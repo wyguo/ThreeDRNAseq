@@ -3,21 +3,17 @@ title: "DDD-GUI user manual"
 author: "Wenbin Guo"
 date: "23 October 2018"
 output:
-  html_document:
-    code_folding: show
-    fig_caption: yes
-    highlight: textmate
-    theme: cerulean
-    toc: yes
-    toc_depth: 3
-  pdf_document:
-    toc: yes
-    toc_depth: '3'
-  word_document:
-    toc: no
-    toc_depth: '3'
-bibliography: inst/reference.bib
+  md_document:
+    variant: markdown_github
+vignette: >
+  %\VignetteIndexEntry{Introduction to ThreeDRNAseq}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
+<style>
+body {
+text-align: justify}
+</style>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,eval = F)
