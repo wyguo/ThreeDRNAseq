@@ -26,3 +26,9 @@ pdf or word format. The analysis pipeline has been successfully used in differen
 from Arabidopsis, barley and potato. 
 
 # Installation and loading
+Install the ThreeDRNAseq R package from Github:
+
+```r
+library(devtools)
+install_github('wyguo/ThreeDRNAseq')
+```

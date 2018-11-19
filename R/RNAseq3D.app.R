@@ -57,7 +57,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
   ##dashboardBody########################################################
   # ========================== dashboardBody ========================== #
   mainbody <- dashboardBody(
-    tags$head(includeScript(system.file("google-analytics.js", package = "RNAseq3D"))),
+    tags$head(includeScript(system.file("google-analytics.js", package = "ThreeDRNAseq"))),
     withMathJax(),
     shinyjs::useShinyjs(),
     tabItems(
