@@ -1,5 +1,4 @@
 <img src="vignettes/fig/header.png" align="right"/>
-===========
 <br>
 <br>
 
