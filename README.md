@@ -3,7 +3,7 @@
 Description
 ===========
 
-This package provides an interactive graphical user interface (GUI) for RNA-seq data differential expression (DE), differential alternative splicing (DAS) and differential transcript usage (DTU) analyses based on two popular pipelines: limma and edgeR. The 3DRNAseq GUI is based on R shiny App and enables command-line-free analysis. To perform analysis, the first step is to generate transcript quantification from quantification tools, such as Salmon and Kallisto. Then users can do mouse click on the App to upload transcript read counts, perform DE and DAS analysis, and make beautiful plots, e.g. expression mean-variance trend plots, PCA plots, heatmap, GO annotation plots, etc. The GUI has steps of proper data pre-processing and false positive controls. These lead to robust DE DAS predictions. All the results and plots can be saved to a report in html, pdf or word format. The analysis pipeline has been successfully used in different RNA-seq studies from Arabidopsis, barley and potato.
+This package provides an interactive graphical user interface (GUI) for RNA-seq data differential expression (DE), differential alternative splicing (DAS) and differential transcript usage (DTU) analyses based on two popular pipelines: limma (Smyth et al. 2013) and edgeR (Robinson et al., 2010). The 3D RNAseq GUI is based on R shiny App and enables command-line-free analysis. To perform analysis, the first step is to generate transcript quantification from quantification tools, such as Salmon (Patro et al., 2017) and Kallisto (Bray et al., 2016). Then users can do mouse click on the App to upload transcript read counts, perform DE and DAS analysis, and make beautiful plots, e.g. expression mean-variance trend plots, PCA plots, heatmap, GO annotation plots, etc. The GUI has steps of proper data pre-processing and false positive controls. These lead to robust DE DAS predictions. All the results and plots can be saved to a report in html, pdf or word format. The analysis pipeline has been successfully used in different RNA-seq studies from Arabidopsis, barley and potato.
 
 Installation and loading
 ========================
@@ -51,3 +51,31 @@ for(i in bioconductor.package.list){
 ```
 
 Note: if any other R packages are missing from your PC, please install accordingly.
+
+Launch the 3D RNA-seq App
+=========================
+
+``` r
+## In the RStudio, typing
+library(ThreeDRNAseq)
+ThreeDRNAseq.app()
+```
+
+User manuals
+============
+
+Two versions of step-by-step user manuals are provided:
+
+-   3D RNA-seq App <a href="xxx" target="_blank">user manual</a> (command-line free).
+-   Command-line <a href="xxx" target="_blank">user manual</a>. Advanced R users also can use command line to perform the analysis.
+
+References
+==========
+
+Bray,N.L., Pimentel,H., Melsted,P., and Pachter,L. (2016) Near-optimal probabilistic RNA-seq quantification. Nat. Biotechnol., 34, 525–527.
+
+Patro,R., Duggal,G., Love,M.I., Irizarry,R.A., and Kingsford,C. (2017) Salmon provides fast and bias-aware quantification of transcript expression. Nat. Methods, 14, 417–419.
+
+Robinson,M.D., McCarthy,D.J., and Smyth,G.K. (2010) edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics, 26, 139–40.
+
+Smyth,G.K., Ritchie,M., Thorne,N., Wettenhall,J., and Shi,W. (2013) limma:Linear Models for Microarray Data User’s Guide(Now Including RNA-Seq Data Analysis). R Man., 1–123.
