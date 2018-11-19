@@ -1,3 +1,7 @@
+<style>
+body {
+text-align: justify}
+</style>
 <img src="vignettes/fig/header.png" align="right"/> <br> <br> <br>
 
 Description
