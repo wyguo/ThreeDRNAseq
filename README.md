@@ -8,6 +8,9 @@ This package provides an interactive graphical user interface (GUI) for RNA-seq 
 Installation and loading
 ========================
 
+Install ThreeDRNAseq package
+----------------------------
+
 ``` r
 #######################################################################################################
 ## use devtools R package to install ThreeDRNAseq from Github
@@ -15,7 +18,12 @@ Installation and loading
 if(!'devtools' %in% installed.packages()[,"Package"])
   install.packages('devtools')
 devtools::instasll_github('wyguo/ThreeDRNAseq')
+```
 
+Install dependency packages
+---------------------------
+
+``` r
 #######################################################################################################
 ## Install packages of dependency
 ###---> Install packages from Cran
@@ -39,3 +47,5 @@ for(i in bioconductor.package.list){
   } else next
 }
 ```
+
+Note: if any other R packages are missing from your PC, please install accordingly.
