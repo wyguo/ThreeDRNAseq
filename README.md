@@ -11,11 +11,13 @@ Installation and loading
 Install ThreeDRNAseq package
 ----------------------------
 
+The package can be installed from Github by using <a href='https://cran.r-project.org/web/packages/devtools/index.html' target='_blank'>devtools</a> R package
+
 ``` r
 #######################################################################################################
 ## use devtools R package to install ThreeDRNAseq from Github
 ###---> If devtools is not installed, please install
-if(!'devtools' %in% installed.packages()[,"Package"])
+if(!requireNamespace("devtools", quietly = TRUE))
   install.packages('devtools')
 devtools::instasll_github('wyguo/ThreeDRNAseq')
 ```
