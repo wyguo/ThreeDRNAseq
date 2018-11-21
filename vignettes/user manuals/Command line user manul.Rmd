@@ -1,5 +1,5 @@
 ---
-title: "DDD pipeline"
+title: "3D pipeline"
 author: "Wenbin Guo"
 date: "2 November 2018"
 output:
@@ -22,14 +22,18 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = T,eval = T,message = T, warning = F,
+knitr::opts_chunk$set(echo = T,eval = F,message = T, warning = F,
                       fig.width=12,fig.height=9,fig.align = "center")
-
 ```
 
+## Introduction
+Instead of mouse click analysis in the <a href="xxx" target="_blank">3D RNA-seq App</a>, advanced R users also can use command line to do the same analysis. This file includes step-by-step codings, which correspond to the steps in the 3D RNA-seq App. Users can refer to the details in the manual:xxx.
+
 ## Load R package
+Assume all the required R packages are installed.
 ```{r,message = F}
 .libPaths('D:/R/win_library')
+# library(ThreeDRNAseq)
 ## app.R ##
 library(shiny)
 library(shinydashboard)
@@ -57,17 +61,20 @@ sourceDir <- function(path, trace = TRUE, ...) {
 sourceDir('R')
 
 ################################################################################
+### Set folder names to save results
 ##----->> save results to local folders
-data.folder <- 'data'
-result.folder <- 'result'
-figure.folder <- 'figure'
+data.folder <- 'data' # for .RData format results
+result.folder <- 'result' # for 3D analysis results in csv files
+figure.folder <- 'figure' # for figures
 
+### Set the input data folder
 ##----->> input data folder of samples.csv, mapping.csv, contrast.csv, etc.
 input.folder <- 'examples/Arabidopsis_cold'
-
-
 ```
+
 ## Data generateion
+Use the <a href="http://bioconductor.org/packages/release/bioc/html/tximport.html" target="_blank">tximport</a> R package to generate the transcript and gene level read counts and TPMs (transcript per million reads).
+
 ```{r}
 ################################################################################
 ##----->> Sample information, e.g. conditions, bio-reps, seq-reps, abundance paths, etc.
@@ -126,6 +133,8 @@ trans_counts=txi_trans$counts
 ## Data pre-processing
 
 ### Step 1: Merge sequencing replicates
+If the RNA-seq data includes sequencing replicates (i.e. the same biological replicate/library is sequenced multiple times), the sequencing replicates are merged to increase the library depths, since they do not provided useful information for biological/technical variability.
+
 ```{r}
 ##If no sequencing replicates, genes_counts and trans_counts remain the same by 
 ##runing the command
@@ -139,6 +148,8 @@ save(samples_new,file=paste0(data.folder,'/samples_new.RData'))
 ```
 
 ### Step 2: Filter low expression transcripts/genes
+To filter the low expressed transcripts across the samples, the expression mean-variance trend is used to determine the CPM (count per million reads) cut-off for low expression and the number of samples to cut. A gene is expressed if any of its transcript is expressed. Please see the details in the 3D RNA-seq App user manual. 
+
 ```{r}
 ################################################################################
 ##----->> Do the filters
@@ -200,6 +211,7 @@ legend('topright',col = c('red','gold'),lty=c(1,4),lwd=3,
 ```
 
 ### Step 3: Principal component analysis (PCA)
+The PCA plot is a rough visualization of the expression variation across conditions/samples and to determine whether the data has batch effects between different biological replicates.
 ```{r}
 ################################################################################
 ##----->> trans level
@@ -267,7 +279,8 @@ g
 ```
 
 ### Step 3-continued: Batch effect estimation
-Only if see clear batch effects on the PCA plots, otherwise skip this step
+Only if see clear batch effects on the PCA plots, otherwise skip this step. The <a href="https://bioconductor.org/packages/release/bioc/html/RUVSeq.html" target="_blank">RUVSeq</a> is used to estimate the batch effects. It will generate modified read counts, where the batch effects have been removed, for batch-free PCA plots and batch effect term which can be passed to the linear regression model for 3D analysis.
+
 ```{r}
 ruvseq.method <- 'RUVr' # ruvseq.method is one of 'RUVr', 'RUVs' and 'RUVg'
 design <- condition2design(condition = samples_new$condition,
@@ -365,6 +378,7 @@ g
 ```
 
 ### Step 4: Data normalisation
+The same transcript/gene in deeplier sequenced samples have more mapped reads. To make genes/transcripts comparable across samples, the "TMM", "RLE" or "upperquantile" method can be used to normalize the expression.
 
 ```{r}
 ################################################################################
@@ -409,11 +423,15 @@ do.call(grid.arrange,g)
 
 
 ## DE, DAS and DTU analysis
+Three pipelines, <a href="https://bioconductor.org/packages/release/bioc/html/limma.html" target="_blank">limma</a>, <a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html" target="_blank">glmQL (edgeR)</a> and <a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html" target="_blank">glm (edgeR)</a> are provided for DE gene and transcripts analysis. "limma" and "edgeR" have comparable performance and they have strigent controls of false positives than the "glm".
 
 ### Step 1: Load contrast group
+The contrast groups passed to the analysis are in a vector object, e.g. \code{contrast <- c('B-A','C-A')} means compare conditions "B" and "C" to condition "A".
+
 ```{r}
 contrast <- read.csv(paste0(input.folder,'/contrast.csv'))
 contrast <- paste0(contrast[,1],'-',contrast[,2])
+###---generate proper contrast format
 contrast <- gsub('_','.',contrast)
 ```
 
@@ -429,7 +447,7 @@ p.adjust.method <- 'BH'
 pval.cutoff <- 0.01
 lfc.cutoff <- 1
 ##----->> limma pipeline
-genes_DDD_stat <- limma.pipeline(dge = genes_dge,
+genes_3D_stat <- limma.pipeline(dge = genes_dge,
                                  design = design,
                                  deltaPS = NULL,
                                  contrast = contrast,
@@ -437,7 +455,7 @@ genes_DDD_stat <- limma.pipeline(dge = genes_dge,
                                  adjust.method = p.adjust.method)
 
 ##----->> edgeR glmQL pipeline
-# genes_DDD_stat <- edgeR.pipeline(dge = genes_dge,
+# genes_3D_stat <- edgeR.pipeline(dge = genes_dge,
 #                                  design = design,
 #                                  deltaPS = NULL,
 #                                  contrast = contrast,
@@ -446,7 +464,7 @@ genes_DDD_stat <- limma.pipeline(dge = genes_dge,
 #                                  adjust.method = p.adjust.method)
 
 ##----->> edgeR glm pipeline
-# genes_DDD_stat <- edgeR.pipeline(dge = genes_dge,
+# genes_3D_stat <- edgeR.pipeline(dge = genes_dge,
 #                                  design = design,
 #                                  deltaPS = NULL,
 #                                  contrast = contrast,
@@ -455,7 +473,7 @@ genes_DDD_stat <- limma.pipeline(dge = genes_dge,
 #                                  adjust.method = p.adjust.method)
 
 ## save results
-save(genes_DDD_stat,file=paste0(data.folder,'/genes_DDD_stat.RData'))
+save(genes_3D_stat,file=paste0(data.folder,'/genes_3D_stat.RData'))
 
 ```
 
@@ -489,7 +507,7 @@ pval.cutoff <- 0.01
 lfc.cutoff <- 1
 deltaPS.cutoff <- 0.1
 ##----->> limma pipeline
-trans_DDD_stat <- limma.pipeline(dge = trans_dge,
+trans_3D_stat <- limma.pipeline(dge = trans_dge,
                                  design = design,
                                  deltaPS = deltaPS,
                                  contrast = contrast,
@@ -497,7 +515,7 @@ trans_DDD_stat <- limma.pipeline(dge = trans_dge,
                                  adjust.method = p.adjust.method)
 
 ##----->> edgeR glmQL pipeline
-# trans_DDD_stat <- edgeR.pipeline(dge = trans_dge,
+# trans_3D_stat <- edgeR.pipeline(dge = trans_dge,
 #                                  design = design,
 #                                  deltaPS = deltaPS,
 #                                  contrast = contrast,
@@ -506,7 +524,7 @@ trans_DDD_stat <- limma.pipeline(dge = trans_dge,
 #                                  adjust.method = p.adjust.method)
 
 ##----->> edgeR glm pipeline
-# trans_DDD_stat <- edgeR.pipeline(dge = trans_dge,
+# trans_3D_stat <- edgeR.pipeline(dge = trans_dge,
 #                                  design = design,
 #                                  deltaPS = deltaPS,
 #                                  contrast = contrast,
@@ -515,35 +533,35 @@ trans_DDD_stat <- limma.pipeline(dge = trans_dge,
 #                                  adjust.method = p.adjust.method)
 
 ## save results
-save(trans_DDD_stat,file=paste0(data.folder,'/trans_DDD_stat.RData'))
+save(trans_3D_stat,file=paste0(data.folder,'/trans_3D_stat.RData'))
 
 ```
 
 ## Result summary
-### DDD target and tables of statistics
+### 3D target and tables of statistics
 ```{r}
 ################################################################################
 ##----->> Summary DE genes
-DE_genes <- summary.DE.target(stat = genes_DDD_stat$DE.stat,
+DE_genes <- summary.DE.target(stat = genes_3D_stat$DE.stat,
                               cutoff = c(adj.pval=pval.cutoff,
                                          log2FC=lfc.cutoff))
 
 ################################################################################
 ## summary DAS genes, DE and DTU trans
 ##----->> DE trans
-DE_trans <- summary.DE.target(stat = trans_DDD_stat$DE.stat,
+DE_trans <- summary.DE.target(stat = trans_3D_stat$DE.stat,
                               cutoff = c(adj.pval=pval.cutoff,
                                          log2FC=lfc.cutoff))
 
 ##----->> DAS genes
 DAS.p.method <- 'F-test' ## DAS.p.method is one of 'F-test' and 
 if(DAS.p.method=='F-test') {
-  DAS.stat <- trans_DDD_stat$DAS.F.stat
+  DAS.stat <- trans_3D_stat$DAS.F.stat
 } else {
-  DAS.stat <- trans_DDD_stat$DAS.Simes.stat
+  DAS.stat <- trans_3D_stat$DAS.Simes.stat
 }
 
-lfc <- genes_DDD_stat$DE.lfc
+lfc <- genes_3D_stat$DE.lfc
 lfc <- reshape2::melt(as.matrix(lfc))
 colnames(lfc) <- c('target','contrast','log2FC')
 DAS_genes <- summary.DAS.target(stat = DAS.stat,
@@ -551,10 +569,10 @@ DAS_genes <- summary.DAS.target(stat = DAS.stat,
                                 cutoff=c(pval.cutoff,deltaPS.cutoff))
 
 ##----->> DTU trans
-lfc <- trans_DDD_stat$DE.lfc
+lfc <- trans_3D_stat$DE.lfc
 lfc <- reshape2::melt(as.matrix(lfc))
 colnames(lfc) <- c('target','contrast','log2FC')
-DTU_trans <- summary.DAS.target(stat = trans_DDD_stat$DTU.stat,
+DTU_trans <- summary.DAS.target(stat = trans_3D_stat$DTU.stat,
                                 lfc = lfc,cutoff = c(adj.pval=pval.cutoff,
                                                      deltaPS=deltaPS.cutoff))
 
@@ -573,11 +591,11 @@ write.csv(DTU_trans,file=paste0(result.folder,'/DTU transcripts.csv'),row.names 
 
 ```
 
-### DDD numbers
+### 3D numbers
 ```{r}
 ################################################################################
 ##----->> target numbers
-summary.DDD.number(DE_genes = DE_genes,
+summary.3D.number(DE_genes = DE_genes,
                    DAS_genes = DAS_genes,
                    DE_trans = DE_trans,
                    DTU_trans=DTU_trans,

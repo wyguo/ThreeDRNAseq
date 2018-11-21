@@ -36,7 +36,7 @@ summary.DAS.target <- function(stat,lfc,cutoff=c(adj.pval=0.01,deltaPS=0.1)){
 #' @param contrast a vector of contrast groups, e.g. \code{contrast = c('B-A','C-A')}, which compares condition B and C to 
 #' condition A.
 #' @details In each contrast group, \code{DEvsDAS} compares the DE and DAS genes; \code{DEvsDTU} compares the DE and DTU
-#' transcripts; and \code{summary.DDD.number} summarises the DE/DAS/DTU gene/transcript numbers.
+#' transcripts; and \code{summary.3D.number} summarises the DE/DAS/DTU gene/transcript numbers.
 #' 
 #' @return a data.frame with first column of contrast goups, second column of DE only genes/transcripts, third column of
 #' DE&DAS genes or DE&DTU transcripts and fourth column of DAS only genes or DTU only transcripts.
@@ -108,7 +108,7 @@ DEvsDTU <- function(DE_trans,DTU_trans,contrast){
 
 #' @export
 #' @rdname DEvsDAS
-summary.DDD.number <- function(DE_genes,DAS_genes,DE_trans,DTU_trans,contrast){
+summary.3D.number <- function(DE_genes,DAS_genes,DE_trans,DTU_trans,contrast){
   # n1 <- lapply(DE_genes,function(x) x$target)
   idx <- factor(DE_genes$contrast,levels = contrast)
   n1 <- split(DE_genes$target,idx)

@@ -33,7 +33,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
   ##dashboardHeader######################################################
   # ========================== dashboardHeader ======================== #
   mainheader <- dashboardHeader(
-    title = 'DDD-GUI',
+    title = '3D RNA-seq App',
     titleWidth = 200,
     dropdownMenuOutput("messageMenu")
   )
@@ -68,7 +68,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                            width = NULL,status = 'primary', solidHeader = T,
                            # shiny::uiOutput('page1'),
                            # DT::dataTableOutput("info")
-                           HTML('<h5 align="justify">The DDD-GUI is used to perform differential expression (DE) gene and transcript, differental
+                           HTML('<h5 align="justify">The 3D RNA-seq App is used to perform differential expression (DE) gene and transcript, differental
                                 alternaive spliced (DAS) gene and differential transcript usage (DTU) transcript analysis.
                                 To use our pipeline in your work, please cite:<br><br>
                                 Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A.,
@@ -540,7 +540,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       tabItem('resultssummary',
               fluidRow(
                 column(width = 3,
-                       box(title='DDD target tables',
+                       box(title='3D target tables',
                            width = 13,status = 'primary', solidHeader = T,
                            HTML('<h4><strong>Visulise statistics</strong></h4>'),
                            selectInput(inputId = 'stat.type',label = 'Targets',
@@ -2220,7 +2220,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                      incProgress(0.2)
                      switch(DE.pipeline,
                             limma={
-                              genes_DDD_stat <- limma.pipeline(dge = DDD.data$genes_dge,
+                              genes_3D_stat <- limma.pipeline(dge = DDD.data$genes_dge,
                                                                design = design,
                                                                deltaPS = DDD.data$deltaPS,
                                                                contrast = DDD.data$contrast,
@@ -2228,7 +2228,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                                                adjust.method = input$p.adjust.method)
                             },
                             glmQL={
-                              genes_DDD_stat <- edgeR.pipeline(dge = DDD.data$genes_dge,
+                              genes_3D_stat <- edgeR.pipeline(dge = DDD.data$genes_dge,
                                                                design = design,
                                                                deltaPS = DDD.data$deltaPS,
                                                                contrast = DDD.data$contrast,
@@ -2237,7 +2237,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                                                adjust.method = input$p.adjust.method)
                             },
                             glm={
-                              genes_DDD_stat <- edgeR.pipeline(dge = DDD.data$genes_dge,
+                              genes_3D_stat <- edgeR.pipeline(dge = DDD.data$genes_dge,
                                                                design = design,
                                                                deltaPS = NULL,
                                                                contrast = DDD.data$contrast,
@@ -2247,16 +2247,16 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                             }
                      )
                      incProgress(0.7)
-                     DE_genes <- summary.DE.target(stat = genes_DDD_stat$DE.stat,
+                     DE_genes <- summary.DE.target(stat = genes_3D_stat$DE.stat,
                                                    cutoff = c(adj.pval=input$pval.cutoff,
                                                               log2FC=input$lfc.cutoff))
 
                      DDD.data$DE_genes <- DE_genes
-                     DDD.data$genes_log2FC <- genes_DDD_stat$DE.lfc
+                     DDD.data$genes_log2FC <- genes_3D_stat$DE.lfc
                      save(DE_genes,file=paste0(DDD.data$data.folder,'/DE_genes.RData'))
                      incProgress(0.8)
-                     save(genes_DDD_stat,file=paste0(DDD.data$data.folder,'/genes_DDD_stat.RData'))
-                     message(paste0('genes_DDD_stat.RData is saved in folder: ',DDD.data$data.folder))
+                     save(genes_3D_stat,file=paste0(DDD.data$data.folder,'/genes_3D_stat.RData'))
+                     message(paste0('genes_3D_stat.RData is saved in folder: ',DDD.data$data.folder))
                    })
     })
 
@@ -2266,12 +2266,12 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       if(is.null(DDD.data$data.folder))
         return(NULL)
       if(input$run.DE>0){
-        paste0('genes_DDD_stat.RData is saved in the data folder.')
+        paste0('genes_3D_stat.RData is saved in the data folder.')
       } else {
-        if(file.exists(paste0(DDD.data$data.folder,'/genes_DDD_stat.RData'))){
-          paste0('genes_DDD_stat.RData is already in "data" folder.\nGenerate new?.')
+        if(file.exists(paste0(DDD.data$data.folder,'/genes_3D_stat.RData'))){
+          paste0('genes_3D_stat.RData is already in "data" folder.\nGenerate new?.')
         } else {
-          paste0('genes_DDD_stat.RData is not in "data" folder.\nPlease generate new.')
+          paste0('genes_3D_stat.RData is not in "data" folder.\nPlease generate new.')
         }
       }
     })
@@ -2405,7 +2405,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                      incProgress(0.2)
                      switch(DE.pipeline,
                             limma={
-                              trans_DDD_stat <- limma.pipeline(dge = DDD.data$trans_dge,
+                              trans_3D_stat <- limma.pipeline(dge = DDD.data$trans_dge,
                                                                design = design,
                                                                deltaPS = DDD.data$deltaPS,
                                                                contrast = DDD.data$contrast,
@@ -2413,7 +2413,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                                                adjust.method = input$p.adjust.method)
                             },
                             glmQL={
-                              trans_DDD_stat <- edgeR.pipeline(dge = DDD.data$trans_dge,
+                              trans_3D_stat <- edgeR.pipeline(dge = DDD.data$trans_dge,
                                                                design = design,
                                                                deltaPS = DDD.data$deltaPS,
                                                                contrast = DDD.data$contrast,
@@ -2422,7 +2422,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                                                adjust.method = input$p.adjust.method)
                             },
                             glm={
-                              trans_DDD_stat <- edgeR.pipeline(dge = DDD.data$trans_dge,
+                              trans_3D_stat <- edgeR.pipeline(dge = DDD.data$trans_dge,
                                                                design = design,
                                                                deltaPS = DDD.data$deltaPS,
                                                                contrast = DDD.data$contrast,
@@ -2433,16 +2433,16 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                      )
                      incProgress(0.7)
                      ##DE trans
-                     DE_trans <- summary.DE.target(stat = trans_DDD_stat$DE.stat,
+                     DE_trans <- summary.DE.target(stat = trans_3D_stat$DE.stat,
                                                    cutoff = c(adj.pval=input$pval.cutoff,
                                                               log2FC=input$lfc.cutoff))
                      DDD.data$DE_trans <- DE_trans
-                     DDD.data$trans_log2FC <- trans_DDD_stat$DE.lfc
+                     DDD.data$trans_log2FC <- trans_3D_stat$DE.lfc
                      save(DE_trans,file=paste0(DDD.data$data.folder,'/DE_trans.RData'))
 
                      ##DAS genes
                      if(input$DAS.p.method=='F-test')
-                       DAS.stat <- trans_DDD_stat$DAS.F.stat else DAS.stat <- trans_DDD_stat$DAS.Simes.stat
+                       DAS.stat <- trans_3D_stat$DAS.F.stat else DAS.stat <- trans_3D_stat$DAS.Simes.stat
 
                      lfc <- DDD.data$genes_log2FC
                      lfc <- reshape2::melt(as.matrix(lfc))
@@ -2457,16 +2457,16 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                      lfc <- DDD.data$trans_log2FC
                      lfc <- reshape2::melt(as.matrix(lfc))
                      colnames(lfc) <- c('target','contrast','log2FC')
-                     DTU_trans <- summary.DAS.target(stat = trans_DDD_stat$DTU.stat,
+                     DTU_trans <- summary.DAS.target(stat = trans_3D_stat$DTU.stat,
                                                      lfc = lfc,cutoff = c(adj.pval=input$pval.cutoff,
                                                                           deltaPS=input$deltaPS.cutoff))
                      DDD.data$DTU_trans <- DTU_trans
                      save(DTU_trans,file=paste0(DDD.data$data.folder,'/DTU_trans.RData'))
                      incProgress(0.8)
 
-                     save(trans_DDD_stat,file=paste0(DDD.data$data.folder,'/trans_DDD_stat.RData'))
-                     DDD.data$trans_DDD_stat <- trans_DDD_stat
-                     message(paste0('trans_DDD_stat.RData is saved in folder: ',DDD.data$data.folder))
+                     save(trans_3D_stat,file=paste0(DDD.data$data.folder,'/trans_3D_stat.RData'))
+                     DDD.data$trans_3D_stat <- trans_3D_stat
+                     message(paste0('trans_3D_stat.RData is saved in folder: ',DDD.data$data.folder))
 
                      ######
 
@@ -2487,12 +2487,12 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       if(is.null(DDD.data$data.folder))
         return(NULL)
       if(input$run.DE>0){
-        paste0('trans_DDD_stat.RData is saved in the data folder.')
+        paste0('trans_3D_stat.RData is saved in the data folder.')
       } else {
-        if(file.exists(paste0(DDD.data$data.folder,'/trans_DDD_stat.RData'))){
-          paste0('trans_DDD_stat.RData is already in "data" folder.\nGenerate new?.')
+        if(file.exists(paste0(DDD.data$data.folder,'/trans_3D_stat.RData'))){
+          paste0('trans_3D_stat.RData is already in "data" folder.\nGenerate new?.')
         } else {
-          paste0('trans_DDD_stat.RData is not in "data" folder.\nPlease generate new.')
+          paste0('trans_3D_stat.RData is not in "data" folder.\nPlease generate new.')
         }
       }
     })
@@ -2792,7 +2792,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     DDD.numbers <- reactive({
       if(is.null(DDD.data$DE_genes) | is.null(DDD.data$DAS_genes) | is.null(DDD.data$DE_trans)| is.null(DDD.data$DTU_trans))
         return(NULL)
-      summary.DDD.number(DE_genes = DDD.data$DE_genes,
+      summary.3D.number(DE_genes = DDD.data$DE_genes,
                          DAS_genes = DDD.data$DAS_genes,
                          DE_trans = DDD.data$DE_trans,
                          DTU_trans=DDD.data$DTU_trans,contrast = DDD.data$contrast)
@@ -2806,7 +2806,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     DEvsDAS <- reactive({
       if(is.null(DDD.data$DE_genes) | is.null(DDD.data$DAS_genes))
         return(NULL)
-      # summary.DDD.vs(x = split(DDD.data$DE_genes$target,DDD.data$DE_genes$contrast),
+      # summary.3D.vs(x = split(DDD.data$DE_genes$target,DDD.data$DE_genes$contrast),
       #                y = split(DDD.data$DAS_genes$target,DDD.data$DAS_genes$contrast),
       #                contrast = DDD.data$contrast,
       #                idx = c('DEonly','DE&DAS','DASonly'))
@@ -2846,7 +2846,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     DEvsDTU <- reactive({
       if(is.null(DDD.data$DE_trans) | is.null(DDD.data$DTU_trans))
         return(NULL)
-      # summary.DDD.vs(x = split(DDD.data$DE_trans$target,DDD.data$DE_trans$contrast),
+      # summary.3D.vs(x = split(DDD.data$DE_trans$target,DDD.data$DE_trans$contrast),
       #                y = split(DDD.data$DTU_trans$target,DDD.data$DTU_trans$contrast),
       #                contrast = DDD.data$contrast,
       #                idx = c('DEonly','DE&DTU','DTUonly'))
