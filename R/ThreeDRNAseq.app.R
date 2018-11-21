@@ -81,8 +81,8 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                            )
 
                            ),
-      ###########################################################################
-      #======================= Data generation panel ============================
+    
+      #=======================>> Data generation panel <<============================
       tabItem("generation",
               tags$head(tags$style("#TxtOut {white-space: normal;}")),
               fluidRow(
@@ -235,8 +235,8 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                 )
               )
                        ),
-      ###########################################################################
-      #======================== Data pre-processing panel =======================
+ 
+      #========================>> Data pre-processing panel <<=======================
       tabItem('preprocessing',
               ##----------Step 1: merge sequencing reps------------
               fluidRow(
@@ -429,9 +429,9 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                 )
               )
               ),
-      ##----------DE, DAS and DTU------------
+      #========================>> 3D panel <<=======================
       tabItem('ddd',
-              ##-contrast group------------
+              ##---------------Contrast group------------
               fluidRow(
                 column(width = 4,
                        box(title='Step 1: Load contrast group',
@@ -524,7 +524,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                        )
               ),
 
-              ##-DE DAS DTU transcripts------------
+              ##-----------DE DAS DTU transcripts------------
               fluidRow(
                 column(width = 12,
                        box(title='Part of deltaPS',
@@ -536,7 +536,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                 )
               )
       ),
-      ##----------Results summary------------
+      #========================>> Results summary- panel <<=======================
       tabItem('resultssummary',
               fluidRow(
                 column(width = 3,
@@ -648,7 +648,8 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                 )
               )
       ),
-      ##----------Advanced plot------------
+      
+      #========================>> Advanced plot <<=======================
       tabItem('advancedanalysis',
               ##----------Heatmap------------
               fluidRow(
@@ -804,8 +805,8 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         )
       )
       ),
-      ###########################################################################
-      #======================= Generate report ============================
+      
+      #=======================>> Generate report panel <<============================
       tabItem("report",
               tags$head(tags$style("#TxtOut {white-space: normal;}")),
               box(title = 'Parameter summary',
@@ -1280,8 +1281,9 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         DDD.data$samples_new else DDD.data$samples
     },options = list(scrollX = TRUE,
                      columnDefs = list(list(className = 'dt-left', targets="_all"))))
-
-    ##generate genes expression####
+    
+    ##------------------->> generate  expression  <<--------------------
+    ##--------------------generate genes expression---------------------
     observe({
       if(input$generate.new.genes.data=='Load txi_genes.RData'){
         updateActionButton(session,inputId = 'run.txi.genes',label = 'Load',icon = icon('upload'))
@@ -1355,7 +1357,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       rungeneinfo()
     })
 
-    ##generate trans expression####
+    ##-------------------- generate trans expression --------------------
     ###---update actionbutton if load data
     observe({
       if(input$generate.new.trans.data=='Load txi_trans.RData'){
@@ -1434,11 +1436,9 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     })
 
 
-    ##############################################################
-    ######                data pre-processing
-    ##############################################################
 
-    ##------------->>  Step 1: merge sequencing reps
+    ##-------------->>    data pre-processing   <<--------------
+    ##-------------  Step 1: merge sequencing reps -------------
 
 
     seqrepinfo <- reactive({
@@ -1808,31 +1808,29 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     observeEvent(input$save.pca.plot,{
       ##transcript level
       # graphics.off()
-      png(filename = paste0(DDD.data$figure.folder,'/Transcript PCA_',input$pca.plot.type,'.png'),
+      png(filename = paste0(DDD.data$figure.folder,'/Transcript PCA ',input$pca.plot.type,'.png'),
           width = 15/2.54,height = 13/2.54,units = 'in',res = 300)
       print(pca.trans.g())
       dev.off()
 
-      pdf(file = paste0(DDD.data$figure.folder,'/Transcript PCA_',input$pca.plot.type,'.pdf'),
+      pdf(file = paste0(DDD.data$figure.folder,'/Transcript PCA ',input$pca.plot.type,'.pdf'),
           width = 15/2.54,height = 13/2.54)
       print(pca.trans.g())
       dev.off()
       ###gene level
       # graphics.off()
-      png(filename = paste0(DDD.data$figure.folder,'/Gene PCA_',input$pca.plot.type,'.png'),
+      png(filename = paste0(DDD.data$figure.folder,'/Gene PCA ',input$pca.plot.type,'.png'),
           width = 15/2.54,height = 13/2.54,units = 'in',res = 300)
       print(pca.genes.g())
       dev.off()
 
-      pdf(file = paste0(DDD.data$figure.folder,'/Gene PCA_',input$pca.plot.type,'.pdf'),
+      pdf(file = paste0(DDD.data$figure.folder,'/Gene PCA ',input$pca.plot.type,'.pdf'),
           width = 15/2.54,height = 13/2.54)
       print(pca.genes.g())
       dev.off()
       message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
       showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
     })
-
-
 
 
     ##--------------remove batch effects-trans level---------------
@@ -1980,24 +1978,24 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     observeEvent(input$save.pca.br.plot,{
       ###transcript level
       # graphics.off()
-      png(filename = paste0(DDD.data$figure.folder,'/Transcript PCA batch effect removed_',input$pca.plot.type,'.png'),
+      png(filename = paste0(DDD.data$figure.folder,'/Transcript PCA batch effect removed ',input$pca.plot.type,'.png'),
           width = 15/2.54,height = 13/2.54,units = 'in',res = 300)
       print(pca.trans.br.g())
       dev.off()
 
-      pdf(file = paste0(DDD.data$figure.folder,'/Transcript PCA batch effect removed_',input$pca.plot.type,'.pdf'),
+      pdf(file = paste0(DDD.data$figure.folder,'/Transcript PCA batch effect removed ',input$pca.plot.type,'.pdf'),
           width = 15/2.54,height = 13/2.54)
       print(pca.trans.br.g())
       dev.off()
 
       ###gene level
       # graphics.off()
-      png(filename = paste0(DDD.data$figure.folder,'/Gene PCA batch effect removed_',input$pca.plot.type,'.png'),
+      png(filename = paste0(DDD.data$figure.folder,'/Gene PCA batch effect removed ',input$pca.plot.type,'.png'),
           width = 15/2.54,height = 13/2.54,units = 'in',res = 300)
       print(pca.genes.br.g())
       dev.off()
 
-      pdf(file = paste0(DDD.data$figure.folder,'/Gene PCA batch effect removed_',input$pca.plot.type,'.pdf'),
+      pdf(file = paste0(DDD.data$figure.folder,'/Gene PCA batch effect removed ',input$pca.plot.type,'.pdf'),
           width = 15/2.54,height = 13/2.54)
       print(pca.genes.br.g())
       dev.off()
@@ -2177,11 +2175,8 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       showNotification(paste0('Table is saved in folder: ',DDD.data$result.folder))
     })
 
-    ###########################################################################################
-    ##DE DAS and DTU----
-    ###########################################################################################
-
-    ##Load contrast----------------
+    ##--------------->> DE DAS and DTU <<---------------
+    ##---------------- Load contrast ----------------
     observe({
       inFile <- input$contrast.input
       if (is.null(inFile))
@@ -2204,7 +2199,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       columnDefs = list(list(className = 'dt-center', targets = "_all")))
     )
 
-    ##---------------DE genes-----------------
+    ##--------------- DE genes -----------------
     observeEvent(input$run.DE,{
       cat('\nDE gene analysis')
       withProgress(message = 'DE gene analysis...', detail = 'This may take a while...',
@@ -2283,7 +2278,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     })
     #
 
-    ##---------------generate deltaPS-----------------
+    ##--------------- generate deltaPS -----------------
     observeEvent(input$run.deltaPS,{
       if(is.null(DDD.data$PS)){
         ##load require data for analysis
@@ -2383,7 +2378,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       rundeltaPSinfo()
     })
 
-    ##--------------->> DE DAS DTU transcripts <<---------------
+    ##--------------- DE DAS DTU transcripts ---------------
     observeEvent(input$run.diffsplice,{
       if(is.null(DDD.data$deltaPS)){
         message('Please generate deltaPS values.')
@@ -2467,9 +2462,6 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                      save(trans_3D_stat,file=paste0(DDD.data$data.folder,'/trans_3D_stat.RData'))
                      DDD.data$trans_3D_stat <- trans_3D_stat
                      message(paste0('trans_3D_stat.RData is saved in folder: ',DDD.data$data.folder))
-
-                     ######
-
                    })
     })
 
@@ -2503,10 +2495,9 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       run.DAS.info()
     })
 
-    ##############################################################
-    ####                       Result summary                 ####
-    ##############################################################
-    ##---------------->> DE DAS DTU statistics <<-----------------
+    ##---------------->>  Result summary   <<-----------------
+    ##---------------- DE DAS DTU statistics -----------------
+    
     output$show.contrast.groups <- renderUI({
       selectInput(inputId = 'contrast.groups',label = 'Contrast groups',
                   choices = DDD.data$contrast)
@@ -2636,7 +2627,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       showNotification(paste0('Figure is saved in folder: ',DDD.data$figure.folder))
     })
 
-    ##---------------consensus across contrast-----------------
+    ##---------------Comparisons between contrast groups-----------------
     output$across.contrast.euler <- renderUI({
       span(
         selectInput(inputId = 'across.contrast.group',
@@ -2803,7 +2794,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     })
 
     ##---------------DE vs DAS-----------------
-    DEvsDAS <- reactive({
+    DEvsDAS.results <- reactive({
       if(is.null(DDD.data$DE_genes) | is.null(DDD.data$DAS_genes))
         return(NULL)
       # summary.3D.vs(x = split(DDD.data$DE_genes$target,DDD.data$DE_genes$contrast),
@@ -2817,17 +2808,17 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     })
 
     output$DE.vs.DAS <- renderTable({
-      if(is.null(DEvsDAS()))
+      if(is.null(DEvsDAS.results()))
         return(NULL)
-      DEvsDAS()
+      DEvsDAS.results()
     },align='c')
 
     ##euler plot
     ###---DE vs DAS
     g.across.target1 <- reactive({
-      if(is.null(DEvsDAS())| is.null(input$across.target))
+      if(is.null(DEvsDAS.results())| is.null(input$across.target))
         return(NULL)
-      x <- unlist(DEvsDAS()[DEvsDAS()$Contrast==input$across.target,-1])
+      x <- unlist(DEvsDAS.results()[DEvsDAS.results()$Contrast==input$across.target,-1])
       if(length(x)==0)
         return(NULL)
       names(x) <- c('DE','DE&DAS','DAS')
@@ -2843,7 +2834,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
 
 
     ##---------------DE vs DTU-----------------
-    DEvsDTU <- reactive({
+    DEvsDTU.results <- reactive({
       if(is.null(DDD.data$DE_trans) | is.null(DDD.data$DTU_trans))
         return(NULL)
       # summary.3D.vs(x = split(DDD.data$DE_trans$target,DDD.data$DE_trans$contrast),
@@ -2856,16 +2847,16 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     })
 
     output$DE.vs.DTU <- renderTable({
-      if(is.null(DEvsDTU()))
+      if(is.null(DEvsDTU.results()))
         return(NULL)
-      DEvsDTU()
+      DEvsDTU.results()
     },align='c')
 
     ###---DE vs DTU
     g.across.target2 <- reactive({
-      if(is.null(DEvsDTU())| is.null(input$across.target))
+      if(is.null(DEvsDTU.results())| is.null(input$across.target))
         return(NULL)
-      x <- unlist(DEvsDTU()[DEvsDTU()$Contrast==input$across.target,-1])
+      x <- unlist(DEvsDTU.results()[DEvsDTU.results()$Contrast==input$across.target,-1])
       if(length(x)==0)
         return(NULL)
       names(x) <- c('DE','DE&DTU','DTU')
@@ -2927,10 +2918,10 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                      write.csv(DDD.numbers(),file=paste0(DDD.data$result.folder,'/DE DAS DTU numbers.csv'),
                                row.names = F)
                      incProgress(0.9)
-                     write.csv(DEvsDAS(),file=paste0(DDD.data$result.folder,'/DE vs DAS gene number.csv'),
+                     write.csv(DEvsDAS.results(),file=paste0(DDD.data$result.folder,'/DE vs DAS gene number.csv'),
                                row.names = F)
                      incProgress(1)
-                     write.csv(DEvsDTU(),file=paste0(DDD.data$result.folder,'/DE vs DTU transcript number.csv'),
+                     write.csv(DEvsDTU.results(),file=paste0(DDD.data$result.folder,'/DE vs DTU transcript number.csv'),
                                row.names = F)
                    })
       message(paste0('All tables of test statistics and target numbers are saved in folder: ',DDD.data$result.folder))
@@ -2938,11 +2929,9 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     })
 
 
-    ##############################################################
-    ######                    Advanced plot                   ####
-    ##############################################################
-
-    ##---------------->>        heatmap        <<-----------------
+    
+    ##---------------->>    Advanced plot   <<-----------------
+    ##----------------        heatmap        ------------------
     observe({
       shinyjs::toggleState(id = 'heatmap.targetlist.type',
                            condition = input$heatmap.select.or.upload=='Upload target list')
@@ -3461,24 +3450,19 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       showNotification(paste0('Figure is saved in folder: ',DDD.data$figure.folder))
     })
 
-    ###########################################################################
-    #======================= Generate report ============================
-
-
+    ###---------------->>        Generate report      <<-----------------
     data.para <- reactive({
       x <- rbind(
-        c('Folders','Data',ifelse(is.null(DDD.data$data.folder),'No information',DDD.data$data.folder)),
-        c('','Results',ifelse(is.null(DDD.data$result.folder),'No information',DDD.data$result.folder)),
-        c('','Figures',ifelse(is.null(DDD.data$figure.folder),'No information',DDD.data$figure.folder)),
+        c('Folders','Directory',DDD.data$path),
+        c('Folders','Data',DDD.data$data.folder),
+        c('','Results',DDD.data$result.folder),
+        c('','Figures',DDD.data$figure.folder),
         c('Data generation','tximport method',input$tximport.method),
-        c('Data pre-processing','Merge sequencing replicates',
-          ifelse(is.null(DDD.data$data.info),'No information',
-                 ifelse(DDD.data$data.info$sample[1] > DDD.data$data.info$merged.sample[1],'Yes','No'))),
+        c('Data pre-processing','Sequencing replicates',length(unique(DDD.data$samples$srep))),
+        c('','Sequencing replicate merged',ifelse(nrow(DDD.data$samples)>nrow(DDD.data$samples_new), 'Yes','No')),
         c('','Low expression CPM cut-off',input$cpm.cut),
         c('','Sample number for CPM cut-off', input$sample.n.cut),
-        c('','Batch effect estimation',ifelse(is.null(DDD.data$data.folder),'No information',
-                                              ifelse(length(list.files(DDD.data$data.folder,'*batch.RData'))>0,'Yes','No'))),
-        # ifelse(length(list.files(DDD.data$data.folder,'*batch.RData'))>0,'Yes','No'))),
+        c('','Batch effect estimation',ifelse(length(list.files(DDD.data$data.folder,'*batch.RData'))>0,'Yes','No')),
         c('','Batch effect estimation method',input$ruvseq.method),
         c('','Normalisation method',input$norm.method),
         c('DE DAS and DTU','Pipeline',input$DE.pipeline),
@@ -3487,7 +3471,10 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         c('','P-value adjust method',input$p.adjust.method),
         c('','Adjusted p-value cut-off',input$pval.cutoff),
         c('','Log2 fold change cut-off',input$lfc.cutoff),
-        c('','delta PS cut-off',input$deltaPS.cutoff)
+        c('','delta PS cut-off',input$deltaPS.cutoff),
+        c('Heatmap','Distance method',input$dist.method),
+        c('','Cluster method',input$cluster.method),
+        c('','Number of clusters',input$cluster.number)
       )
       x <- data.frame(x)
       colnames(x) <- c('Step','Description','Parameter (Double click to edit if not correct)')
@@ -3539,10 +3526,10 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         write.csv(DDD.numbers(),file=paste0(DDD.data$result.folder,'/DE DAS DTU numbers.csv'),
                   row.names = F)
       if(!file.exists(paste0(DDD.data$result.folder,'/DE vs DAS gene number.csv')))
-        write.csv(DEvsDAS(),file=paste0(DDD.data$result.folder,'/DE vs DAS gene number.csv'),
+        write.csv(DEvsDAS.results(),file=paste0(DDD.data$result.folder,'/DE vs DAS gene number.csv'),
                   row.names = F)
       if(!file.exists(paste0(DDD.data$result.folder,'/DE vs DTU transcript number.csv')))
-        write.csv(DEvsDTU(),file=paste0(DDD.data$result.folder,'/DE vs DTU transcript number.csv'))
+        write.csv(DEvsDTU.results(),file=paste0(DDD.data$result.folder,'/DE vs DTU transcript number.csv'))
 
       report.folder <- paste0(DDD.data$path,'/report')
       if(!file.exists(report.folder))

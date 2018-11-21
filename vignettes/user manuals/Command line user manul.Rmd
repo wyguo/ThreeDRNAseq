@@ -1,7 +1,7 @@
 ---
-title: "3D pipeline"
+title: "3D RNA-seq pipeline"
 author: "Wenbin Guo"
-date: "2 November 2018"
+date: "21 November 2018"
 output:
   html_document:
     code_folding: show
@@ -211,7 +211,7 @@ legend('topright',col = c('red','gold'),lty=c(1,4),lwd=3,
 ```
 
 ### Step 3: Principal component analysis (PCA)
-The PCA plot is a rough visualization of the expression variation across conditions/samples and to determine whether the data has batch effects between different biological replicates.
+The PCA plot is a rough visualization of expression variation across conditions/samples and to determine whether the data has batch effects between different biological replicates.
 ```{r}
 ################################################################################
 ##----->> trans level
@@ -423,12 +423,12 @@ do.call(grid.arrange,g)
 
 
 ## DE, DAS and DTU analysis
-Three pipelines, <a href="https://bioconductor.org/packages/release/bioc/html/limma.html" target="_blank">limma</a>, <a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html" target="_blank">glmQL (edgeR)</a> and <a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html" target="_blank">glm (edgeR)</a> are provided for DE gene and transcripts analysis. "limma" and "edgeR" have comparable performance and they have strigent controls of false positives than the "glm".
+Three pipelines, <a href="https://bioconductor.org/packages/release/bioc/html/limma.html" target="_blank">limma</a>, <a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html" target="_blank">glmQL (edgeR)</a> and <a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html" target="_blank">glm (edgeR)</a> are provided for DE gene and transcripts analysis. "limma" and "edgeR" have comparable performance and they have stringent controls of false positives than the "glm".
 
 ### Step 1: Load contrast group
-The contrast groups passed to the analysis are in a vector object, e.g. \code{contrast <- c('B-A','C-A')} means compare conditions "B" and "C" to condition "A".
 
 ```{r}
+# The contrast groups passed to the analysis are in a vector object, e.g. \code{contrast <- c('B-A','C-A')} means compare conditions "B" and "C" to condition "A".
 contrast <- read.csv(paste0(input.folder,'/contrast.csv'))
 contrast <- paste0(contrast[,1],'-',contrast[,2])
 ###---generate proper contrast format
@@ -538,7 +538,7 @@ save(trans_3D_stat,file=paste0(data.folder,'/trans_3D_stat.RData'))
 ```
 
 ## Result summary
-### 3D target and tables of statistics
+### Significant 3D targets and testing statistics
 ```{r}
 ################################################################################
 ##----->> Summary DE genes
@@ -591,7 +591,7 @@ write.csv(DTU_trans,file=paste0(result.folder,'/DTU transcripts.csv'),row.names 
 
 ```
 
-### 3D numbers
+### Significant 3D target numbers
 ```{r}
 ################################################################################
 ##----->> target numbers
@@ -688,6 +688,7 @@ plot.updown(data2plot,plot.title = 'DTU trans',contrast = contrast)
 ```
 
 #### Flow chart
+
 ```{r}
 ################################################################################
 ##----->> DE vs DAS genes
@@ -716,7 +717,7 @@ plot.flow.chart(expressed = target_high$trans_high,
 
 ```
 
-#### Plot compare contrast groups
+#### Comparisons between contrast groups
 ```{r}
 ################################################################################
 ##----->> DE genes
@@ -756,7 +757,7 @@ grid.arrange(g,top=textGrob('DTU transcripts', gp=gpar(cex=1.2)))
    
 ```
 
-#### Plot transcriptional vs AS
+#### Comparison of transcription and AS targets
 ```{r}
 contrast.idx <- contrast[1]
 ################################################################################
@@ -784,8 +785,9 @@ if(length(x)==0){
 }
 ```
 
-## Advanced plot
-### Heatmap 
+## Advanced plots
+### Heatmap of 3D targets
+The targets are firstly clustered into groups by using the <a href="https://cran.r-project.org/web/packages/fastcluster/index.html" target="_blank">fastcluster</a> R package, and then made into heatmap by using the <a href="https://bioconductor.org/packages/release/bioc/html/ComplexHeatmap.html" target="_blank">ComplexHeatmap</a> R package
 ```{r}
 ################################################################################
 ##----->> DE genes
@@ -909,7 +911,7 @@ draw(g,column_title='Conditions',column_title_side = "bottom")
 
 ```
 
-### Profile plot
+### Profile plot 
 ```{r}
 ################################################################################
 ##----->> generate annotation of DE and/or DAS, DE and/or DTU
@@ -957,7 +959,9 @@ g.ps
 
 ```
 
-### GO annotation plot
+### GO annotation plot of DE/DAS genes
+To make the plot, users must provide GO annotation table in csv file, with first column of "Category" (i.e. CC, BP and MF), second column of GO "Term" and the remaining columns of statistics of significance. 
+
 ```{r}
 ################################################################################
 ##----->> DE genes
