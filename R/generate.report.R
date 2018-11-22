@@ -8,6 +8,8 @@
 #'                 report.folder = 'report')
 generate.report <- function(input.Rmd,report.folder,
                             type=c('all','html_document','pdf_document','word_document')){
+  if(!file.exists(report.folder))
+    dir.create(report.folder,recursive = T)
   type <- match.arg(type,c('all','html_document','pdf_document','word_document'))
   if(type=='all'){
     try(rmarkdown::render(input = input.Rmd,

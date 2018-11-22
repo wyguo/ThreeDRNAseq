@@ -909,6 +909,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       data.folder=NULL,
       figure.folder=NULL,
       result.folder=NULL,
+      report.folder=NULL,
       path=getwd(),
       mapping=NULL,
       samples=NULL,
@@ -955,11 +956,8 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     })
 
 
-    ##############################################################
-    ######                    Data generation                 ####
-    ##############################################################
-
-    ##------------->>  Loaded data in workspace   <<--------------
+    ##------------->>   Data generation      <<--------------
+    ##-------------  Loaded data in workspace   --------------
 
     observe({
       Data <- c(
@@ -1236,6 +1234,14 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       if(!file.exists(result.folder))
         dir.create(result.folder,recursive = T)
       DDD.data$result.folder <- result.folder
+    })
+    
+    #####reports save folder
+    report.folder <- observe({
+      report.folder <- paste0(DDD.data$path,'/report')
+      if(!file.exists(report.folder))
+        dir.create(report.folder,recursive = T)
+      DDD.data$report.folder <- report.folder
     })
 
     ##mapping table####
@@ -3457,6 +3463,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         c('Folders','Data',DDD.data$data.folder),
         c('','Results',DDD.data$result.folder),
         c('','Figures',DDD.data$figure.folder),
+        c('','Reports',DDD.data$report.folder),
         c('Data generation','tximport method',input$tximport.method),
         c('Data pre-processing','Sequencing replicates',length(unique(DDD.data$samples$srep))),
         c('','Sequencing replicate merged',ifelse(nrow(DDD.data$samples)>nrow(DDD.data$samples_new), 'Yes','No')),
@@ -3531,17 +3538,13 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       if(!file.exists(paste0(DDD.data$result.folder,'/DE vs DTU transcript number.csv')))
         write.csv(DEvsDTU.results(),file=paste0(DDD.data$result.folder,'/DE vs DTU transcript number.csv'))
 
-      report.folder <- paste0(DDD.data$path,'/report')
-      if(!file.exists(report.folder))
-        dir.create(report.folder,recursive = T)
+    
       withProgress(message = 'Generating report',
                    detail = 'This may take a while...', value = 0, {
                      incProgress(0.3)
                      ##generate report
                      generate.report(input.Rmd = paste0(DDD.data$path,"/report.Rmd"),
-                                     report.folder = report.folder)
-                     # generate.report(input.Rmd = paste0("test.Rmd"),
-                     #                 report.folder = report.folder)
+                                     report.folder = DDD.data$report.folder)
                      message(paste0('Reports in html, pdf and word format are saved in : ',paste0(DDD.data$path,'/report')))
                      showNotification(paste0('Reports in html, pdf and word format are saved in : ',paste0(DDD.data$path,'/report')))
                    })
