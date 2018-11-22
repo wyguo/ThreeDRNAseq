@@ -4,6 +4,7 @@ header-includes: \usepackage{caption}
 date: "Today"
 output:
   html_document:
+    keep_md: true
     fig_caption: yes
     highlight: textmate
     theme: cerulean
