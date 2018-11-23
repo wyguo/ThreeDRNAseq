@@ -3,8 +3,15 @@ title: "DE DAS and DTU analysis"
 header-includes: \usepackage{caption}
 date: "Today"
 output:
+  word_document:
+    fig_caption: yes
+    toc: no
+    toc_depth: '4'
+  pdf_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: '4'
   html_document:
-    keep_md: true
     fig_caption: yes
     highlight: textmate
     theme: cerulean
@@ -13,36 +20,22 @@ output:
     toc_float:
       collapsed: no
       smooth_scroll: yes
-  pdf_document:
-    fig_caption: yes
-    toc: yes
-    toc_depth: '4'
-  word_document:
-    fig_caption: yes
-    toc: no
-    toc_depth: '4'
 ---
 
 ```{r setup, include=FALSE,eval=T}
-knitr::opts_chunk$set(echo = F,eval = T)
+knitr::opts_chunk$set(echo = F,eval = T,warning = F,message = F)
 options(stringsAsFactors = F)
-################################################
-##--load library
-require(readr)
-require(eulerr)
-require(gridExtra)
-require(grid)
-require(Gmisc)
-require(dplyr)
+```
 
 
+```{r}
 para <- data.frame(read.csv('result/Parameter summary.csv'))
 colnames(para) <- c('Step','Description','Parameter')
-data.info <- suppressMessages(read_csv('result/data.info.csv'))
+data.info <- readr::read_csv('result/data.info.csv')
 colnames(data.info)[1] <- 'targets'
-DDD.number <- suppressMessages(read_csv('result/DE DAS DTU numbers.csv'))
-DEvsDAS <- suppressMessages(read_csv('result/DE vs DAS gene number.csv'))
-DEvsDTU <- suppressMessages(read_csv('result/DE vs DTU transcript number.csv'))
+DDD.number <- readr::read_csv('result/DE DAS DTU numbers.csv')
+DEvsDAS <- readr::read_csv('result/DE vs DAS gene number.csv')
+DEvsDTU <- readr::read_csv('result/DE vs DTU transcript number.csv')
 load('data/contrast.RData')
 load('data/samples.RData')
 load('data/samples_new.RData')
@@ -51,23 +44,11 @@ load('data/DAS_genes.RData')
 load('data/DE_trans.RData')
 load('data/DTU_trans.RData')
 load('data/target_high.RData')
-
-sourceDir <- function(path, trace = TRUE, ...) {
-  for (nm in list.files(path, pattern = "[.][RrSsQq]$")) {
-    #if(trace) cat(nm,":")
-    source(file.path(path, nm), ...)
-    #if(trace) cat("/n")
-  }
-}
-# sourceDir('D:/PhD project/R projects for PhD######/R function in general')
-
-# sourceDir('E:/DDD/R function in general')
 ```
 
 ## Overview
-Working directory for the analysis:
 ```{r}
-getwd()
+# getwd()
 knitr::kable(para,format = "markdown") 
 ```
 
@@ -75,7 +56,7 @@ Table: Overview of parameters used for the DE, DAS and DTU analysis.
 
 ## Experimental design
 ```{r,results='asis'}
-cat('  \nConditions ( n=',length(unique(samples$condition)),'):',unique(samples$condition))
+cat('  \nConditions ( n=',length(unique(samples$condition)),'):',paste0(unique(samples$condition),collapse = ', '))
 cat('  \nBiological replicate number:',length(unique(samples$brep)))
 cat('  \nSequencing replicate number:',length(unique(samples$srep)))
 cat('  \nContrast groups for expression comparisons:')
@@ -131,7 +112,7 @@ knitr::include_graphics("figure/Gene mean-variance trend.png")
 }
 ```
 <hr>
-Table: Data inforamtion after low expression filters.
+Table: Data information after low expression filters.
 ```{r,results='asis'}
 knitr::kable(data.info,format = "markdown") 
 ```
@@ -351,6 +332,33 @@ if(!file.exists('figure/DAS genes GO annotation plot.png')){
   knitr::include_graphics('figure/DAS genes GO annotation plot.png')
 }
 ```
+
+### R packages used for the analysis
+```{r}
+x <- rbind(c('Make the shiny app','shiny','https://shiny.rstudio.com/'),
+                c('','shinydashboard','https://rstudio.github.io/shinydashboard/'),
+                c('','rhandsontable','https://jrowen.github.io/rhandsontable/'),
+                c('','shinyFiles','https://cran.r-project.org/web/packages/shinyFiles/index.html'),
+                c('Read csv file','readr','https://cran.r-project.org/web/packages/readr/index.html'),
+                c('Expression generator','tximport','http://bioconductor.org/packages/release/bioc/html/tximport.html'),
+                c('Batch effect estimation','RUVSeq','https://bioconductor.org/packages/release/bioc/html/RUVSeq.html'),
+                c('3D analysis','limma','https://bioconductor.org/packages/release/bioc/html/limma.html'),
+                c('','edgeR','https://bioconductor.org/packages/release/bioc/html/edgeR.html'),
+                c('Heatmap','ComplexHeatmap','https://bioconductor.org/packages/release/bioc/html/ComplexHeatmap.html'),
+                c('Cluster of heatmap','fastcluster','https://cran.r-project.org/web/packages/fastcluster/index.html'),
+                c('Flow charts','Gmisc','https://cran.r-project.org/web/packages/Gmisc/index.html'),
+                c('Euler plots','eulerr','https://cran.r-project.org/web/packages/eulerr/index.html'),
+                c('Other plots','ggplot2','https://cran.r-project.org/web/packages/ggplot2/index.html'),
+                c('','plotly','https://cran.r-project.org/web/packages/plotly/index.html'),
+                c('','gridExtra','https://cran.r-project.org/web/packages/gridExtra/index.html'),
+                c('','grid','https://cran.r-project.org/web/packages/grid/index.html')
+                )
+x <- data.frame(x)
+colnames(x) <- c('Usage','Package','Link')
+knitr::kable(x,format = "markdown") 
+```
+
+Table: The main R packages used in the 3D RNA-seq analysis. If any other R packages are missing from your local PC, please install accordingly. 
 
 ## References
 Law, C W, Y Chen, W Shi, and G K Smyth. 2014. "voom: Precision weights unlock linear model analysis tools for RNA-seq read counts." Genome Biol 15 (2): R29. doi:10.1186/gb-2014-15-2-r29.

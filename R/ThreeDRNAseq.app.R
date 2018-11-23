@@ -22,11 +22,13 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
   library(edgeR)
   library(limma)
   library(plotly)
+  library(ggplot2)
   library(RUVSeq)
   library(eulerr)
   library(gridExtra)
   library(grid)
   library(ComplexHeatmap)
+  library(fastcluster)
   library(Gmisc)
   options(stringsAsFactors=F)
 
@@ -392,12 +394,12 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                        )
               ),
 
-              ##----------Step 4: Normalisation------------
+              ##----------Step 4: Normalization------------
               fluidRow(
                 column(width = 3,
-                       box(title = 'Step 4: Normalisation',width = 13,
+                       box(title = 'Step 4: Normalization',width = 13,
                            status = 'primary',solidHeader = T,
-                           radioButtons(inputId = 'norm.method',label = 'Normalisation methods',
+                           radioButtons(inputId = 'norm.method',label = 'Normalization methods',
                                         choices = c('TMM','RLE','upperquartile'),
                                         selected = 'TMM',inline = T),
                            actionButton('run.norm','Run',icon("send outline icon",lib = 'font-awesome'),
@@ -998,8 +1000,8 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                     'Remaining transcripts and genes after filtering the low expressed',
                     'Estimated transcript batch effect only if exist',
                     'Estimated gene batch effect only if exist',
-                    'Transcript level normalisation factor',
-                    'Gene level normalisation factor',
+                    'Transcript level normalization factor',
+                    'Gene level normalization factor',
                     'Contrast groups of conditions for comparisons',
                     'delta Percent spliced value based on contrast groups',
                     'DE genes in different contrast groups',
@@ -2009,7 +2011,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
     })
 
-    ##--------------Step 4-normalisation--------------
+    ##--------------Step 4-normalization--------------
     observeEvent(input$run.norm,{
       cat('\nNormalise transcript read counts')
       dge <- DGEList(counts=DDD.data$trans_counts[DDD.data$target_high$trans_high,],
@@ -2079,7 +2081,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       q <- subplot(style(trans.dist.g()$g1+theme(legend.position = 'none',
                                                  axis.title.x = element_blank(),
                                                  axis.text.x = element_blank()), showlegend = FALSE),
-                   trans.dist.g()$g2+labs(title='Data distribution (before and after normalisation)'),
+                   trans.dist.g()$g2+labs(title='Data distribution (before and after normalization)'),
                    nrows = 2,
                    titleX=T,
                    titleY = T,margin=0.04)
@@ -2104,7 +2106,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       q <- subplot(style(genes.dist.g()$g1+theme(legend.position = 'none',
                                                  axis.title.x = element_blank(),
                                                  axis.text.x = element_blank()), showlegend = FALSE),
-                   genes.dist.g()$g2+labs(title='Data distribution (before and after normalisation)'),
+                   genes.dist.g()$g2+labs(title='Data distribution (before and after normalization)'),
                    nrows = 2,
                    titleX=T,
                    titleY = T,margin=0.04)
@@ -3471,7 +3473,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         c('','Sample number for CPM cut-off', input$sample.n.cut),
         c('','Batch effect estimation',ifelse(length(list.files(DDD.data$data.folder,'*batch.RData'))>0,'Yes','No')),
         c('','Batch effect estimation method',input$ruvseq.method),
-        c('','Normalisation method',input$norm.method),
+        c('','Normalization method',input$norm.method),
         c('DE DAS and DTU','Pipeline',input$DE.pipeline),
         c('','AS function',ifelse(input$DE.pipeline=='limma',
                                   'limma::diffSplice','edgeR::diffSpliceDGE')),
