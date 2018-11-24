@@ -45,14 +45,14 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
   mainsidebar <- dashboardSidebar(
     width = 200,
     sidebarMenu(
-      menuItem(text = 'Introduction',tabName = 'introduction',icon = icon("book"),selected = F),
+      menuItem(text = 'Introduction',tabName = 'introduction',icon = icon("book"),selected = T),
       menuItem(text = 'Data generation',tabName = 'generation',icon = icon("database"),selected = F),
       menuItem(text = 'Data pre-processing',tabName = 'preprocessing',icon = icon("cogs"),startExpanded = F,selected = F
       ),
       menuItem(text = 'DE DAS and DTU',tabName = 'ddd',icon = icon("random"),selected = F),
       menuItem(text = 'Result summary',tabName = 'resultssummary',icon = icon("sitemap",lib='font-awesome'),selected = F),
       menuItem(text = 'Advanced plot',tabName = 'advancedanalysis',icon = icon("line-chart",lib='font-awesome'),selected = F),
-      menuItem(text = 'Generate report',tabName = 'report',icon = icon("file",lib='font-awesome'),selected = T)
+      menuItem(text = 'Generate report',tabName = 'report',icon = icon("file",lib='font-awesome'),selected = F)
     )
   )
 
@@ -70,14 +70,34 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                            width = NULL,status = 'primary', solidHeader = T,
                            # shiny::uiOutput('page1'),
                            # DT::dataTableOutput("info")
-                           HTML('<h5 align="justify">The 3D RNA-seq App is used to perform differential expression (DE) gene and transcript, differental
-                                alternaive spliced (DAS) gene and differential transcript usage (DTU) transcript analysis.
-                                To use our pipeline in your work, please cite:<br><br>
-                                Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A.,
-                                Entizne,J.C., Panter,P.E., Knight,H., Nimmo,H., Zhang,R.,
-                                and Brown,J.W.S. (2018) Rapid and dynamic alternative
-                                splicing impacts the Arabidopsis cold response transcriptome.
-                                Plant Cell. <a href="http://www.plantcell.org/content/30/7/1424" target="_blank"> http://www.plantcell.org/content/30/7/1424 </a></h5>')
+                           HTML('
+                                <center><img src="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/fig/header.gif?raw=true" align="middle" style="height: 45%; width: 45%; object-fit: contain;"></center>
+                                <h3>Description</h3>
+                                <div align="justify">
+                                <p><strong>ThreeDRNAseq (3D RNA-seq)</strong> R package provides an interactive graphical user interface (GUI) for RNA-seq data differential expression (DE), differential alternative splicing (DAS) and differential transcript usage (DTU) (3D) analyses based on two popular pipelines: <a href="https://bioconductor.org/packages/release/bioc/html/limma.html" target="_blank">limma</a> (Smyth et al. 2013) and <a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html" target="_blank">edgeR</a> (Robinson et al., 2010). The 3D RNA-seq GUI is based on R <a href="https://shiny.rstudio.com/" target="_blank">shiny</a> App and enables the RNA-seq analysis to be done only with in <strong>3 Days (3D)</strong>. To perform the 3D analysis,</p>
+                                <ul>
+                                <li>The first step is to generate transcript quantification from tools, such as <a href="https://combine-lab.github.io/salmon/" target="_blank">Salmon</a> (Patro et al., 2017) and <a href="https://pachterlab.github.io/kallisto/" target="_blank">Kallisto</a> (Bray et al., 2016). The transcript quantification procedure often takes <strong>1-2 Days</strong>.</li>
+                                <li>Then users can do mouse click on the App to upload transcript read counts, perform 3D analysis, and make beautiful plots, e.g. expression mean-variance trend plots, PCA plots, heatmap, GO annotation plots, etc.. The results of significance and all the plots can be wrapped into html, pdf and/or word reports by one-button-click. The entire 3D mouse-click analysis only takes <strong>1 Day or even less</strong>.</li>
+                                </ul>
+                                <p>The 3D RNA-seq analysis pipeline has steps of proper data pre-processing, e.g. low expression filters based on expression mean-variance trend, visualise data variation, batch effect estimation, data normalisation, etc.. The optimal parameters for each step are determined by quality control plots, e.g. mean-variance trend plots, PCA plots, data distribution plots, etc.. The pipeline also has stringent controls of false positive, leading to robust 3D predictions. The pipeline has been successfully applied in different RNA-seq studies from Arabidopsis (Calixto et al., 2018), barley (Bull et al., 2017) and potato to identify novel condition-responsive genes/transcripts, especially those with significant alternative splicing changes. To use our pipeline in your work, please cite:</p>
+                                <p><a href="http://www.plantcell.org/content/30/7/1424" target="_blank">Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C., Panter,P.E., Knight,H., Nimmo,H., Zhang,R., and Brown,J.W.S. (2018) Rapid and dynamic alternative splicing impacts the Arabidopsis cold response transcriptome. Plant Cell.</a></p>
+                                <h3 id="user-manuals">User manuals</h3>
+                                <p>Two versions of step-by-step user manuals are provided:</p>
+                                <ul>
+                                <li>3D RNA-seq App manual (command-line free) for easy to use:</li>
+                                <li>3D RNA-seq command-line based manual for advanced R users:</li>
+                                </ul>
+                                <h3 id="references">References</h3>
+                                <ul>
+                                <li><p>Bray,N.L., Pimentel,H., Melsted,P., and Pachter,L. (2016) Near-optimal probabilistic RNA-seq quantification. Nat. Biotechnol., 34, 525–527.</p></li>
+                                <li><p>Bull,H., Casao,M.C., Zwirek,M., Flavell,A.J., Thomas,W.T.B.B., Guo,W., Zhang,R., Rapazote-Flores,P., Kyriakidis,S., Russell,J., Druka,A., McKim,S.M., and Waugh,R. (2017) Barley SIX-ROWED SPIKE3 encodes a putative Jumonji C-type H3K9me2/me3 demethylase that represses lateral spikelet fertility. Nat. Commun., 8, 936.</p></li>
+                                <li><p>Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C., Panter,P.E., Knight,H., Nimmo,H., Zhang,R., and Brown,J.W.S. (2018) Rapid and dynamic alternative splicing impacts the Arabidopsis cold response transcriptome. Plant Cell, tpc.00177.2018.</p></li>
+                                <li><p>Patro,R., Duggal,G., Love,M.I., Irizarry,R.A., and Kingsford,C. (2017) Salmon provides fast and bias-aware quantification of transcript expression. Nat. Methods, 14, 417–419.</p></li>
+                                <li><p>Robinson,M.D., McCarthy,D.J., and Smyth,G.K. (2010) edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics, 26, 139–40.</p></li>
+                                <li>Smyth,G.K., Ritchie,M., Thorne,N., Wettenhall,J., and Shi,W. (2013) limma:Linear Models for Microarray Data User’s Guide(Now Including RNA-Seq Data Analysis). R Man., 1–123.</li>
+                                </ul>
+                                </div>
+                                ')
                            )
                            )
                            )
@@ -125,15 +145,13 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                             style="color: #fff; background-color: #428bca; border-color: #2e6da4")
                            ),
                            hr(),
-                           HTML('Notes: The whole analysis has a number of steps and each step will generate several datasets for downstream analysis.
-                                These datasets will be saved as ".RData" format to "data" folder in the workding directory and R users can access
-                                them by R command lines. This table summarises the steps to generate and use these intermediate datasets, and whether
-                                the datasets are already saved in the "data" folder. To generate/upload the datasets, the following options are provided:
+                           HTML('<p>The whole pipeline has a number of steps and each step is related to several intermediate datasets. This table summarise the generation and usage steps of these datasets and whether (True or False) they have been loaded in workspace ready for use. To avoid running the pipeline from very beginning every time the App get refreshed, the following options are provided:</p>
                                 <ul>
-                                <li> If the datasets (in .RData format) do not exist in the "data" folder, users can generate these datasets step-by-step. </li>
-                                <li> If all the required datasets are generated and saved in the "data" folder, users can upload by clicking "Load all" button. </li>
-                                <li> To perform analysis or visualise results in a specific step, users also can unload the required datasets for individual steps. </li>
-                                </ul>')
+                                <li>If all/part of the required datasets (in .RData format) do not exist in the “data” folder of working directory, users can generate these datasets from corresponding steps.</li>
+                                <li>If all/part of the required datasets (in .RData format) already exist in the “data” folder, users can click “Load all” button to load them.</li>
+                                <li>To perform analysis or visualise results in a specific step, users also can load the required datasets for individual steps.</li>
+                                </ul>
+                                ')
                            ))
                            ),
               fluidRow(
@@ -840,7 +858,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
 
   Logged = F
   my_username <- "User"
-  my_password <- "test"
+  my_password <- "3DRNAseq"
 
   server <- function(input, output, session) {
     # set data size
@@ -855,7 +873,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     dataModal <- function(failed = FALSE) {
       modalDialog(
         textInput("username", "Username:",value = 'User'),
-        passwordInput("password", "Password:",value = 'test'),
+        passwordInput("password", "Password:",value = ''),
         footer = tagList(
           # modalButton("Cancel"),
           div(style="display:inline-block;vertical-align:middle;height:40px;float: left",
@@ -3460,19 +3478,31 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
 
     ###---------------->>        Generate report      <<-----------------
     data.para <- reactive({
+      if(is.null(DDD.data$samples) | is.null(DDD.data$samples_new)){
+        srep.merge <- 'No information'
+      } else {
+        srep.merge <- ifelse(nrow(DDD.data$samples)>nrow(DDD.data$samples_new),'Yes','No')
+      }
+      
+      if(is.null(DDD.data$samples)){
+        srep.n <- 'No information'
+      } else {
+        srep.n <- length(unique(DDD.data$samples$srep))
+      }
+          
       x <- rbind(
-        c('Folders','Directory',DDD.data$path),
-        c('Folders','Data',DDD.data$data.folder),
-        c('','Results',DDD.data$result.folder),
-        c('','Figures',DDD.data$figure.folder),
-        c('','Reports',DDD.data$report.folder),
+        c('Folders','Directory',DDD.data$path),#
+        c('Folders','Data',DDD.data$data.folder),#
+        c('','Results',DDD.data$result.folder),#
+        c('','Figures',DDD.data$figure.folder),#
+        c('','Reports',DDD.data$report.folder),#
         c('Data generation','tximport method',input$tximport.method),
-        c('Data pre-processing','Sequencing replicates',length(unique(DDD.data$samples$srep))),
-        c('','Sequencing replicate merged',ifelse(nrow(DDD.data$samples)>nrow(DDD.data$samples_new), 'Yes','No')),
+        c('Data pre-processing','Sequencing replicates',srep.n),
+        c('','Sequencing replicate merged',srep.merge),
         c('','Low expression CPM cut-off',input$cpm.cut),
         c('','Sample number for CPM cut-off', input$sample.n.cut),
-        c('','Batch effect estimation',ifelse(length(list.files(DDD.data$data.folder,'*batch.RData'))>0,'Yes','No')),
-        c('','Batch effect estimation method',input$ruvseq.method),
+        c('','Batch effect estimation',ifelse(length(list.files(DDD.data$data.folder,'*batch.RData'))>0,'Yes','No')),#
+        c('','Batch effect estimation method',input$ruvseq.method),#
         c('','Normalization method',input$norm.method),
         c('DE DAS and DTU','Pipeline',input$DE.pipeline),
         c('','AS function',ifelse(input$DE.pipeline=='limma',
@@ -3485,6 +3515,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         c('','Cluster method',input$cluster.method),
         c('','Number of clusters',input$cluster.number)
       )
+
       x <- data.frame(x)
       colnames(x) <- c('Step','Description','Parameter (Double click to edit if not correct)')
       x
