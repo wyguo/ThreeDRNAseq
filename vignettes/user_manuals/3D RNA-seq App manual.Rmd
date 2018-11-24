@@ -37,9 +37,9 @@ options(stringsAsFactors = F)
 ```
 
 <div align="justify">
-<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script> -->
 
 ## How to use this manual
+
 The 3D RNA-seq pipeline includes complex steps of expression data generation, data pre-processing, 3D analysis and result summary. This manual provides step-by-step instructions to use the 3D RNA-seq App. To use this App in your work, please cite: 
 
 [Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C., Panter,P.E., Knight,H., Nimmo,H., Zhang,R., and Brown,J.W.S. (2018) Rapid and dynamic alternative splicing impacts the Arabidopsis cold response transcriptome. Plant Cell.](http://www.plantcell.org/content/30/7/1424){target="_blank"}
@@ -48,9 +48,11 @@ Command-line based 3D analysis manual:
 <a href="https://github.com/wyguo/ThreeDRNAseq/tree/master/vignettes/user_manuals" target="_blank"><button class='button'><font color="black">Click me!</font></button></a>
 
 ## Installation
+
 ThreeDRNAseq R package can be installed from Github by using <a href='https://cran.r-project.org/web/packages/devtools/index.html' target='_blank'>devtools</a> R package
 
 ### Install ThreeDRNAseq package
+
 ``` {r}
 ##################################################################################################
 ## use devtools R package to install ThreeDRNAseq from Github
@@ -63,6 +65,7 @@ devtools::instasll_github('wyguo/ThreeDRNAseq')
 ```
 
 ### Install dependency packages
+
 ``` {r}
 ##################################################################################################
 ## Install packages of dependency
@@ -130,8 +133,10 @@ The following datasets are required in the pipeline (<a href='#Figure1'>Figure 1
 <p id='Figure1'><strong>Figure 1:</strong> User provided datasets.</p>
 
 <p id='Section_output_data'></p>
+<br>
 
 ## Output data
+
 Four folders will be created in the working directory to save the analysis results:
 
 - data folder: the intermediate datasets in the analysis will be saved in the "data" folder in R data format (.RData). Advanced R users can open and process these objects in R software. For basic R users, please keep in mind these ".RData" objects are used to store the intermidate datasets. 
@@ -142,6 +147,7 @@ Four folders will be created in the working directory to save the analysis resul
 The detailed descriptions of files saved in the above folders can be found in Section <a href='#Section_saved_files'>"Saved files in local directory"</a>.
 
 ## 3D RNA-seq App
+
 The App includes 7 pages in the sidebar menu: Introduction, Data generation, Data pre-processing, DE DAS and DTU analysis, Result summary, Advanced plot and Generate report.
 <center>
 ![](3D_App_figure/menu.png){align="middle"}
@@ -150,6 +156,7 @@ The App includes 7 pages in the sidebar menu: Introduction, Data generation, Dat
 ### Data generation
 
 #### Set directory and load datasets
+
 To begin with, users can choose a working directory to save the output data, results and figures.
 
 ![](3D_App_figure/wkd.png)
@@ -182,13 +189,16 @@ The csv files "mapping.csv" and "samples.csv" (see <a href='#Figure1'> Figure 1A
 ![](3D_App_figure/expression_generation.png)
 
 <p id='Figure4'><strong>Figure 4:</strong> Generate gene and transcript expression.</p>
+<br>
 
 ### Data pre-processing
+
 Once the read counts and TPMs are generated, the data is pre-processed with steps: Merge sequencing replicates (if exist), Remove low expressed transcripts/genes, Estimate batch effects (if exist) and Data normalisation. In each step, quality control plots are generated to optimise the parameters for pre-processing (<a href='#Figure5'>Figure 5</a>).
 
 ![](3D_App_figure/data_preprocessing.png)
 
 <p id='Figure5'><strong>Figure 5:</strong> Data pre-processing. The figures were generated based on the RNA-seq data from study of Arabidopsis in response to cold (Calixto et al., 2018). </p>
+<br>
 
 #### Merge sequencing replicates
 
@@ -209,8 +219,10 @@ where $X$ is read count, $\mu$ is the mean and $\phi$ is the overdispersion. The
 
 ![](3D_App_figure/merge_filter.png)
 <p id='Figure6'><strong>Figure 6:</strong> Merge sequencing replicates and filter low expressed genes/transcripts. (D) is the scatter plot of mean-variance trends before and after filtering the low expressed transcrpts. The fitted lines of the trends are also presented (Yellow line: before filtering; Red line: after filtering).<p>
+<br>
 
 #### Principal component analysis (PCA) and batch effect estimation
+
 PCA is a mathematical method to reduce expression data dimensionality while remaining most of the data variance. The reduction is performed by projecting the data to directions or principal components (PCs) from highest to lowest data variability. Therefore, the data main variance is accessible by investigate top few number of PCs rather than thousands of variables.  In Omic data analysis, the first two to four principal components are often used to visualise the similarities and differences of samples, thereby determining the grouping of samples. In the PCA scatter plot, the samples from the same condition often stay close, but far from the samples of other conditions. It can be used as evidence for data quality checking.
 
 PCA plot also can be used to identify whether the RNA-seq data contain batch effects, which are caused by biological replications in different laboratory conditions. Compared with random noise, batch effects can be distinguished owning to the systematic biases of signals across replicates. For example, <a href='#Figure7'>Figure 7A</a> shows the PCA plot (PC1 vs PC2) of a RNA-seq data with 3 time-points T2, T10 and T19. Each time-point has 3 biological replicates. It can be seen that the first biological replicate (brep1) stays in a separate cluster to other two replicates, which indicates a clear batch effect of the data. In this pipeline, the [RUVSeq](https://bioconductor.org/packages/release/bioc/html/RUVSeq.html){target="_blank"} R package (Risso et al., 2014) is used to estimate the batch effects. The RUVSeq algorithm generates batch effect terms which can be incorporated in the design matrix of linear regression model for 3D analysis, i.e.
@@ -223,31 +235,37 @@ In this panel (<a href='#Figure7'>Figure 7</a>), users can select and visualise 
 
 ![](3D_App_figure/PCA.png)
 <p id='Figure7'><strong>Figure 7:</strong> PCA plot before (A) and after (B) remove batch effects.<p>
+<br>
 
 #### Data normalisation
+
 To enable unbiased comparisons across samples, read counts must be normalised on the basis of sequencing depths. Normalisation methods Trimmed Mean of M-values (TMM), Relative Log Expression (RLE) and upper-quartile can be used to reduce the effects from the systematic technical biases across samples (Bullard et al., 2010). Box plots are used to visualise the expression distribution of raw read counts and normalised expression across samples.
 
 ![](3D_App_figure/normalisation.png)
 Figure 8: Data normalisation.
 
 ## 3D RNA-seq analysis
+
 ### Definition of 3D in this pipeline
 
 ![](3D_App_figure/DDD_definition.png)
 
 ### Statistics 
+
 - Contrast groups: refer to the conditions to compare, e.g. "B-A" and "C-A" compares the conditions "B" and "C" to condition "A".
 - Adjusted p-value: in the expression comparative analysis, each gene/transcript is fitted with a statistical model, reporting a p-value. However, the testing is performed over a substantial number of genes/transcripts and each testing has a probability of making errors. Hence, all p-values in the analysis are adjusted to control the false discovery rate (FDR). Please see the R function <a href='https://stat.ethz.ch/R-manual/R-devel/library/stats/html/p.adjust.html',target='_blank'>p.adjust</a> for details.
 - $L_2FC$: $\log_2$ fold change of expression based on contrast groups.
 - $\Delta PS$: Transcript level PS (percent of splice) is defined as the ratio of transcript average abundance of conditions divided by the average gene abundance. $\Delta PS$ is the PS differences of conditions based on the contrast groups. We recommend to use TPMs to calculate PS values. The option to generate PS from read counts is also provided (<a href='#Figure9'>Figure 9C</a>). 
 
 ### DE gene/transcript analysis
+
 A gene/transcript is identified as DE in a contrast group if $L_2FC$ of expression $\geq$ cut-off and with adjusted p-value < cut-off.
 
 Two pipelines are provided for DE analysis: <a target="_blank" href="https://genomebiology.biomedcentral.com/articles/10.1186/gb-2014-15-2-r29">"limma-voom"</a> 
 and <a target="_blank" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2796818/">"edgeR"</a>. The <a target="_blank" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2796818/">"edgeR"</a> pipeline includes two methods: <a target="_blank" href="https://www.rdocumentation.org/packages/edgeR/versions/3.14.0/topics/glmQLFit">"glmQL"</a> (Genewise Negative Binomial Generalized Linear Models with Quasi-likelihood Tests) and <a target="_blank" href="https://www.rdocumentation.org/packages/edgeR/versions/3.14.0/topics/glmFit">"glm"</a> (Genewise Negative Binomial Generalized Linear Models). In limma pipeline, $L_2FCs$ are calculated based count per million reads (CPMs) while in edgeR, $L_2FCs$ are based on read counts. From several real RNA-seq data analyses, high consensus is achieved between <a target="_blank" href="https://genomebiology.biomedcentral.com/articles/10.1186/gb-2014-15-2-r29">"limma-voom"</a> and <a target="_blank" href="https://www.rdocumentation.org/packages/edgeR/versions/3.14.0/topics/glmQLFit">"glmQL"</a> (>90%) and they have more stringent controls of false discovery rate than the <a target="_blank" href="https://www.rdocumentation.org/packages/edgeR/versions/3.14.0/topics/glmFit">"glm"</a> method.
 
 ### DAS gene and DTU transcript analysis
+
 To test differential alternative splicing (AS), the gene level expression is compared to transcript level expression in the contrast groups. A gene is DAS in a contrast group if adjusted p-value < cut-off and at least one transcript of the gene with $\Delta PS \geq$ cut-off. A transcript is DTU if adjusted p-value < cut-off and $\Delta PS \geq$ cut-off.  
 
 **Two pipelines for AS analysis:** 
@@ -259,8 +277,10 @@ To perform the analysis, the contrast groups in csv file (<a href='#Figure1'>Fig
 
 ![](3D_App_figure/ddd.png)
 <p id='Figure9'><strong>Figure 9:</strong> 3D RNA-seq analysis panels.<p>
+<br>
 
 ## Result summary
+
 This page includes panels to show the 3D analysis results (<a href='#Figure10'>Figure 10</a>-<a href='#Figure10'>12</a>):
 
 - The test statistics in different contrast groups, e.g. adjusted p-value and $L_2FC$.
@@ -276,35 +296,42 @@ This page includes panels to show the 3D analysis results (<a href='#Figure10'>F
 
 ![](3D_App_figure/flowchat.png)
 <p id='Figure12'><strong>Figure 12:</strong> Flow charts to show numbers of DE and/or DAS genes and DE and/or DTU transcripts. <p>
-<!-- ## Session information -->
-<!-- sessionInfo() -->
+<br>
 
 ## Advanced plot
+
 ### Heatmap
+
 Users can make heatmap for DE genes, DAS genes, DE transcripts and DTU transcripts identified from the analysis (<a href='#Figure13'>Figure 13A</a>). Users can also upload a gene or transcript list in csv file to make heatmap for specific list (<a href='#Figure13'>Figure 13B</a>). To make the heatmap, the average TPMs of conditions for the targets are standardized into z-scores. In corresponding plots, the DAS only genes or DTU only transcripts are excluded since they only have AS changes rather than significant abundance changes. The <a href='https://stat.ethz.ch/R-manual/R-devel/library/stats/html/dist.html' target='_blank'>dist</a> and <a href='https://stat.ethz.ch/R-manual/R-devel/library/stats/html/hclust.html' target='_blank'>hclust</a> R functions are used to perform the hierarchical clustering analysis. The heatmaps and the target list in each cluster of the heatmaps can be saved to local folder.
 
 ![](3D_App_figure/heatmap.png)
 <p id='Figure13'><strong>Figure 13:</strong> Heatmap panel (A) and example of user provided gene list in csv file to make heatmap (B). To avoid confliction, if the radio button "Select target" is selected, the "Or Choose target list csv file" function is enabled; If the radio button "Upload target list" is selected, the "Select targets" function is enabled.<p>
+<br>
 
 ### Profile plot
+
 Gene and transcript expression profiles (TPMs or read counts) and PS (percent spliced) can be visualised by typing a gene name (<a href='#Figure14'>Figure 14A</a>). Users can also generate a number of plots by provides a gene list (<a href='#Figure13'>Figure 13B</a>) and all the plots will be saved to "Multiple profile plot" folder in the "figure" folder of working directory (<a href='#Figure14'>Figure 14B</a>).
 
 ![](3D_App_figure/profiles.png)
 <p id='Figure14'><strong>Figure 14:</strong> Plot of expression profiles and PS across conditions <p>
-
+<br>
 ### GO annotation plot
+
 Users can generate DE and DAS gene list by click "Generate" button (<a href='#Figure15'>Figure 15B</a>). These gene lists can be loaded to Gene Ontology (GO) analysis tools/databases (e.g. <a href='https://david.ncifcrf.gov/' target='_blank'>DAVID</a> and <a href='http://bioinfo.cau.edu.cn/agriGO/' target='_blank'>agriGO</a>) to generate GO annotation. A csv file with GO annotation information is required to generate the annotation plot (<a href='#Figure15'>Figure 15B</a>). The file includes a "Category" column of CC (cellular component), BP (biological process) and MF (molecular function), a column of "Term" of GO annotation and columns of statistics to report the annotation enrichment, e.g. count, FDR, -log10(FDR), etc. (<a href='#Figure15'>Figure 15A</a>). In the panel, users can select different statistics to visualise. The selected gene list type will present in the plot title to distinguish whether the provided gene list is DE or DAS genes.
 
 ![](3D_App_figure/go.png)
 <p id='Figure15'><strong>Figure 15:</strong> GO annotation plot panel. <p>
+<br>
 
 ## Generate report
+
 The table in this page lists the parameters for 3D analysis and the locations of saved files, which will be used to generate the report. If the information is wrong, users can double click the cells in the table to correct to values. Based on this information, reports in three formats, word, pdf and html, will be generated and saved in the "report" folder of working directory.
 
 ![](3D_App_figure/report.png)
 <p id='Figure16'><strong>Figure 16:</strong> Generate report panel. <p>
 
 <p id='Section_saved_files'></p>
+<br>
 
 ## Saved files in local directory
 
@@ -398,6 +425,7 @@ Table: Figures are saved to "figure" folder in both "png" and "pdf" formats.
 Table: Reports in three formats, html, pdf and word, are generated from 3D RNA-seq analysis results/figures.
 
 ## References
+
 Bray,N.L., Pimentel,H., Melsted,P., and Pachter,L. (2016) Near-optimal probabilistic RNA-seq quantification. Nat. Biotechnol., 34, 525–527.
 
 Bullard,J.H., Purdom,E., Hansen,K.D., and Dudoit,S. (2010) Evaluation of statistical methods for normalization and differential expression in mRNA-Seq experiments. BMC Bioinformatics, 11, 94.
@@ -417,6 +445,7 @@ Robinson,M., Mccarthy,D., Chen,Y., and Smyth,G.K. (2011) edgeR : differential 
 Soneson,C., Love,M.I., and Robinson,M.D. (2016) Differential analyses for RNA-seq: transcript-level estimates improve gene-level inferences. F1000Research, 4, 1521.
 
 ## Session information
+
 ```{r,echo=F,eval=TRUE}
 sessionInfo()
 ```
