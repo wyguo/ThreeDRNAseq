@@ -188,6 +188,8 @@ The example RNA-seq data is a subset from study of Arabidopsis in response to co
 <center>
 <img src="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/fig/example_exp.png?raw=true">
 </center>
+<br>
+
 | Time-points | Description                                                                    |
 |:------------|--------------------------------------------------------------------------------|
 | T2          | Second time-point of Day 0, temperature 20<sup>*o*</sup>*C*                    |
