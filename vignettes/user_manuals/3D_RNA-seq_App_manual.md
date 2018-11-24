@@ -205,6 +205,8 @@ The App includes 7 pages in the sidebar menu: Introduction, Data generation, Dat
 <center>
 <img src="3D_App_figure/menu.png" align="middle" />
 </center>
+<br>
+
 ### Data generation
 
 #### Set directory and load datasets
@@ -295,14 +297,14 @@ In this panel (<a href='#Figure7'>Figure 7</a>), users can select and visualise 
 
 To enable unbiased comparisons across samples, read counts must be normalised on the basis of sequencing depths. Normalisation methods Trimmed Mean of M-values (TMM), Relative Log Expression (RLE) and upper-quartile can be used to reduce the effects from the systematic technical biases across samples (Bullard et al., 2010). Box plots are used to visualise the expression distribution of raw read counts and normalised expression across samples.
 
-![](3D_App_figure/normalisation.png) Figure 8: Data normalisation.
+![](3D_App_figure/normalisation.png) Figure 8: Data normalisation. <br>
 
 3D RNA-seq analysis
 -------------------
 
 ### Definition of 3D in this pipeline
 
-![](3D_App_figure/DDD_definition.png)
+![](3D_App_figure/DDD_definition.png) <br>
 
 ### Statistics
 
@@ -379,7 +381,9 @@ Gene and transcript expression profiles (TPMs or read counts) and PS (percent sp
 <p id='Figure14'>
 <strong>Figure 14:</strong> Plot of expression profiles and PS across conditions
 <p>
-<br> \#\#\# GO annotation plot
+<br>
+
+### GO annotation plot
 
 Users can generate DE and DAS gene list by click "Generate" button (<a href='#Figure15'>Figure 15B</a>). These gene lists can be loaded to Gene Ontology (GO) analysis tools/databases (e.g. <a href='https://david.ncifcrf.gov/' target='_blank'>DAVID</a> and <a href='http://bioinfo.cau.edu.cn/agriGO/' target='_blank'>agriGO</a>) to generate GO annotation. A csv file with GO annotation information is required to generate the annotation plot (<a href='#Figure15'>Figure 15B</a>). The file includes a "Category" column of CC (cellular component), BP (biological process) and MF (molecular function), a column of "Term" of GO annotation and columns of statistics to report the annotation enrichment, e.g. count, FDR, -log10(FDR), etc. (<a href='#Figure15'>Figure 15A</a>). In the panel, users can select different statistics to visualise. The selected gene list type will present in the plot title to distinguish whether the provided gene list is DE or DAS genes.
 

@@ -1,26 +1,165 @@
-3D RNA-seq pipeline
-================
-Wenbin Guo
-21 November 2018
-
 Introduction
 ------------
 
-Instead of mouse click analysis in the <a href="xxx" target="_blank">3D RNA-seq App</a>, advanced R users also can use command line to do the same analysis. This file includes step-by-step codings, which correspond to the steps in the 3D RNA-seq App. Users can refer to the details in the manual:xxx.
+Instead of mouse click analysis in the <a href="xxx" target="_blank">3D RNA-seq App</a>, advanced R users also can use command line to do the same analysis. This file includes step-by-step coding, which corresponds to the steps in the 3D RNA-seq App. Users can refer to the details in the manual:xxx.
 
 To use our pipeline in your work, please cite:
 
 <a href="http://www.plantcell.org/content/30/7/1424" target="_blank">Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C., Panter,P.E., Knight,H., Nimmo,H., Zhang,R., and Brown,J.W.S. (2018) Rapid and dynamic alternative splicing impacts the Arabidopsis cold response transcriptome. Plant Cell.</a>
 
-Load R package
---------------
+Install and load R packages
+---------------------------
+
+### Install ThreeDRNAseq package
+
+``` r
+#######################################################################################################
+## use devtools R package to install ThreeDRNAseq from Github
+###---> If devtools is not installed, please install
+if(!requireNamespace("devtools", quietly = TRUE))
+  install.packages('devtools')
+
+###---> Install ThreeDRNAseq
+devtools::install_github('wyguo/ThreeDRNAseq')
+```
+
+### Install dependency packages
+
+``` r
+#######################################################################################################
+## Install packages of dependency
+###---> Install packages from Cran
+cran.package.list <- c('shiny','shinydashboard','shinydashboard','shinyFiles','plotly','eulerr',
+                       'gridExtra','Gmisc')
+for(i in cran.package.list){
+   if(!requireNamespace(i, quietly = TRUE)){
+     message('Installing package: ',i)
+     install.packages(i,dependencies = T)
+   } else next
+}
+
+###---> Install packages from Bioconductor
+bioconductor.package.list <- c('tximport','edgeR','limma','RUVSeq','ComplexHeatmap')
+for(i in bioconductor.package.list){
+  if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+  if(!requireNamespace(i, quietly = TRUE)){
+    message('Installing package: ',i)
+    BiocManager::install("tximport", version = "3.8")
+  } else next
+}
+```
+
+<table>
+<caption>The main R packages used in the 3D RNA-seq analysis. If any other R packages are missing from your PC, please install accordingly.</caption>
+<colgroup>
+<col width="21%" />
+<col width="14%" />
+<col width="64%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Usage</th>
+<th align="left">Package</th>
+<th align="left">Link</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Make the shiny app</td>
+<td align="left">shiny</td>
+<td align="left"><a href="https://shiny.rstudio.com/" class="uri">https://shiny.rstudio.com/</a></td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">shinydashboard</td>
+<td align="left"><a href="https://rstudio.github.io/shinydashboard/" class="uri">https://rstudio.github.io/shinydashboard/</a></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">rhandsontable</td>
+<td align="left"><a href="https://jrowen.github.io/rhandsontable/" class="uri">https://jrowen.github.io/rhandsontable/</a></td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">shinyFiles</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/shinyFiles/index.html" class="uri">https://cran.r-project.org/web/packages/shinyFiles/index.html</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Read csv file</td>
+<td align="left">readr</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/readr/index.html" class="uri">https://cran.r-project.org/web/packages/readr/index.html</a></td>
+</tr>
+<tr class="even">
+<td align="left">Expression generator</td>
+<td align="left">tximport</td>
+<td align="left"><a href="http://bioconductor.org/packages/release/bioc/html/tximport.html" class="uri">http://bioconductor.org/packages/release/bioc/html/tximport.html</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Batch effect estimation</td>
+<td align="left">RUVSeq</td>
+<td align="left"><a href="https://bioconductor.org/packages/release/bioc/html/RUVSeq.html" class="uri">https://bioconductor.org/packages/release/bioc/html/RUVSeq.html</a></td>
+</tr>
+<tr class="even">
+<td align="left">3D analysis</td>
+<td align="left">limma</td>
+<td align="left"><a href="https://bioconductor.org/packages/release/bioc/html/limma.html" class="uri">https://bioconductor.org/packages/release/bioc/html/limma.html</a></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">edgeR</td>
+<td align="left"><a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html" class="uri">https://bioconductor.org/packages/release/bioc/html/edgeR.html</a></td>
+</tr>
+<tr class="even">
+<td align="left">Heatmap</td>
+<td align="left">ComplexHeatmap</td>
+<td align="left"><a href="https://bioconductor.org/packages/release/bioc/html/ComplexHeatmap.html" class="uri">https://bioconductor.org/packages/release/bioc/html/ComplexHeatmap.html</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Cluster of heatmap</td>
+<td align="left">fastcluster</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/fastcluster/index.html" class="uri">https://cran.r-project.org/web/packages/fastcluster/index.html</a></td>
+</tr>
+<tr class="even">
+<td align="left">Flow charts</td>
+<td align="left">Gmisc</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/Gmisc/index.html" class="uri">https://cran.r-project.org/web/packages/Gmisc/index.html</a></td>
+</tr>
+<tr class="odd">
+<td align="left">Euler plots</td>
+<td align="left">eulerr</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/eulerr/index.html" class="uri">https://cran.r-project.org/web/packages/eulerr/index.html</a></td>
+</tr>
+<tr class="even">
+<td align="left">Other plots</td>
+<td align="left">ggplot2</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/ggplot2/index.html" class="uri">https://cran.r-project.org/web/packages/ggplot2/index.html</a></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">plotly</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/plotly/index.html" class="uri">https://cran.r-project.org/web/packages/plotly/index.html</a></td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">gridExtra</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/gridExtra/index.html" class="uri">https://cran.r-project.org/web/packages/gridExtra/index.html</a></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">grid</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/grid/index.html" class="uri">https://cran.r-project.org/web/packages/grid/index.html</a></td>
+</tr>
+</tbody>
+</table>
+
+### Load R package
 
 Assume all the required R packages are installed.
 
 ``` r
-.libPaths('D:/R/win_library')
-# library(ThreeDRNAseq)
-## app.R ##
+library(ThreeDRNAseq)
+
 library(shiny)
 library(shinydashboard)
 library(rhandsontable)
@@ -35,16 +174,8 @@ library(gridExtra)
 library(grid)
 library(ComplexHeatmap)
 library(Gmisc)
-options(stringsAsFactors=F)
 
-sourceDir <- function(path, trace = TRUE, ...) {
-  for (nm in list.files(path, pattern = "[.][RrSsQq]$")) {
-    #if(trace) cat(nm,":")
-    source(file.path(path, nm), ...)
-    #if(trace) cat("/n")
-  }
-}
-sourceDir('D:/PhD project/R projects/test round 2018/ThreeDRNAseq/R')
+options(stringsAsFactors=F)
 ```
 
 Set pipeline parameters
@@ -90,10 +221,10 @@ cluster.method <- 'ward.D'
 cluster.number <- 10
 ```
 
-Data generateion
-----------------
+Data generation
+---------------
 
-Use the <a href="http://bioconductor.org/packages/release/bioc/html/tximport.html" target="_blank">tximport</a> R package (Soneson et al., 2016) to generate the transcript and gene level read counts and TPMs (transcript per million reads) from outputs of quantification tools, such as Salmon and Kallisto
+Use the <a href="http://bioconductor.org/packages/release/bioc/html/tximport.html" target="_blank">tximport</a> R package (Soneson et al., 2016) to generate the transcript and gene level read counts and TPMs (transcript per million reads) from outputs of quantification tools, such as Salmon (Patro et al., 2017) and Kallisto (Bray et al., 2016).
 
 ``` r
 ################################################################################
@@ -207,7 +338,7 @@ mv.trans.plot <- function(){
 mv.trans.plot()
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
 
 ``` r
 ### save to figure folder
@@ -257,7 +388,7 @@ mv.genes.plot <- function(){
 mv.genes.plot()
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-5-2.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-7-2.png" style="display: block; margin: auto;" />
 
 ``` r
 ### save to figure folder
@@ -307,7 +438,7 @@ g <- plot.PCA.ind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
 g
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
 
 ``` r
 ### save to figure
@@ -344,7 +475,7 @@ g <- plot.PCA.ind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
 g
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-6-2.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-8-2.png" style="display: block; margin: auto;" />
 
 ``` r
 ### save to figure
@@ -390,7 +521,7 @@ g <- plot.PCA.ind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
 g
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-6-3.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-8-3.png" style="display: block; margin: auto;" />
 
 ``` r
 ### save to figure
@@ -427,7 +558,7 @@ g <- plot.PCA.ind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
 g
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-6-4.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-8-4.png" style="display: block; margin: auto;" />
 
 ``` r
 ### save to figure
@@ -506,7 +637,7 @@ g <- plot.PCA.ind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
 g
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
 
 ``` r
 ### save to figure
@@ -543,7 +674,7 @@ g <- plot.PCA.ind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
 g
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-7-2.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-9-2.png" style="display: block; margin: auto;" />
 
 ``` r
 ### save to figure
@@ -589,7 +720,7 @@ g <- plot.PCA.ind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
 g
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-7-3.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-9-3.png" style="display: block; margin: auto;" />
 
 ``` r
 ### save to figure
@@ -626,7 +757,7 @@ g <- plot.PCA.ind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
 g
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-7-4.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-9-4.png" style="display: block; margin: auto;" />
 
 ``` r
 ### save to figure
@@ -649,9 +780,9 @@ dev.off()
     ## png 
     ##   2
 
-### Step 4: Data normalisation
+### Step 4: Data normalization
 
-The same transcript/gene in deeplier sequenced samples have more mapped reads. To make genes/transcripts comparable across samples, the "TMM", "RLE" or "upperquantile" method can be used to normalize the expression.
+The same transcript/gene in deeper sequenced samples have more mapped reads. To make genes/transcripts comparable across samples, the "TMM", "RLE" or "upperquantile" method can be used to normalize the expression.
 
 ``` r
 ################################################################################
@@ -684,7 +815,7 @@ g <- boxplot.normalised(data.before = data.before,
 do.call(grid.arrange,g)
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
 
 ``` r
 ### save to figure
@@ -718,7 +849,7 @@ g <- boxplot.normalised(data.before = data.before,
 do.call(grid.arrange,g)
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-8-2.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-10-2.png" style="display: block; margin: auto;" />
 
 ``` r
 ### save to figure
@@ -783,6 +914,7 @@ contrast <- read.csv(paste0(input.folder,'/contrast.csv'))
 contrast <- paste0(contrast[,1],'-',contrast[,2])
 ###---generate proper contrast format
 contrast <- gsub('_','.',contrast)
+save(contrast,file=paste0(data.folder,'/contrast.RData'))
 ```
 
 ### Step 2: DE genes
@@ -1257,7 +1389,7 @@ g <- plot.euler.diagram(x = targets)
 grid.arrange(g,top=textGrob('DE genes', gp=gpar(cex=1.2)))
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-19-1.png" style="display: block; margin: auto;" />
 
 ``` r
 ################################################################################
@@ -1270,7 +1402,7 @@ g <- plot.euler.diagram(x = targets)
 grid.arrange(g,top=textGrob('DAS genes', gp=gpar(cex=1.2)))
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-17-2.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-19-2.png" style="display: block; margin: auto;" />
 
 ``` r
 ################################################################################
@@ -1283,7 +1415,7 @@ g <- plot.euler.diagram(x = targets)
 grid.arrange(g,top=textGrob('DE transcripts', gp=gpar(cex=1.2)))
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-17-3.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-19-3.png" style="display: block; margin: auto;" />
 
 ``` r
 ################################################################################
@@ -1296,7 +1428,7 @@ g <- plot.euler.diagram(x = targets)
 grid.arrange(g,top=textGrob('DTU transcripts', gp=gpar(cex=1.2)))
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-17-4.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-19-4.png" style="display: block; margin: auto;" />
 
 #### Comparison of transcription and AS targets
 
@@ -1315,7 +1447,7 @@ if(length(x)==0){
 }
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-18-1.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-20-1.png" style="display: block; margin: auto;" />
 
 ``` r
 ################################################################################
@@ -1331,7 +1463,7 @@ if(length(x)==0){
 }
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-18-2.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-20-2.png" style="display: block; margin: auto;" />
 
 Advanced plots
 --------------
@@ -1380,7 +1512,7 @@ g <- Heatmap(as.matrix(data2plot), name = 'Z-scores',
 draw(g,column_title='Conditions',column_title_side = "bottom")
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-19-1.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-21-1.png" style="display: block; margin: auto;" />
 
 ``` r
 ### save to figure
@@ -1446,7 +1578,7 @@ g <- Heatmap(as.matrix(data2plot), name = 'Z-scores',
 draw(g,column_title='Conditions',column_title_side = "bottom")
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-19-2.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-21-2.png" style="display: block; margin: auto;" />
 
 ``` r
 ### save to figure
@@ -1512,7 +1644,7 @@ g <- Heatmap(as.matrix(data2plot), name = 'Z-scores',
 draw(g,column_title='Conditions',column_title_side = "bottom")
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-19-3.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-21-3.png" style="display: block; margin: auto;" />
 
 ``` r
 ### save to figure
@@ -1578,7 +1710,7 @@ g <- Heatmap(as.matrix(data2plot), name = 'Z-scores',
 draw(g,column_title='Conditions',column_title_side = "bottom")
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-19-4.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-21-4.png" style="display: block; margin: auto;" />
 
 ``` r
 ### save to figure
@@ -1637,7 +1769,7 @@ g.pr <- plot.abundance(data.exp = txi_trans$abundance[target_high$trans_high,],
 g.pr
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-20-1.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-22-1.png" style="display: block; margin: auto;" />
 
 ``` r
 ################################################################################
@@ -1653,7 +1785,7 @@ g.ps <- plot.PS(data.exp = txi_trans$abundance[target_high$trans_high,],
 g.ps
 ```
 
-<img src="Command_line_user_manul_files/figure-markdown_github/unnamed-chunk-20-2.png" style="display: block; margin: auto;" />
+<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-22-2.png" style="display: block; margin: auto;" />
 
 ### GO annotation plot of DE/DAS genes
 
@@ -1737,7 +1869,7 @@ para <- rbind(
   c('','Batch effect estimation',
     ifelse(length(list.files(data.folder,'*batch.RData'))>0,'Yes','No')),
   c('','Batch effect estimation method',ruvseq.method),
-  c('','Normalisation method',norm.method),
+  c('','Normalization method',norm.method),
   c('DE DAS and DTU','Pipeline',DE.pipeline),
   c('','AS function',ifelse(DE.pipeline=='limma',
                             'limma::diffSplice','edgeR::diffSpliceDGE')),
@@ -1767,7 +1899,7 @@ para
     ## 10                      Sample number for CPM cut-off
     ## 11                            Batch effect estimation
     ## 12                     Batch effect estimation method
-    ## 13                               Normalisation method
+    ## 13                               Normalization method
     ## 14      DE DAS and DTU                       Pipeline
     ## 15                                        AS function
     ## 16                              P-value adjust method
@@ -1805,24 +1937,312 @@ para
 write.csv(para,file=paste0(result.folder,'/Parameter summary.csv'),row.names = F)
 
 ################################################################################
-##----->> download report.Rmd file from Github
-# if(!file.exists('report.Rmd'))
-#   download.file(url = 'https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/report.Rmd',
-#               destfile = 'report.Rmd',method = 'auto',mode = )
-# generate.report(input.Rmd = 'report.Rmd',report.folder = report.folder,type = 'all')
-# 
-# report.url <- 'https://rmarkdown.rstudio.com/demos/1-example.Rmd'
-# report.url <- 'https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/report.Rmd'
-# download.file(url = report.url,
-#               destfile = 'example2.Rmd',method = 'auto')
-# 
-# knitrRmd <- paste(readLines(textConnection(getURL(report.url))), collapse="\n")
+#----->> download report.Rmd file from Github
+report.url <- 'https://raw.githubusercontent.com/wyguo/ThreeDRNAseq/master/vignettes/report.Rmd'
+if(!file.exists('report.Rmd'))
+  download.file(url = report.url,destfile = 'report.Rmd',method = 'auto')
+generate.report(input.Rmd = 'report.Rmd',report.folder = report.folder,type = 'all')
 ```
+
+Saved files in local directory
+------------------------------
+
+### Saved files in the "data" folder
+
+<table>
+<caption>The intermediate datasets in &quot;.RData&quot; format are saved in the &quot;data&quot; folder. Advanced R users can access these &quot;.RData&quot; objects by R command line. For the returned objects from R functions/packages, please go to corresponding documentations for details.</caption>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">File names</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">contrast.RData</td>
+<td align="left">Contrast group</td>
+</tr>
+<tr class="even">
+<td align="left">DAS_genes.RData</td>
+<td align="left">Testing statistics of DAS genes.</td>
+</tr>
+<tr class="odd">
+<td align="left">DE_genes.RData</td>
+<td align="left">Testing statistics of DE genes.</td>
+</tr>
+<tr class="even">
+<td align="left">DE_trans.RData</td>
+<td align="left">Testing statistics of DE transcripts.</td>
+</tr>
+<tr class="odd">
+<td align="left">deltaPS.RData</td>
+<td align="left">Matrix of deltaPS values.</td>
+</tr>
+<tr class="even">
+<td align="left">DTU_trans.RData</td>
+<td align="left">Testing statistics of DTU transcripts.</td>
+</tr>
+<tr class="odd">
+<td align="left">genes_3D_stat.RData</td>
+<td align="left">The returned object of DE gene analysis by using limma.pipeline/edgeR.pipeline functions in ThreeDRNAseq R package.</td>
+</tr>
+<tr class="even">
+<td align="left">genes_batch.RData</td>
+<td align="left">The returned object of gene level batch effect estimation by using RUVSeq R package.</td>
+</tr>
+<tr class="odd">
+<td align="left">genes_dge.RData</td>
+<td align="left">The returned object of gene expression normalization by using calcNormFactors function in edgeR.</td>
+</tr>
+<tr class="even">
+<td align="left">mapping.RData</td>
+<td align="left">Matrix of transcript-gene mapping.</td>
+</tr>
+<tr class="odd">
+<td align="left">PS.RData</td>
+<td align="left">Matrix of transcript percent spliced (PS), which is used to generate deltaPS based on contrast groups.</td>
+</tr>
+<tr class="even">
+<td align="left">samples.RData</td>
+<td align="left">The sample information before merging sequencing replicates.</td>
+</tr>
+<tr class="odd">
+<td align="left">samples_new.RData</td>
+<td align="left">The sample information after merging sequencing replicates. If there are no sequencing replicates, the &quot;sample_new&quot; object has the same number of rows with the &quot;samples&quot; object.</td>
+</tr>
+<tr class="even">
+<td align="left">target_high.RData</td>
+<td align="left">A list object with two element: expressed transcripts (trans_high) and expressed genes (genes_high).</td>
+</tr>
+<tr class="odd">
+<td align="left">trans_3D_stat.RData</td>
+<td align="left">The returned object of DAS gene, DE and DTU transcripts analysis by using limma.pipeline/edgeR.pipeline functions in ThreeDRNAseq R package.</td>
+</tr>
+<tr class="even">
+<td align="left">trans_batch.RData</td>
+<td align="left">The returned object of transcript level batch effect estimation by using RUVSeq R package..</td>
+</tr>
+<tr class="odd">
+<td align="left">trans_dge.RData</td>
+<td align="left">The returned object of transcript expression normalization by using calcNormFactors function in edgeR.</td>
+</tr>
+<tr class="even">
+<td align="left">txi_genes.RData</td>
+<td align="left">The returned object of gene expression by using tximport R package.</td>
+</tr>
+<tr class="odd">
+<td align="left">txi_trans.RData</td>
+<td align="left">The returned object of transcript expression by using tximport R package.</td>
+</tr>
+</tbody>
+</table>
+
+### Saved files in the "result" folder
+
+<table>
+<caption>The csv files in the result folder of working directory. Raw read counts/TPMs are the datasets before any data pre-processing, e.g. sequencing replicate merge and low expression filters.</caption>
+<colgroup>
+<col width="24%" />
+<col width="75%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">File.names</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">counts_genes.csv</td>
+<td align="left">Gene level raw read counts</td>
+</tr>
+<tr class="even">
+<td align="left">counts_trans.csv</td>
+<td align="left">Transcript level raw read counts</td>
+</tr>
+<tr class="odd">
+<td align="left">DAS genes.csv</td>
+<td align="left">Testing statistics of DAS genes.</td>
+</tr>
+<tr class="even">
+<td align="left">data.info.csv</td>
+<td align="left">Data information during data pre-processing.</td>
+</tr>
+<tr class="odd">
+<td align="left">DE DAS DTU numbers.csv</td>
+<td align="left">Numbers of 3D genes/transcripts in contrast groups.</td>
+</tr>
+<tr class="even">
+<td align="left">DE genes.csv</td>
+<td align="left">Testing statistics of DE genes.</td>
+</tr>
+<tr class="odd">
+<td align="left">DE transcripts.csv</td>
+<td align="left">Testing statistics of DE transcripts.</td>
+</tr>
+<tr class="even">
+<td align="left">DE vs DAS gene number.csv</td>
+<td align="left">Numbers of DE vs DAS genes in contrast groups.</td>
+</tr>
+<tr class="odd">
+<td align="left">DE vs DTU transcript number.csv</td>
+<td align="left">Numbers of DE vs DTU transcripts in contrast groups.</td>
+</tr>
+<tr class="even">
+<td align="left">DTU transcripts.csv</td>
+<td align="left">Testing statistics of DTU transcripts.</td>
+</tr>
+<tr class="odd">
+<td align="left">Parameter summary.csv</td>
+<td align="left">Methods/Parameters/Cut-offs used for 3D RNA-seq analysis.</td>
+</tr>
+<tr class="even">
+<td align="left">Target in each cluster heatmap * DE&amp;DAS genes.csv</td>
+<td align="left">DE&amp;DAS gene lists in clusters of DAS gene heatmap. The DASonly genes are excluded since they have no significant abundance changes across samples.</td>
+</tr>
+<tr class="odd">
+<td align="left">Target in each cluster heatmap * DE genes.csv</td>
+<td align="left">DE gene list in clusters of DE gene heatmap.</td>
+</tr>
+<tr class="even">
+<td align="left">Target in each cluster heatmap * DE trans.csv</td>
+<td align="left">DE&amp;DTU transcript lists in clusters of DTU transcript heatmap. The DTUonly transcripts are excluded since they have no significant abundance changes across samples.</td>
+</tr>
+<tr class="odd">
+<td align="left">Target in each cluster heatmap * DE&amp;DTU trans.csv</td>
+<td align="left">DE transcript list in clusters of DE transcript heatmap.</td>
+</tr>
+<tr class="even">
+<td align="left">TPM_genes.csv</td>
+<td align="left">Gene level raw TPMs</td>
+</tr>
+<tr class="odd">
+<td align="left">TPM_trans.csv</td>
+<td align="left">Transcript level raw TPMs</td>
+</tr>
+</tbody>
+</table>
+
+### Saved files in the "figure" folder
+
+<table>
+<caption>Figures are saved to &quot;figure&quot; folder in both &quot;png&quot; and &quot;pdf&quot; formats.</caption>
+<colgroup>
+<col width="54%" />
+<col width="45%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">File.names</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">DAS genes GO annotation plot.png/.pdf</td>
+<td align="left">DAS genes GO annotation plot</td>
+</tr>
+<tr class="even">
+<td align="left">DAS genes updown regulation numbers.png/.pdf</td>
+<td align="left">DAS genes updown regulation numbers</td>
+</tr>
+<tr class="odd">
+<td align="left">DE genes GO annotation plot.png/.pdf</td>
+<td align="left">DE genes GO annotation plot</td>
+</tr>
+<tr class="even">
+<td align="left">DE genes updown regulation numbers.png/.pdf</td>
+<td align="left">DE genes updown regulation numbers</td>
+</tr>
+<tr class="odd">
+<td align="left">DE transcripts updown regulation numbers.png/.pdf</td>
+<td align="left">DE transcripts updown regulation numbers</td>
+</tr>
+<tr class="even">
+<td align="left">DTU transcripts updown regulation numbers.png/.pdf</td>
+<td align="left">DTU transcripts updown regulation numbers</td>
+</tr>
+<tr class="odd">
+<td align="left">Gene data distribution.png/.pdf</td>
+<td align="left">Gene data distribution</td>
+</tr>
+<tr class="even">
+<td align="left">Gene mean-variance trend.png/.pdf</td>
+<td align="left">Gene mean-variance trend</td>
+</tr>
+<tr class="odd">
+<td align="left">Gene PCA Average expression.png/.pdf</td>
+<td align="left">Gene PCA Average expression</td>
+</tr>
+<tr class="even">
+<td align="left">Gene PCA batch effect removed Bio-reps.png/.pdf</td>
+<td align="left">Gene PCA batch effect removed Bio-reps</td>
+</tr>
+<tr class="odd">
+<td align="left">Gene PCA Bio-reps.png/.pdf</td>
+<td align="left">Gene PCA Bio-reps</td>
+</tr>
+<tr class="even">
+<td align="left">Heatmap DAS genes.png/.pdf</td>
+<td align="left">Heatmap DAS genes</td>
+</tr>
+<tr class="odd">
+<td align="left">Heatmap DE genes.png/.pdf</td>
+<td align="left">Heatmap DE genes</td>
+</tr>
+<tr class="even">
+<td align="left">Heatmap DE transcripts.png/.pdf</td>
+<td align="left">Heatmap DE transcripts</td>
+</tr>
+<tr class="odd">
+<td align="left">Heatmap DTU transcripts.png/.pdf</td>
+<td align="left">Heatmap DTU transcripts</td>
+</tr>
+<tr class="even">
+<td align="left">Transcript data distribution.png/.pdf</td>
+<td align="left">Transcript data distribution</td>
+</tr>
+<tr class="odd">
+<td align="left">Transcript mean-variance trend.png/.pdf</td>
+<td align="left">Transcript mean-variance trend</td>
+</tr>
+<tr class="even">
+<td align="left">Transcript PCA Average expression.png/.pdf</td>
+<td align="left">Transcript PCA Average expression</td>
+</tr>
+<tr class="odd">
+<td align="left">Transcript PCA batch effect removed Bio-reps.png/.pdf</td>
+<td align="left">Transcript PCA batch effect removed Bio-reps</td>
+</tr>
+<tr class="even">
+<td align="left">Transcript PCA Bio-reps.png/.pdf</td>
+<td align="left">Transcript PCA Bio-reps</td>
+</tr>
+<tr class="odd">
+<td align="left">Union set DE genes vs DAS genes.png/.pdf</td>
+<td align="left">Flow chart -Union set DE genes vs DAS genes</td>
+</tr>
+<tr class="even">
+<td align="left">Union set DE transcripts vs DTU transcripts.png/.pdf</td>
+<td align="left">Flow chart -Union set DE transcripts vs DTU transcripts</td>
+</tr>
+</tbody>
+</table>
+
+### Saved files in the "report" folder
+
+| File.names  | Description |
+|:------------|:------------|
+| report.docx | word format |
+| report.html | html format |
+| report.pdf  | pdf format  |
 
 References
 ----------
-
-Balaban,M.O., Unal Sengor,G.F., Soriano,M.G., and Ruiz,E.G. (2011) Quantification of gaping, bruising, and blood spots in salmon fillets using image analysis. J Food Sci, 76, E291-7.
 
 Bray,N.L., Pimentel,H., Melsted,P., and Pachter,L. (2016) Near-optimal probabilistic RNA-seq quantification. Nat. Biotechnol., 34, 525–527.
 
@@ -1873,40 +2293,45 @@ Session information
     ## [27] limma_3.36.3                tximport_1.11.0            
     ## [29] shinyFiles_0.7.1            rhandsontable_0.3.6        
     ## [31] shinydashboard_0.7.0        shiny_1.1.0                
+    ## [33] ThreeDRNAseq_0.1.0         
     ## 
     ## loaded via a namespace (and not attached):
-    ##   [1] backports_1.1.2        circlize_0.4.4         Hmisc_4.1-1           
+    ##   [1] circlize_0.4.4         backports_1.1.2        Hmisc_4.1-1           
     ##   [4] aroma.light_3.10.0     plyr_1.8.4             lazyeval_0.2.1        
-    ##   [7] splines_3.5.1          digest_0.6.17          htmltools_0.3.6       
-    ##  [10] magrittr_1.5           checkmate_1.8.5        memoise_1.1.0         
-    ##  [13] cluster_2.0.7-1        fastcluster_1.1.25     readr_1.1.1           
-    ##  [16] annotate_1.58.0        R.utils_2.7.0          prettyunits_1.0.2     
-    ##  [19] colorspace_1.3-2       blob_1.1.1             dplyr_0.7.6           
-    ##  [22] crayon_1.3.4           RCurl_1.95-4.11        jsonlite_1.5          
-    ##  [25] genefilter_1.62.0      bindr_0.1.1            survival_2.42-6       
-    ##  [28] glue_1.3.0             polyclip_1.9-1         gtable_0.2.0          
-    ##  [31] zlibbioc_1.26.0        GetoptLong_0.1.7       shape_1.4.4           
-    ##  [34] abind_1.4-5            scales_1.0.0           DESeq_1.32.0          
-    ##  [37] DBI_1.0.0              viridisLite_0.3.0      xtable_1.8-3          
-    ##  [40] progress_1.2.0         foreign_0.8-71         bit_1.1-14            
-    ##  [43] Formula_1.2-3          htmlwidgets_1.2        httr_1.3.1            
-    ##  [46] RColorBrewer_1.1-2     acepack_1.4.1          pkgconfig_2.0.2       
-    ##  [49] XML_3.98-1.16          R.methodsS3_1.7.1      nnet_7.3-12           
-    ##  [52] locfit_1.5-9.1         reshape2_1.4.3         labeling_0.3          
-    ##  [55] tidyselect_0.2.4       rlang_0.2.2            later_0.7.4           
-    ##  [58] AnnotationDbi_1.42.1   munsell_0.5.0          tools_3.5.1           
-    ##  [61] RSQLite_2.1.1          evaluate_0.11          stringr_1.3.1         
-    ##  [64] yaml_2.2.0             knitr_1.20             bit64_0.9-7           
-    ##  [67] fs_1.2.6               forestplot_1.7.2       purrr_0.2.5           
-    ##  [70] bindrcpp_0.2.2         mime_0.5               R.oo_1.22.0           
-    ##  [73] biomaRt_2.36.1         compiler_3.5.1         rstudioapi_0.7        
-    ##  [76] tibble_1.4.2           geneplotter_1.58.0     stringi_1.1.7         
-    ##  [79] GenomicFeatures_1.32.2 lattice_0.20-35        Matrix_1.2-14         
-    ##  [82] pillar_1.3.0           GlobalOptions_0.1.0    data.table_1.11.6     
-    ##  [85] bitops_1.0-6           httpuv_1.4.5           rtracklayer_1.40.6    
-    ##  [88] R6_2.2.2               latticeExtra_0.6-28    hwriter_1.3.2         
-    ##  [91] promises_1.0.1         gtools_3.8.1           MASS_7.3-50           
-    ##  [94] assertthat_0.2.0       rprojroot_1.3-2        rjson_0.2.20          
-    ##  [97] withr_2.1.2            GenomeInfoDbData_1.1.0 hms_0.4.2             
-    ## [100] rpart_4.1-13           tidyr_0.8.1            rmarkdown_1.10        
-    ## [103] base64enc_0.1-3
+    ##   [7] splines_3.5.1          usethis_1.4.0          digest_0.6.17         
+    ##  [10] htmltools_0.3.6        magrittr_1.5           checkmate_1.8.5       
+    ##  [13] memoise_1.1.0          cluster_2.0.7-1        remotes_2.0.1         
+    ##  [16] fastcluster_1.1.25     readr_1.1.1            annotate_1.58.0       
+    ##  [19] R.utils_2.7.0          prettyunits_1.0.2      colorspace_1.3-2      
+    ##  [22] blob_1.1.1             dplyr_0.7.6            callr_3.0.0           
+    ##  [25] crayon_1.3.4           RCurl_1.95-4.11        jsonlite_1.5          
+    ##  [28] genefilter_1.62.0      bindr_0.1.1            survival_2.42-6       
+    ##  [31] glue_1.3.0             polyclip_1.9-1         gtable_0.2.0          
+    ##  [34] zlibbioc_1.26.0        GetoptLong_0.1.7       pkgbuild_1.0.2        
+    ##  [37] shape_1.4.4            abind_1.4-5            scales_1.0.0          
+    ##  [40] DESeq_1.32.0           DBI_1.0.0              viridisLite_0.3.0     
+    ##  [43] xtable_1.8-3           progress_1.2.0         foreign_0.8-71        
+    ##  [46] bit_1.1-14             Formula_1.2-3          htmlwidgets_1.2       
+    ##  [49] httr_1.3.1             RColorBrewer_1.1-2     acepack_1.4.1         
+    ##  [52] pkgconfig_2.0.2        XML_3.98-1.16          R.methodsS3_1.7.1     
+    ##  [55] nnet_7.3-12            locfit_1.5-9.1         reshape2_1.4.3        
+    ##  [58] labeling_0.3           tidyselect_0.2.4       rlang_0.2.2           
+    ##  [61] later_0.7.4            AnnotationDbi_1.42.1   munsell_0.5.0         
+    ##  [64] tools_3.5.1            cli_1.0.0              RSQLite_2.1.1         
+    ##  [67] devtools_2.0.0         evaluate_0.11          stringr_1.3.1         
+    ##  [70] yaml_2.2.0             processx_3.2.0         knitr_1.20            
+    ##  [73] bit64_0.9-7            fs_1.2.6               forestplot_1.7.2      
+    ##  [76] purrr_0.2.5            bindrcpp_0.2.2         mime_0.5              
+    ##  [79] R.oo_1.22.0            biomaRt_2.36.1         compiler_3.5.1        
+    ##  [82] rstudioapi_0.7         curl_3.2               testthat_2.0.1        
+    ##  [85] tibble_1.4.2           geneplotter_1.58.0     stringi_1.1.7         
+    ##  [88] ps_1.1.0               GenomicFeatures_1.32.2 desc_1.2.0            
+    ##  [91] lattice_0.20-35        Matrix_1.2-14          pillar_1.3.0          
+    ##  [94] BiocManager_1.30.2     GlobalOptions_0.1.0    data.table_1.11.6     
+    ##  [97] bitops_1.0-6           rtracklayer_1.40.6     httpuv_1.4.5          
+    ## [100] hwriter_1.3.2          R6_2.2.2               latticeExtra_0.6-28   
+    ## [103] promises_1.0.1         sessioninfo_1.1.0      gtools_3.8.1          
+    ## [106] MASS_7.3-50            assertthat_0.2.0       pkgload_1.0.1         
+    ## [109] rjson_0.2.20           rprojroot_1.3-2        withr_2.1.2           
+    ## [112] GenomeInfoDbData_1.1.0 hms_0.4.2              rpart_4.1-13          
+    ## [115] tidyr_0.8.1            rmarkdown_1.10         base64enc_0.1-3
