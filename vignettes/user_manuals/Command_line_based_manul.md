@@ -1,3 +1,4 @@
+-   [Table of contents](#table-of-contents)
 -   [Introduction](#introduction)
 -   [Install and load R packages](#install-and-load-r-packages)
     -   [Install ThreeDRNAseq package](#install-threedrnaseq-package)
@@ -33,6 +34,9 @@
     -   [Saved files in the "report" folder](#saved-files-in-the-report-folder)
 -   [References](#references)
 -   [Session information](#session-information)
+
+Table of contents
+-----------------
 
 Introduction
 ------------
@@ -393,32 +397,18 @@ mv.trans.plot <- function(){
          legend = c('low-exp removed','low-exp kept'))
 }
 mv.trans.plot()
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure folder
 png(filename = paste0(figure.folder,'/Transcript mean-variance trend.png'),
     width = 25/2.54,height = 12/2.54,units = 'in',res = 300)
 mv.trans.plot()
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(file = paste0(figure.folder,'/Transcript mean-variance trend.pdf'),
     width = 25/2.54,height = 12/2.54)
 mv.trans.plot()
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 ################################################################################
 ## gene level
 condition <- paste0(samples_new$condition)
@@ -443,30 +433,18 @@ mv.genes.plot <- function(){
          legend = c('low-exp removed','low-exp kept'))
 }
 mv.genes.plot()
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-7-2.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure folder
 png(filename = paste0(figure.folder,'/Gene mean-variance trend.png'),
     width = 25/2.54,height = 12/2.54,units = 'in',res = 300)
 mv.genes.plot()
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(file = paste0(figure.folder,'/Gene mean-variance trend.pdf'),
     width = 25/2.54,height = 12/2.54)
 mv.genes.plot()
 dev.off()
 ```
-
-    ## png 
-    ##   2
 
 ### Step 3: Principal component analysis (PCA)
 
@@ -493,32 +471,18 @@ g <- plotPCAind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
                   add.label = T,adj.label = F)
 
 g
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure
 png(filename = paste0(figure.folder,'/Transcript PCA Bio-reps.png'),
     width = 15/2.54,height = 13/2.54,units = 'in',res = 300)
 print(g)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(file = paste0(figure.folder,'/Transcript PCA Bio-reps.pdf'),
     width = 15/2.54,height = 13/2.54)
 print(g)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 ##################################################
 ##--average expression plot
 rownames(data2pca) <- gsub('_','.',rownames(data2pca))
@@ -530,32 +494,19 @@ g <- plotPCAind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
                   ellipse.type = 'none',add.label = T,adj.label = F)
 
 g
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-8-2.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure
 png(filename = paste0(figure.folder,'/Transcript PCA Average expression.png'),
     width = 15/2.54,height = 13/2.54,units = 'in',res = 300)
 print(g)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(file = paste0(figure.folder,'/Transcript PCA Average expression.pdf'),
     width = 15/2.54,height = 13/2.54)
 print(g)
 dev.off()
-```
 
-    ## png 
-    ##   2
 
-``` r
 ################################################################################
 ##----->> genes level
 data2pca <- genes_counts[target_high$genes_high,]
@@ -576,32 +527,18 @@ g <- plotPCAind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
                   add.label = T,adj.label = F)
 
 g
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-8-3.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure
 png(filename = paste0(figure.folder,'/Gene PCA Bio-reps.png'),
     width = 15/2.54,height = 13/2.54,units = 'in',res = 300)
 print(g)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(file = paste0(figure.folder,'/Gene PCA Bio-reps.pdf'),
     width = 15/2.54,height = 13/2.54)
 print(g)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 ##################################################
 ##--average expression plot
 rownames(data2pca) <- gsub('_','.',rownames(data2pca))
@@ -613,30 +550,18 @@ g <- plotPCAind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
                   ellipse.type = 'none',add.label = T,adj.label = F)
 
 g
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-8-4.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure
 png(filename = paste0(figure.folder,'/Gene PCA Average expression.png'),
     width = 15/2.54,height = 13/2.54,units = 'in',res = 300)
 print(g)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(file = paste0(figure.folder,'/Gene PCA Average expression.pdf'),
     width = 15/2.54,height = 13/2.54)
 print(g)
 dev.off()
 ```
-
-    ## png 
-    ##   2
 
 ### Step 3-continued: Batch effect estimation
 
@@ -692,32 +617,18 @@ g <- plotPCAind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
                   add.label = T,adj.label = F)
 
 g
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure
 png(filename = paste0(figure.folder,'/Transcript PCA batch effect removed Bio-reps.png'),
     width = 15/2.54,height = 13/2.54,units = 'in',res = 300)
 print(g)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(file = paste0(figure.folder,'/Transcript PCA batch effect removed Bio-reps.pdf'),
     width = 15/2.54,height = 13/2.54)
 print(g)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 ##################################################
 ##--average expression plot
 rownames(data2pca) <- gsub('_','.',rownames(data2pca))
@@ -729,32 +640,19 @@ g <- plotPCAind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
                   ellipse.type = 'none',add.label = T,adj.label = F)
 
 g
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-9-2.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure
 png(filename = paste0(figure.folder,'/Transcript PCA Average expression.png'),
     width = 15/2.54,height = 13/2.54,units = 'in',res = 300)
 print(g)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(file = paste0(figure.folder,'/Transcript PCA Average expression.pdf'),
     width = 15/2.54,height = 13/2.54)
 print(g)
 dev.off()
-```
 
-    ## png 
-    ##   2
 
-``` r
 ################################################################################
 ##----->> genes level
 data2pca <- genes_batch$normalizedCounts[target_high$genes_high,]
@@ -775,32 +673,18 @@ g <- plotPCAind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
                   add.label = T,adj.label = F)
 
 g
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-9-3.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure
 png(filename = paste0(figure.folder,'/Gene PCA batch effect removed Bio-reps.png'),
     width = 15/2.54,height = 13/2.54,units = 'in',res = 300)
 print(g)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(file = paste0(figure.folder,'/Gene PCA batch effect removed Bio-reps.pdf'),
     width = 15/2.54,height = 13/2.54)
 print(g)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 ##################################################
 ##--average expression plot
 rownames(data2pca) <- gsub('_','.',rownames(data2pca))
@@ -812,30 +696,18 @@ g <- plotPCAind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
                   ellipse.type = 'none',add.label = T,adj.label = F)
 
 g
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-9-4.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure
 png(filename = paste0(figure.folder,'/Gene PCA Average expression.png'),
     width = 15/2.54,height = 13/2.54,units = 'in',res = 300)
 print(g)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(file = paste0(figure.folder,'/Gene PCA Average expression.pdf'),
     width = 15/2.54,height = 13/2.54)
 print(g)
 dev.off()
 ```
-
-    ## png 
-    ##   2
 
 ### Step 4: Data normalization
 
@@ -870,32 +742,18 @@ g <- boxplot.normalised(data.before = data.before,
                         condition = condition,
                         sample.name = sample.name)
 do.call(grid.arrange,g)
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure
 png(filename = paste0(figure.folder,'/Transcript data distribution.png'),
     width = 20/2.54,height = 20/2.54,units = 'in',res = 300)
 do.call(grid.arrange,g)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(file = paste0(figure.folder,'/Transcript data distribution.pdf'),
     width = 20/2.54,height = 20/2.54)
 do.call(grid.arrange,g)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 ###--- genes level
 data.before <- genes_counts[target_high$genes_high,]
 data.after <- counts2CPM(obj = genes_dge,Log = T)
@@ -904,30 +762,18 @@ g <- boxplot.normalised(data.before = data.before,
                         condition = condition,
                         sample.name = sample.name)
 do.call(grid.arrange,g)
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-10-2.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure
 png(filename = paste0(figure.folder,'/Gene data distribution.png'),
     width = 20/2.54,height = 20/2.54,units = 'in',res = 300)
 do.call(grid.arrange,g)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(file = paste0(figure.folder,'/Gene data distribution.pdf'),
     width = 20/2.54,height = 20/2.54)
 do.call(grid.arrange,g)
 dev.off()
 ```
-
-    ## png 
-    ##   2
 
 ### Data information
 
@@ -945,16 +791,6 @@ data.info <- data.frame(
 )
 rownames(data.info) <- c('Transcript','Gene')
 data.info
-```
-
-    ##            raw.number sample condition brep srep merged.sample cpm.cut
-    ## Transcript      82198     27         3    3    3             9       1
-    ## Gene            34218     27         3    3    3             9      --
-    ##            sample.n.cut after.filter
-    ## Transcript            1        41871
-    ## Gene                 --        19594
-
-``` r
 write.csv(data.info,file=paste0(result.folder,'/data.info.csv'),row.names = T)
 ```
 
@@ -992,11 +828,7 @@ genes_3D_stat <- limma.pipeline(dge = genes_dge,
                                  diffAS = F,
                                  adjust.method = p.adjust.method)
 }
-```
 
-    ## [1] "Contrast groups: T10-T2; T19-T2"
-
-``` r
 if(DE.pipeline == 'glmQL'){
 ##----->> edgeR glmQL pipeline
 genes_3D_stat <- edgeR.pipeline(dge = genes_dge,
@@ -1061,16 +893,7 @@ trans_3D_stat <- limma.pipeline(dge = trans_dge,
                                  diffAS = T,
                                  adjust.method = p.adjust.method)
 }
-```
 
-    ## [1] "Contrast groups: T10-T2; T19-T2"
-    ## Total number of exons:  41871 
-    ## Total number of genes:  19594 
-    ## Number of genes with 1 exon:  10233 
-    ## Mean number of exons in a gene:  2 
-    ## Max number of exons in a gene:  31
-
-``` r
 if(DE.pipeline == 'glmQL'){
 ##----->> edgeR glmQL pipeline
 trans_3D_stat <- edgeR.pipeline(dge = trans_dge,
@@ -1163,14 +986,6 @@ DDD.numbers <- summary3Dnumber(DE_genes = DE_genes,
                                  DTU_trans=DTU_trans,
                                  contrast = contrast)
 DDD.numbers
-```
-
-    ##       contrast DE genes DAS genes DE transcripts DTU transcripts
-    ## 1       T10-T2      946       362           1271             598
-    ## 2       T19-T2     2261       883           3079            1479
-    ## 3 Intersection      433       244            599             377
-
-``` r
 write.csv(DDD.numbers,file=paste0(result.folder,'/DE DAS DTU numbers.csv'),
           row.names = F)
 
@@ -1180,14 +995,6 @@ DEvsDAS.results <- DEvsDAS(DE_genes = DE_genes,
                            DAS_genes = DAS_genes,
                            contrast = contrast)
 DEvsDAS.results
-```
-
-    ##       Contrast DEonly DE&DAS DASonly
-    ## 1       T10-T2    928     18     344
-    ## 2       T19-T2   2171     90     793
-    ## 3 Intersection    408      4     216
-
-``` r
 write.csv(DEvsDAS.results,file=paste0(result.folder,'/DE vs DAS gene number.csv'),
           row.names = F)
 
@@ -1198,14 +1005,6 @@ DEvsDTU.results <- DEvsDTU(DE_trans = DE_trans,
                            DTU_trans = DTU_trans,
                            contrast = contrast)
 DEvsDTU.results
-```
-
-    ##       Contrast DEonly DE&DTU DTUonly
-    ## 1       T10-T2   1141    130     468
-    ## 2       T19-T2   2600    479    1000
-    ## 3 Intersection    483     59     201
-
-``` r
 write.csv(DEvsDTU.results,file=paste0(result.folder,'/DE vs DTU transcript number.csv'),row.names = F)
 ```
 
@@ -1230,32 +1029,19 @@ data2plot <- lapply(contrast,function(i){
 data2plot <- do.call(rbind,data2plot)
 g.updown <- plotUpdown(data2plot,plot.title = 'DE genes',contrast = contrast)
 print(g.updown)
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-17-1.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure
 png(paste0(figure.folder,'/DE genes updown regulation numbers.png'),
     width = length(contrast)*5/2.54,10/2.54,units = 'in',res = 300)
 print(g.updown)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(paste0(figure.folder,'/DE genes updown regulation numbers.pdf'),
     width = length(contrast)*5/2.54,10/2.54)
 print(g.updown)
 dev.off()
-```
 
-    ## png 
-    ##   2
 
-``` r
 ################################################################################
 ##----->> DAS genes
 idx <- factor(DAS_genes$contrast,levels = contrast)
@@ -1272,32 +1058,19 @@ data2plot <- lapply(contrast,function(i){
 data2plot <- do.call(rbind,data2plot)
 g.updown <- plotUpdown(data2plot,plot.title = 'DAS genes',contrast = contrast)
 print(g.updown)
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-17-2.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure
 png(paste0(figure.folder,'/DAS genes updown regulation numbers.png'),
     width = length(contrast)*5/2.54,10/2.54,units = 'in',res = 300)
 print(g.updown)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(paste0(figure.folder,'/DAS genes updown regulation numbers.pdf'),
     width = length(contrast)*5/2.54,10/2.54)
 print(g.updown)
 dev.off()
-```
 
-    ## png 
-    ##   2
 
-``` r
 ################################################################################
 ##----->> DE trans
 idx <- factor(DE_trans$contrast,levels = contrast)
@@ -1314,32 +1087,18 @@ data2plot <- lapply(contrast,function(i){
 data2plot <- do.call(rbind,data2plot)
 g.updown <- plotUpdown(data2plot,plot.title = 'DE trans',contrast = contrast)
 print(g.updown)
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-17-3.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure
 png(paste0(figure.folder,'/DE transcripts updown regulation numbers.png'),
     width = length(contrast)*5/2.54,10/2.54,units = 'in',res = 300)
 print(g.updown)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(paste0(figure.folder,'/DE transcripts updown regulation numbers.pdf'),
     width = length(contrast)*5/2.54,10/2.54)
 print(g.updown)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 ################################################################################
 ##----->> DTU trans
 idx <- factor(DTU_trans$contrast,levels = contrast)
@@ -1356,30 +1115,18 @@ data2plot <- lapply(contrast,function(i){
 data2plot <- do.call(rbind,data2plot)
 g.updown <- plotUpdown(data2plot,plot.title = 'DTU trans',contrast = contrast)
 print(g.updown)
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-17-4.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure
 png(paste0(figure.folder,'/DTU transcripts updown regulation numbers.png'),
     width = length(contrast)*5/2.54,10/2.54,units = 'in',res = 300)
 print(g.updown)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(paste0(figure.folder,'/DTU transcripts updown regulation numbers.pdf'),
     width = length(contrast)*5/2.54,10/2.54)
 print(g.updown)
 dev.off()
 ```
-
-    ## png 
-    ##   2
 
 #### Flow chart
 
@@ -1400,31 +1147,17 @@ genes.flow.chart <- function(){
 }
 
 genes.flow.chart()
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-18-1.png" style="display: block; margin: auto;" />
-
-``` r
 png(filename = paste0(figure.folder,'/Union set DE genes vs DAS genes.png'),
     width = 22/2.54,height = 13/2.54,units = 'in',res = 300)
 genes.flow.chart()
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(file = paste0(figure.folder,'/Union set DE genes vs DAS genes.pdf'),
     width = 22/2.54,height = 13/2.54)
 genes.flow.chart()
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 ################################################################################
 ##----->> DE vs DTU transcripts
 DE.trans<- unique(DE_trans$target)
@@ -1441,29 +1174,17 @@ trans.flow.chart <- function(){
 }
 
 trans.flow.chart()
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-18-2.png" style="display: block; margin: auto;" />
-
-``` r
 png(filename = paste0(figure.folder,'/Union set DE transcripts vs DTU transcripts.png'),
     width = 22/2.54,height = 13/2.54,units = 'in',res = 300)
 trans.flow.chart()
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(file = paste0(figure.folder,'/Union set DE transcripts vs DTU transcripts.pdf'),
     width = 22/2.54,height = 13/2.54)
 trans.flow.chart()
 dev.off()
 ```
-
-    ## png 
-    ##   2
 
 #### Comparisons between contrast groups
 
@@ -1476,11 +1197,7 @@ targets <- lapply(contrast,function(i){
 names(targets) <- contrast
 g <- plotEulerDiagram(x = targets)
 grid.arrange(g,top=textGrob('DE genes', gp=gpar(cex=1.2)))
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-19-1.png" style="display: block; margin: auto;" />
-
-``` r
 ################################################################################
 ##----->> DAS genes
 targets <- lapply(contrast,function(i){
@@ -1489,11 +1206,7 @@ targets <- lapply(contrast,function(i){
 names(targets) <- contrast
 g <- plotEulerDiagram(x = targets)
 grid.arrange(g,top=textGrob('DAS genes', gp=gpar(cex=1.2)))
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-19-2.png" style="display: block; margin: auto;" />
-
-``` r
 ################################################################################
 ##----->> DE transcripts
 targets <- lapply(contrast,function(i){
@@ -1502,11 +1215,7 @@ targets <- lapply(contrast,function(i){
 names(targets) <- contrast
 g <- plotEulerDiagram(x = targets)
 grid.arrange(g,top=textGrob('DE transcripts', gp=gpar(cex=1.2)))
-```
-
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-19-3.png" style="display: block; margin: auto;" />
-
-``` r
+    
 ################################################################################
 ##----->> DTU transcripts
 targets <- lapply(contrast,function(i){
@@ -1516,8 +1225,6 @@ names(targets) <- contrast
 g <- plotEulerDiagram(x = targets)
 grid.arrange(g,top=textGrob('DTU transcripts', gp=gpar(cex=1.2)))
 ```
-
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-19-4.png" style="display: block; margin: auto;" />
 
 #### Comparison of transcription and AS targets
 
@@ -1534,11 +1241,7 @@ if(length(x)==0){
   g
   grid.arrange(g,top=textGrob('DE vs DAS genes', gp=gpar(cex=1.2)))
 }
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-20-1.png" style="display: block; margin: auto;" />
-
-``` r
 ################################################################################
 ##----->> DE vs DTU transcripts
 x <- unlist(DEvsDTU.results[DEvsDTU.results$Contrast==contrast.idx,-1])
@@ -1551,8 +1254,6 @@ if(length(x)==0){
   grid.arrange(g,top=textGrob('DE vs DTU transcripts', gp=gpar(cex=1.2)))
 }
 ```
-
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-20-2.png" style="display: block; margin: auto;" />
 
 Advanced plots
 --------------
@@ -1599,32 +1300,17 @@ g <- Heatmap(as.matrix(data2plot), name = 'Z-scores',
              column_title= column_title)
 
 draw(g,column_title='Conditions',column_title_side = "bottom")
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-21-1.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure
 png(paste0(figure.folder,'/Heatmap DE genes.png'),
     width = pmax(10,1*length(unique(samples$condition)))/2.54,height = 20/2.54,units = 'in',res = 300)
 draw(g,column_title='Conditions',column_title_side = "bottom")
 dev.off()
-```
-
-    ## png 
-    ##   2
-
-``` r
 pdf(paste0(figure.folder,'/Heatmap DE genes.pdf'),
     width = pmax(10,1*length(unique(samples$condition)))/2.54,height = 20/2.54)
 draw(g,column_title='Conditions',column_title_side = "bottom")
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 ################################################################################
 ##----->> DAS genes
 dist.method <- 'euclidean'
@@ -1665,32 +1351,18 @@ g <- Heatmap(as.matrix(data2plot), name = 'Z-scores',
              column_title= column_title)
 
 draw(g,column_title='Conditions',column_title_side = "bottom")
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-21-2.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure
 png(paste0(figure.folder,'/Heatmap DAS genes.png'),
     width = pmax(10,1*length(unique(samples$condition)))/2.54,height = 20/2.54,units = 'in',res = 300)
 draw(g,column_title='Conditions',column_title_side = "bottom")
 dev.off()
-```
-
-    ## png 
-    ##   2
-
-``` r
 pdf(paste0(figure.folder,'/Heatmap DAS genes.pdf'),
     width = pmax(10,1*length(unique(samples$condition)))/2.54,height = 20/2.54)
 draw(g,column_title='Conditions',column_title_side = "bottom")
 dev.off()
-```
 
-    ## png 
-    ##   2
 
-``` r
 ################################################################################
 ##----->> DE trans
 dist.method <- 'euclidean'
@@ -1731,32 +1403,18 @@ g <- Heatmap(as.matrix(data2plot), name = 'Z-scores',
              column_title= column_title)
 
 draw(g,column_title='Conditions',column_title_side = "bottom")
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-21-3.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure
 png(paste0(figure.folder,'/Heatmap DE transcripts.png'),
     width = pmax(10,1*length(unique(samples$condition)))/2.54,height = 20/2.54,units = 'in',res = 300)
 draw(g,column_title='Conditions',column_title_side = "bottom")
 dev.off()
-```
-
-    ## png 
-    ##   2
-
-``` r
 pdf(paste0(figure.folder,'/Heatmap DE transcripts.pdf'),
     width = pmax(10,1*length(unique(samples$condition)))/2.54,height = 20/2.54)
 draw(g,column_title='Conditions',column_title_side = "bottom")
 dev.off()
-```
 
-    ## png 
-    ##   2
 
-``` r
 ################################################################################
 ##----->> DTU trans
 dist.method <- 'euclidean'
@@ -1797,30 +1455,17 @@ g <- Heatmap(as.matrix(data2plot), name = 'Z-scores',
              column_title= column_title)
 
 draw(g,column_title='Conditions',column_title_side = "bottom")
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-21-4.png" style="display: block; margin: auto;" />
-
-``` r
 ### save to figure
 png(paste0(figure.folder,'/Heatmap DTU transcripts.png'),
     width = pmax(10,1*length(unique(samples$condition)))/2.54,height = 20/2.54,units = 'in',res = 300)
 draw(g,column_title='Conditions',column_title_side = "bottom")
 dev.off()
-```
-
-    ## png 
-    ##   2
-
-``` r
 pdf(paste0(figure.folder,'/Heatmap DTU transcripts.pdf'),
     width = pmax(10,1*length(unique(samples$condition)))/2.54,height = 20/2.54)
 draw(g,column_title='Conditions',column_title_side = "bottom")
 dev.off()
 ```
-
-    ## png 
-    ##   2
 
 ### Profile plot
 
@@ -1856,11 +1501,7 @@ g.pr <- plotAbundance(data.exp = txi_trans$abundance[target_high$trans_high,],
                        reps = samples$condition,
                        y.lab = 'TPM')
 g.pr
-```
 
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-22-1.png" style="display: block; margin: auto;" />
-
-``` r
 ################################################################################
 ##----->> PS plot
 g.ps <- plotPS(data.exp = txi_trans$abundance[target_high$trans_high,],
@@ -1873,8 +1514,6 @@ g.ps <- plotPS(data.exp = txi_trans$abundance[target_high$trans_high,],
                 y.lab = 'PS')
 g.ps
 ```
-
-<img src="Command_line_based_manul_files/figure-markdown_github/unnamed-chunk-22-2.png" style="display: block; margin: auto;" />
 
 ### GO annotation plot of DE/DAS genes
 
@@ -1894,20 +1533,12 @@ png(paste0(figure.folder,'/DE genes GO annotation plot.png'),
     units = 'in',res = 300)
 print(g)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(paste0(figure.folder,'/DE genes GO annotation plot.pdf'),
     width = 20/2.54,height = 21/2.54)
 print(g)
 dev.off()
 ```
-
-    ## png 
-    ##   2
 
 ``` r
 ################################################################################
@@ -1923,20 +1554,12 @@ png(paste0(figure.folder,'/DAS genes GO annotation plot.png'),
     units = 'in',res = 300)
 print(g)
 dev.off()
-```
 
-    ## png 
-    ##   2
-
-``` r
 pdf(paste0(figure.folder,'/DAS genes GO annotation plot.pdf'),
     width = 20/2.54,height = 8/2.54)
 print(g)
 dev.off()
 ```
-
-    ## png 
-    ##   2
 
 Generate report
 ---------------
@@ -1973,56 +1596,6 @@ para <- rbind(
 para <- data.frame(para)
 colnames(para) <- c('Step','Description','Parameter (Double click to edit if not correct)')
 para
-```
-
-    ##                   Step                    Description
-    ## 1              Folders                      Directory
-    ## 2                                                Data
-    ## 3                                             Results
-    ## 4                                             Figures
-    ## 5                                             Reports
-    ## 6      Data generation                tximport method
-    ## 7  Data pre-processing          Sequencing replicates
-    ## 8                         Sequencing replicate merged
-    ## 9                          Low expression CPM cut-off
-    ## 10                      Sample number for CPM cut-off
-    ## 11                            Batch effect estimation
-    ## 12                     Batch effect estimation method
-    ## 13                               Normalization method
-    ## 14      DE DAS and DTU                       Pipeline
-    ## 15                                        AS function
-    ## 16                              P-value adjust method
-    ## 17                           Adjusted p-value cut-off
-    ## 18                           Log2 fold change cut-off
-    ## 19                                   delta PS cut-off
-    ## 20             Heatmap                Distance method
-    ## 21                                     Cluster method
-    ## 22                                 Number of clusters
-    ##                                                               Parameter (Double click to edit if not correct)
-    ## 1         D:/PhD project/R projects/test round 2018/DDD-GUI of DE DAS and DTU in case studies of RNA-seq data
-    ## 2    D:/PhD project/R projects/test round 2018/DDD-GUI of DE DAS and DTU in case studies of RNA-seq data/data
-    ## 3  D:/PhD project/R projects/test round 2018/DDD-GUI of DE DAS and DTU in case studies of RNA-seq data/result
-    ## 4  D:/PhD project/R projects/test round 2018/DDD-GUI of DE DAS and DTU in case studies of RNA-seq data/figure
-    ## 5  D:/PhD project/R projects/test round 2018/DDD-GUI of DE DAS and DTU in case studies of RNA-seq data/report
-    ## 6                                                                                             lengthScaledTPM
-    ## 7                                                                                                           3
-    ## 8                                                                                                         Yes
-    ## 9                                                                                                           1
-    ## 10                                                                                                          1
-    ## 11                                                                                                        Yes
-    ## 12                                                                                                       RUVr
-    ## 13                                                                                                        TMM
-    ## 14                                                                                                      limma
-    ## 15                                                                                          limma::diffSplice
-    ## 16                                                                                                         BH
-    ## 17                                                                                                       0.01
-    ## 18                                                                                                          1
-    ## 19                                                                                                        0.1
-    ## 20                                                                                                  euclidean
-    ## 21                                                                                                     ward.D
-    ## 22                                                                                                         10
-
-``` r
 write.csv(para,file=paste0(result.folder,'/Parameter summary.csv'),row.names = F)
 
 ################################################################################
@@ -2362,65 +1935,10 @@ Session information
     ## [5] LC_TIME=English_United Kingdom.1252    
     ## 
     ## attached base packages:
-    ##  [1] grid      stats4    parallel  stats     graphics  grDevices utils    
-    ##  [8] datasets  methods   base     
-    ## 
-    ## other attached packages:
-    ##  [1] Gmisc_1.6.4                 htmlTable_1.12             
-    ##  [3] Rcpp_0.12.18                ComplexHeatmap_1.18.1      
-    ##  [5] gridExtra_2.3               eulerr_4.1.0               
-    ##  [7] RUVSeq_1.14.0               EDASeq_2.14.1              
-    ##  [9] ShortRead_1.38.0            GenomicAlignments_1.16.0   
-    ## [11] SummarizedExperiment_1.10.1 DelayedArray_0.6.6         
-    ## [13] matrixStats_0.54.0          Rsamtools_1.32.3           
-    ## [15] GenomicRanges_1.32.6        GenomeInfoDb_1.16.0        
-    ## [17] Biostrings_2.48.0           XVector_0.20.0             
-    ## [19] IRanges_2.14.11             S4Vectors_0.18.3           
-    ## [21] BiocParallel_1.14.2         Biobase_2.40.0             
-    ## [23] BiocGenerics_0.26.0         plotly_4.8.0.9000          
-    ## [25] ggplot2_3.0.0               edgeR_3.22.3               
-    ## [27] limma_3.36.3                tximport_1.11.0            
-    ## [29] shinyFiles_0.7.1            rhandsontable_0.3.6        
-    ## [31] shinydashboard_0.7.0        shiny_1.1.0                
-    ## [33] ThreeDRNAseq_0.1.0         
+    ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## loaded via a namespace (and not attached):
-    ##   [1] circlize_0.4.4         backports_1.1.2        Hmisc_4.1-1           
-    ##   [4] aroma.light_3.10.0     plyr_1.8.4             lazyeval_0.2.1        
-    ##   [7] splines_3.5.1          usethis_1.4.0          digest_0.6.18         
-    ##  [10] htmltools_0.3.6        magrittr_1.5           checkmate_1.8.5       
-    ##  [13] memoise_1.1.0          cluster_2.0.7-1        remotes_2.0.1         
-    ##  [16] fastcluster_1.1.25     readr_1.1.1            annotate_1.58.0       
-    ##  [19] R.utils_2.7.0          prettyunits_1.0.2      colorspace_1.3-2      
-    ##  [22] blob_1.1.1             dplyr_0.7.6            callr_3.0.0           
-    ##  [25] crayon_1.3.4           RCurl_1.95-4.11        jsonlite_1.5          
-    ##  [28] genefilter_1.62.0      bindr_0.1.1            survival_2.42-6       
-    ##  [31] glue_1.3.0             polyclip_1.9-1         gtable_0.2.0          
-    ##  [34] zlibbioc_1.26.0        GetoptLong_0.1.7       pkgbuild_1.0.2        
-    ##  [37] shape_1.4.4            abind_1.4-5            scales_1.0.0          
-    ##  [40] DESeq_1.32.0           DBI_1.0.0              viridisLite_0.3.0     
-    ##  [43] xtable_1.8-3           progress_1.2.0         foreign_0.8-71        
-    ##  [46] bit_1.1-14             Formula_1.2-3          htmlwidgets_1.2       
-    ##  [49] httr_1.3.1             RColorBrewer_1.1-2     acepack_1.4.1         
-    ##  [52] pkgconfig_2.0.2        XML_3.98-1.16          R.methodsS3_1.7.1     
-    ##  [55] nnet_7.3-12            locfit_1.5-9.1         reshape2_1.4.3        
-    ##  [58] labeling_0.3           tidyselect_0.2.4       rlang_0.2.2           
-    ##  [61] later_0.7.4            AnnotationDbi_1.42.1   munsell_0.5.0         
-    ##  [64] tools_3.5.1            cli_1.0.1              RSQLite_2.1.1         
-    ##  [67] devtools_2.0.1         evaluate_0.11          stringr_1.3.1         
-    ##  [70] yaml_2.2.0             processx_3.2.0         knitr_1.20            
-    ##  [73] bit64_0.9-7            fs_1.2.6               forestplot_1.7.2      
-    ##  [76] purrr_0.2.5            bindrcpp_0.2.2         mime_0.5              
-    ##  [79] R.oo_1.22.0            biomaRt_2.36.1         compiler_3.5.1        
-    ##  [82] rstudioapi_0.7         curl_3.2               testthat_2.0.1        
-    ##  [85] tibble_1.4.2           geneplotter_1.58.0     stringi_1.1.7         
-    ##  [88] ps_1.1.0               GenomicFeatures_1.32.2 desc_1.2.0            
-    ##  [91] lattice_0.20-35        Matrix_1.2-14          pillar_1.3.0          
-    ##  [94] BiocManager_1.30.2     GlobalOptions_0.1.0    data.table_1.11.8     
-    ##  [97] bitops_1.0-6           rtracklayer_1.40.6     httpuv_1.4.5          
-    ## [100] hwriter_1.3.2          R6_2.2.2               latticeExtra_0.6-28   
-    ## [103] promises_1.0.1         sessioninfo_1.1.0      gtools_3.8.1          
-    ## [106] MASS_7.3-50            assertthat_0.2.0       pkgload_1.0.1         
-    ## [109] rjson_0.2.20           rprojroot_1.3-2        withr_2.1.2           
-    ## [112] GenomeInfoDbData_1.1.0 hms_0.4.2              rpart_4.1-13          
-    ## [115] tidyr_0.8.1            rmarkdown_1.10         base64enc_0.1-3
+    ##  [1] compiler_3.5.1  backports_1.1.2 magrittr_1.5    rprojroot_1.3-2
+    ##  [5] tools_3.5.1     htmltools_0.3.6 yaml_2.2.0      Rcpp_0.12.18   
+    ##  [9] stringi_1.1.7   rmarkdown_1.10  knitr_1.20      stringr_1.3.1  
+    ## [13] digest_0.6.18   evaluate_0.11
