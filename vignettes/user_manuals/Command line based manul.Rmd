@@ -4,7 +4,9 @@ author: "Wenbin Guo"
 date: "21 November 2018"
 output:
   md_document:
-    variant: markdown_github
+  toc: true
+  variant: markdown_github
+  preserve_yaml: true
 vignette: >
   %\VignetteIndexEntry{Introduction to ThreeDRNAseq}
   %\VignetteEngine{knitr::rmarkdown}
@@ -919,6 +921,7 @@ data2plot <- lapply(contrast,function(i){
 })
 data2plot <- do.call(rbind,data2plot)
 g.updown <- plotUpdown(data2plot,plot.title = 'DE genes',contrast = contrast)
+print(g.updown)
 
 ### save to figure
 png(paste0(figure.folder,'/DE genes updown regulation numbers.png'),
@@ -947,6 +950,7 @@ data2plot <- lapply(contrast,function(i){
 })
 data2plot <- do.call(rbind,data2plot)
 g.updown <- plotUpdown(data2plot,plot.title = 'DAS genes',contrast = contrast)
+print(g.updown)
 
 ### save to figure
 png(paste0(figure.folder,'/DAS genes updown regulation numbers.png'),
@@ -975,6 +979,7 @@ data2plot <- lapply(contrast,function(i){
 })
 data2plot <- do.call(rbind,data2plot)
 g.updown <- plotUpdown(data2plot,plot.title = 'DE trans',contrast = contrast)
+print(g.updown)
 
 ### save to figure
 png(paste0(figure.folder,'/DE transcripts updown regulation numbers.png'),
@@ -1002,6 +1007,7 @@ data2plot <- lapply(contrast,function(i){
 })
 data2plot <- do.call(rbind,data2plot)
 g.updown <- plotUpdown(data2plot,plot.title = 'DTU trans',contrast = contrast)
+print(g.updown)
 
 ### save to figure
 png(paste0(figure.folder,'/DTU transcripts updown regulation numbers.png'),
@@ -1034,6 +1040,8 @@ genes.flow.chart <- function(){
                 deltaPS.cutoff = deltaPS.cutoff)
 }
 
+genes.flow.chart()
+
 png(filename = paste0(figure.folder,'/Union set DE genes vs DAS genes.png'),
     width = 22/2.54,height = 13/2.54,units = 'in',res = 300)
 genes.flow.chart()
@@ -1058,6 +1066,8 @@ trans.flow.chart <- function(){
                 lfc.cutoff = lfc.cutoff,
                 deltaPS.cutoff = deltaPS.cutoff)
 }
+
+trans.flow.chart()
 
 png(filename = paste0(figure.folder,'/Union set DE transcripts vs DTU transcripts.png'),
     width = 22/2.54,height = 13/2.54,units = 'in',res = 300)
