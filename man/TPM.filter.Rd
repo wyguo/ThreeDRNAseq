@@ -7,11 +7,11 @@
 TPM.filter(TPM, sample.n = 3, tpm.cut = 1)
 }
 \arguments{
+\item{TPM}{a data.frame/matrix of TPM.}
+
 \item{sample.n}{number of samples}
 
 \item{tpm.cut}{a numeric value of TPM cut-off}
-
-\item{counts}{a data.frame or matrix of read counts.}
 }
 \value{
 A vector of logcial values (TRUE/FALSE) to indicate the rows of the input data to keep/filter.
@@ -20,5 +20,5 @@ A vector of logcial values (TRUE/FALSE) to indicate the rows of the input data t
 Filter low expression based on TPM (transcript per million reads)
 }
 \details{
-An expressed target must have \eqn{\geq} \code{sample.n} with TPM \eqn{\geq} \code{cpm.cut}.
+An expressed target must have \eqn{\geq} \code{sample.n} with TPM \eqn{\geq} \code{tpm.cut}.
 }

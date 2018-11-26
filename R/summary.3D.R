@@ -1,10 +1,10 @@
 #' Summary DE genes and transcripts
 #' @param stat a data.frame object with first column of "target", second column of "contrast",
 #' third and fourth columns of DE gene/transcript statistics (i.e. "adj.pval" and "log2FC", respectively). 
-#' @param cutoff a numeric vector of cut-offs to "adj.pval" and "log2FC", e.g. \code{cutoff=c(adj.pval=0.01,log2FC=1)}.
+#' @param cutoff a numeric vector of cut-offs to "adj.pval" and "log2FC".
 #' @return a data.frame object, which is a subset of input \code{stat} after applying the \code{cutoff}.
 #' 
-summary.DE.target <- function(stat,cutoff=c(adj.pval=0.01,log2FC=1)){
+summaryDEtarget <- function(stat,cutoff=c(adj.pval=0.01,log2FC=1)){
   names(cutoff) <- c('adj.pval','log2FC')
   stat$up.down <- 'up_regulate'
   stat$up.down[stat[,'log2FC']<0] <- 'down_regulate'
@@ -19,7 +19,7 @@ summary.DE.target <- function(stat,cutoff=c(adj.pval=0.01,log2FC=1)){
 #' @param cutoff a numeric vector of cut-offs for the statistics.
 #' @return a data.frame object, which is a subset of input \code{stat} after applying the \code{cutoff}.
 #' 
-summary.DAS.target <- function(stat,lfc,cutoff=c(adj.pval=0.01,deltaPS=0.1)){
+summaryDAStarget <- function(stat,lfc,cutoff=c(adj.pval=0.01,deltaPS=0.1)){
   names(cutoff) <- c('adj.pval','deltaPS')
   lfc <- lfc[which(lfc$target %in% stat$target),]
   stat <- merge(stat,lfc)
@@ -32,11 +32,11 @@ summary.DAS.target <- function(stat,lfc,cutoff=c(adj.pval=0.01,deltaPS=0.1)){
 
 #' Compare DE and DAS results
 #' @param DE_genes,DAS_genes,DE_trans,DTU_trans data.frame objects of DE genes, DAS genes, DE transcripts and DTU transcripts,
-#' which are the outputs of \code{\link{summary.DE.target}} and \code{\link{summary.DAS.target}}.
+#' which are the outputs of \code{\link{summaryDEtarget}} and \code{\link{summaryDAStarget}}.
 #' @param contrast a vector of contrast groups, e.g. \code{contrast = c('B-A','C-A')}, which compares condition B and C to 
 #' condition A.
 #' @details In each contrast group, \code{DEvsDAS} compares the DE and DAS genes; \code{DEvsDTU} compares the DE and DTU
-#' transcripts; and \code{summary.3D.number} summarises the DE/DAS/DTU gene/transcript numbers.
+#' transcripts; and \code{summary3Dnumber} summarises the DE/DAS/DTU gene/transcript numbers.
 #' 
 #' @return a data.frame with first column of contrast goups, second column of DE only genes/transcripts, third column of
 #' DE&DAS genes or DE&DTU transcripts and fourth column of DAS only genes or DTU only transcripts.
@@ -108,7 +108,7 @@ DEvsDTU <- function(DE_trans,DTU_trans,contrast){
 
 #' @export
 #' @rdname DEvsDAS
-summary.3D.number <- function(DE_genes,DAS_genes,DE_trans,DTU_trans,contrast){
+summary3Dnumber <- function(DE_genes,DAS_genes,DE_trans,DTU_trans,contrast){
   # n1 <- lapply(DE_genes,function(x) x$target)
   idx <- factor(DE_genes$contrast,levels = contrast)
   n1 <- split(DE_genes$target,idx)
@@ -141,3 +141,36 @@ summary.3D.number <- function(DE_genes,DAS_genes,DE_trans,DTU_trans,contrast){
   x
 }
 
+
+#' Merge two testing statistics
+#' @param x,y data.frame object of statistics (e.g. p-values, log2-fold changes, deltaPS), with rows of targets and
+#' columns statistics in contrast groups.
+#' @param contrast a vector of contrast groups, e.g. \code{contrast = c('B-A','C-A')}. If \code{NULL}, the column names of
+#' \code{x} are used as \code{contrast}.
+#' @param stat.type a vector of statistic types of \code{x} and \code{y}, respectively, e.g.
+#' \code{stat.type = c('adj.pval','lfc')}. \code{stat.type} is passed to third and fourth column names of the output data.frame.
+#' @param srot.by a column name to sort the output data.frame.
+#' @return \code{summaryStat} returns a data.frame object with first column of target, second column of contrast groups, third column name of
+#' statistics \code{x} and fourth column of statistic \code{y}.
+#' @export
+summaryStat  <- function(x,y,target,
+                         contrast = NULL,
+                         stat.type = c('adj.pval','lfc'),
+                         srot.by = stat.type[1]){
+  x <- x[target,,drop=F]
+  y <- y[target,,drop=F]
+  if(is.null(contrast))
+    contrast <- colnames(x)
+  x <- x[,contrast]
+  y <- y[,contrast]
+  
+  stat <- lapply(contrast,function(i){
+    z <- data.frame(targets =target,contrast=i, x[,i],y[,i],row.names = NULL)
+    colnames(z) <- c('target','contrast',stat.type)
+    z <- z[order(z[,srot.by]),]
+  })
+  names(stat) <- contrast
+  stat <- do.call(rbind,stat)
+  rownames(stat) <- NULL
+  stat
+}

@@ -7,7 +7,7 @@
 condition2design(condition, batch.effect = NULL)
 }
 \arguments{
-\item{batch.effect}{batch effect terms estimated from xxx. Default is \code{NULL}.}
+\item{batch.effect}{batch effect terms estimated from \code{remove.batch}. Default is \code{NULL}.}
 
 \item{condtion}{a vector of conditions of samples corresponding to the expression dataset.}
 }

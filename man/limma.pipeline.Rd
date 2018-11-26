@@ -12,7 +12,7 @@ edgeR.pipeline(dge, method = c("glm", "glmQL"), design, contrast,
   diffAS = F, deltaPS = NULL, adjust.method = "BH")
 }
 \arguments{
-\item{dge}{a numeric matrix of read counts r a \code{\link[edgeR]{DGEList}} object.
+\item{dge}{a numeric matrix of read counts or a \code{\link[edgeR]{DGEList}} object.
 Counts must be non-negative and NAs are not permitted.}
 
 \item{contrast}{a vector of contrast groups for expression comparisons,
@@ -26,8 +26,8 @@ expression mean-variance trend.}
 
 \item{deltaPS}{a matrix of \eqn{\Delta}PS values, with rows of transcripts and columns of contrast groups.}
 
-\item{diffAS}{logical, whether to perform DAS analysis. If \code{TRUE}, the \code{\link[limma]{diffSplice}} function is
-used to peform DAS gene and DTU transcript analysis.}
+\item{diffAS}{logical, whether to perform DAS analysis. If \code{TRUE}, the \code{\link[limma]{diffSplice}} (limma pipeline)
+or \code{\link[edgeR]{diffSpliceDGE}} (edgeR pipeline) function is used to peform DAS gene and DTU transcript analysis.}
 
 \item{adjust.method}{method the adjust p-values for multiple comparisons. Default is "BH" and full details can be found in \code{\link{p.adjust}.}}
 
@@ -37,83 +37,83 @@ used to peform DAS gene and DTU transcript analysis.}
 a list object with elements:
 \itemize{
    \item{
-   \code{voom.object} the results of \code{\link[limma]{voom}} function to estimate expression mean-variance trend.
+   \code{voom.object:} the results of \code{\link[limma]{voom}} function to estimate expression mean-variance trend.
    }
    \item{
-   \code{fit.lmFit} the results of \code{\link[limma]{lmFit}} to fit a linear regression model on conditions.
+   \code{fit.lmFit:} the results of \code{\link[limma]{lmFit}} to fit a linear regression model on conditions.
    }
    \item{
-   \code{fit.glm} the results of \code{\link[edgeR]{glmFit}} in the edgeR pipeline.
+   \code{fit.glm:} the results of \code{\link[edgeR]{glmFit}} in the edgeR pipeline.
    }
    \item{
-   \code{fit.glmQL} the  results of \code{\link[edgeR]{glmQLFit}} in the edgeR pipeline.
+   \code{fit.glmQL:} the  results of \code{\link[edgeR]{glmQLFit}} in the edgeR pipeline.
    }
    \item{
-   \code{fit.contrast} the results of \code{\link[limma]{contrasts.fit}}, i.e. incorporate the contrast groups to the linear regression model.
+   \code{fit.contrast:} the results of \code{\link[limma]{contrasts.fit}}, i.e. incorporate the contrast groups to the linear regression model.
    }
    \item{
-   \code{fit.eBayes} the results of \code{\link[limma]{eBayes}}
+   \code{fit.eBayes:} the results of \code{\link[limma]{eBayes}}.
    }
    \item{
-   \code{DE.pval.list} a list object of which each element is the result of applying \code{\link[limma]{topTable}} or \code{\link[edgeR]{topTags}}
+   \code{DE.pval.list:} a list object of which each element is the result of applying \code{\link[limma]{topTable}} or \code{\link[edgeR]{topTags}}
    to individual contrast groups.
    }
    \item{
-   \code{DE.pval} a data.frame object of adjusted p-values, with rows of genes/transcripts and columns of contrast groups.
+   \code{DE.pval:} a data.frame object of adjusted p-values, with rows of genes/transcripts and columns of contrast groups.
    }
    \item{
-   \code{DE.lfc} a data.frame object of \eqn{L_2FC}, with rows of genes/transcripts and columns of contrast groups.
+   \code{DE.lfc:} a data.frame object of \eqn{L_2FC}, with rows of genes/transcripts and columns of contrast groups.
    }
    \item{
-   \code{DE.stat} a data.frame object with first column of target (genes/transcripts), second column of contrast (contrast groups), third column of
+   \code{DE.stat:} a data.frame object with first column of target (genes/transcripts), second column of contrast (contrast groups), third column of
    adj.pval and fourth column of log2FC.
    }
    \item{
-   \code{DE.stat.overalltest} a data.frame object of testing statistics over all contrast groups rather than testing in individual contrast groups.
+   \code{DE.stat.overalltest:} a data.frame object of testing statistics over all contrast groups rather than testing in individual contrast groups.
    }
 }
 If alternative splicing analysis is performed (\code{diffAS=TRUE}), more results are returned:
 \itemize{
    \item{
-   \code{fit.splice} the results of \code{\link[limma]{diffSplice}} or \code{\link[edgeR]{diffSpliceDGE}} for individual contrast groups.
+   \code{fit.splice:} the results of \code{\link[limma]{diffSplice}} or \code{\link[edgeR]{diffSpliceDGE}} for individual contrast groups.
    }
    \item{
-   \code{DTU.pval.list} a list object of which each element is the DTU transcript result of \code{\link[limma]{topSplice}} or
+   \code{DTU.pval.list:} a list object of which each element is the DTU transcript result of \code{\link[limma]{topSplice}} or
    \code{\link[edgeR]{topSpliceDGE}} for individual contrast groups.
    }
    \item{
-   \code{DTU.pval} a data.frame object of adjusted p-values, with rows of transcripts and columns of contrast groups.
+   \code{DTU.pval:} a data.frame object of adjusted p-values, with rows of transcripts and columns of contrast groups.
    }
    \item{
-   \code{DTU.deltaPS} a data.frame object of \eqn{\Delta}PS, with rows of transcripts and columns of contrast groups.
+   \code{DTU.deltaPS:} a data.frame object of \eqn{\Delta}PS, with rows of transcripts and columns of contrast groups.
    }
    \item{
-   \code{DTU.stat} a data.frame object with first column of target (transcripts), second column of contrast groups, third column of adj.pval and
+   \code{DTU.stat:} a data.frame object with first column of target (transcripts), second column of contrast groups, third column of adj.pval and
     fourth column of deltaPS.
    }
    \item{
-   \code{maxdeltaPS} a data.frame object with rows of genes and columns of maximum \eqn{\Delta}PS of the transcripts in the same gene in different
+   \code{maxdeltaPS:} a data.frame object with rows of genes and columns of maximum \eqn{\Delta}PS of the transcripts in the same gene in different
    contrast groups.
    }
    \item{
-   \code{DAS.pval.F.list} a list object of which each element is the DAS gene result of "F-test" using \code{\link[limma]{topSplice}} or
+   \code{DAS.pval.F.list:} a list object of which each element is the DAS gene result of "F-test" using \code{\link[limma]{topSplice}} or
    \code{\link[edgeR]{topSpliceDGE}} in individual contrast groups.
    }
    \item{
-   \code{DAS.pval.F} a data.frame object of adjusted p-value with rows of genes and columns of contrast groups.
+   \code{DAS.pval.F:} a data.frame object of adjusted p-value with rows of genes and columns of contrast groups.
    }
    \item{
-   \code{DAS.F.stat} the DAS gene statistics using "F-test".
+   \code{DAS.F.stat:} the DAS gene statistics using "F-test".
    }
    \item{
-   \code{DAS.pval.simes.list} a list object of "Simes-test" using \code{\link[limma]{topSplice}} or
+   \code{DAS.pval.simes.list:} a list object of "Simes-test" using \code{\link[limma]{topSplice}} or
    \code{\link[edgeR]{topSpliceDGE}} in individual contrast groups.
    }
    \item{
-   \code{DAS.pval.simes} a data.frame object of DAS gene adjusted p-values using "Simes" method.
+   \code{DAS.pval.simes:} a data.frame object of DAS gene adjusted p-values using "Simes" method.
    }
    \item{
-   \code{DAS.simes.stat} the DAS gene statistics using "Simes-test".
+   \code{DAS.simes.stat:} the DAS gene statistics using "Simes-test".
    }
 }
 }
@@ -142,7 +142,7 @@ alternative splicing (DAS) gene and differential transcript usage (DTU) transcri
     for details.
     }
     \item{
-    \eqn{L_2FC}: \eqn{\log_2} fold change of CPM expression based on contrast groups.
+    \eqn{L_2FC}: \eqn{\log_2} fold change of expression based on contrast groups.
    }
    \item{
    \eqn{\Delta}PS: Transcript level PS (percent of splice) is defined as the ratio of transcript average abundance of conditions divided by the
@@ -154,13 +154,20 @@ alternative splicing (DAS) gene and differential transcript usage (DTU) transcri
 
 A gene/transcript is identified as DE in a contrast group if \eqn{L_2FC} of expression \eqn{\geq} a cut-off and with adjusted p-value < a cut-off.
 
-\bold{DAS genes and DTU transcripts}
+Two pipelines are provided for DE analysis: 
+
+``limma-voom'' and ``edgeR''. The ``edgeR'' pipeline includes two methods: ``glmQL'' (Genewise Negative Binomial Generalized Linear Models with 
+Quasi-likelihood Tests) and ``glm'' (Genewise Negative Binomial Generalized Linear Models). In limma pipeline, L2FCs are calculated based count 
+per million reads (CPMs) while in edgeR, L2FCs are based on read counts. From several real RNA-seq data analyses, high consensus is achieved between 
+``limma-voom'' and ``glmQL'' (>90%) and they have more stringent controls of false discovery rate than the ``glm'' method.
+
+\bold{DAS gene and DTU transcript analysis}
 
 To test differential expression, the gene level expression is compared to transcript level expression in the contrast groups.
 A gene is DAS in a contrast group if adjusted p-value < cut-off and at least one transcript of the gene with \eqn{\Delta}PS \eqn{\geq} a cut-off.
 A transcript is DTU if adjusted p-value < a cut-off and \eqn{\Delta}PS \eqn{\geq} a cut-off.
 
-\bold{Two pipelines for expression comparative analysis}
+Two pipelines for AS analysis:
 \itemize{
     \item{
     limma pipeline: To identify DAS genes, the expression of each transcript is compared to the weighted average expression of all the transcripts

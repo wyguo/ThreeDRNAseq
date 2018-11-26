@@ -1,4 +1,4 @@
-#' The shiny app for DE, DAS and DTU analysis
+#' The shiny app for 3D analysis
 #'
 #' @param data.size.max maximum size limit for unload files in Shiny. Default is 300 (MB).
 #'
@@ -84,8 +84,8 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                 <h3 id="user-manuals">User manuals</h3>
                                 <p>Two versions of step-by-step user manuals are provided:</p>
                                 <ul>
-                                <li>3D RNA-seq App manual (command-line free) for easy to use:</li>
-                                <li>3D RNA-seq command-line based manual for advanced R users:</li>
+                                <li>3D RNA-seq App manual (command-line free) for easy to use: <a href="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md" target="_blank">https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md</a></li>
+                                <li>3D RNA-seq command-line based manual for advanced R users: <a href="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/Command_line_based_manul.md" target="_blank">https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/Command_line_based_manul.md</a></li>
                                 </ul>
                                 <h3 id="references">References</h3>
                                 <ul>
@@ -177,9 +177,9 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                            ),
                            br(),
                            HTML('This file includes the information of conditions for linear regression,
-                                biological replicates, sequencing replicates (if exist) and the complete paths of
-                                <a href="https://combine-lab.github.io/salmon/" target="_blank">salmon</a> quantification files "quant.sf".
-                                See examples in the manual.')
+                                biological replicates, sequencing replicates and the complete paths of
+                                transcript quantification.
+                                See details in the manual.')
                            )
                            ),
                 #generate gene expression####
@@ -211,7 +211,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                         choices = c('Generate new data','Load txi_genes.RData'),
                                         selected = 'Generate new data'
                            ),
-                           HTML('If the <i>txi_genes.RData</i> file is already in the "data" folder, user can select "Load txi_genes.RData"
+                           HTML('If the <i>txi_genes.RData</i> file is already in the "data" folder, to save time, user can select "Load txi_genes.RData"
                                 and click "Load" to load the data directly.'
                            ),
                            br(),
@@ -230,7 +230,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                         selected = 'Generate new data'
 
                            ),
-                           HTML('If the <i>txi_trans.RData</i> file is already in the "data" folder, user can select "Load txi_trans.RData"
+                           HTML('If the <i>txi_trans.RData</i> file is already in the "data" folder, to save time, user can select "Load txi_trans.RData"
                                 and click "Run" to load the data directly.'
                            ),
                            br(),
@@ -350,7 +350,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                            HTML('<ol>
                                 <li style="margin-left: -20px;">Select PCs to visualise</li>
                                 <li style="margin-left: -20px;">Select "Plot type", either show all Bio-reps or average expression of conditions</li>
-                                <li style="margin-left: -20px;">Select colour the Bio-reps or the Condtions</li>
+                                <li style="margin-left: -20px;">Select colour according to Bio-reps or Condtions</li>
                                 <li style="margin-left: -20px;">Select "ellipse" or "polygon" to highlight the clusters</li>
                                 </ol>')
                            )
@@ -379,6 +379,8 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                   radioButtons(inputId = 'ruvseq.method',label = 'RUVSeq method',
                                                choices = c('RUVr','RUVs','RUVg'),selected = 'RUVr',
                                                inline = T),
+                                  sliderInput(inputId = 'ruvseq.k',label = 'Number of possible factors caused batch effects',
+                                              min = 1,max = 6,value = 1,step = 1),
                                   actionButton('remove.batch','Remove batch effects',icon("cut"),
                                                style="color: #fff; background-color: #428bca; border-color: #2e6da4"),
                                   br(),
@@ -1580,11 +1582,12 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       if(is.null(DDD.data$trans_counts) | is.null(DDD.data$mapping))
         return(NULL)
       cat('\nFilter low expression')
-      target_high <- counts.filter(counts = DDD.data$trans_counts,
-                                   mapping = DDD.data$mapping,
-                                   cpm.cut = input$cpm.cut,
-                                   sample.n = input$sample.n.cut,
-                                   Log=F)
+      target_high <- low.expression.filter(abundance = DDD.data$trans_counts,
+                                           mapping = DDD.data$mapping,
+                                           abundance.cut = input$cpm.cut,
+                                           sample.n = input$sample.n.cut,
+                                           unit = 'counts',
+                                           Log=F)
       save(target_high,file=paste0(DDD.data$data.folder,'/target_high.RData'))
       message(paste0('target_high.RData is saved in folder: ',DDD.data$data.folder))
 
@@ -1639,10 +1642,10 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         fit.raw <- mv.trans()$fit.raw
         fit.filtered <- mv.trans()$fit.filtered
         par(mfrow=c(1,2))
-        plot.mean.variance(x = fit.raw$sx,y = fit.raw$sy,
+        plotMeanVariance(x = fit.raw$sx,y = fit.raw$sy,
                            l = fit.raw$l,lwd=2,fit.line.col ='gold',col='black')
         title('\n\nRaw counts')
-        plot.mean.variance(x = fit.filtered$sx,y = fit.filtered$sy,
+        plotMeanVariance(x = fit.filtered$sx,y = fit.filtered$sy,
                            l = fit.filtered$l,lwd=2,col='black')
         title('\n\nFiltered counts')
         lines(fit.raw$l, col = "gold",lty=4,lwd=2)
@@ -1673,10 +1676,10 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         fit.raw <- mv.genes()$fit.raw
         fit.filtered <- mv.genes()$fit.filtered
         par(mfrow=c(1,2))
-        plot.mean.variance(x = fit.raw$sx,y = fit.raw$sy,
+        plotMeanVariance(x = fit.raw$sx,y = fit.raw$sy,
                            l = fit.raw$l,lwd=2,fit.line.col ='gold',col='black')
         title('\n\nRaw counts')
-        plot.mean.variance(x = fit.filtered$sx,y = fit.filtered$sy,
+        plotMeanVariance(x = fit.filtered$sx,y = fit.filtered$sy,
                            l = fit.filtered$l,lwd=2,col='black')
         title('\n\nFiltered counts')
         lines(fit.raw$l, col = "gold",lty=4,lwd=2)
@@ -1768,7 +1771,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
           groups <- DDD.data$samples_new$brep
         if(input$pca.color.option=='Conditions')
           groups <- DDD.data$samples_new$condition
-        g <- plot.PCA.ind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
+        g <- plotPCAind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
                           groups = groups,plot.title = 'Transcript PCA: bio-reps',
                           ellipse.type = ellipse.type,
                           add.label = T,adj.label = F)
@@ -1780,7 +1783,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         groups <- DDD.data$samples_new$brep
         data2pca.ave <- rowmean(data2pca,DDD.data$samples_new$condition,reorder = F)
         groups <- unique(DDD.data$samples_new$condition)
-        g <- plot.PCA.ind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
+        g <- plotPCAind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
                           groups = groups,plot.title = 'Transcript PCA: average expression',
                           ellipse.type = 'none',add.label = T,adj.label = F)
       }
@@ -1808,7 +1811,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
           groups <- DDD.data$samples_new$brep
         if(input$pca.color.option=='Conditions')
           groups <- DDD.data$samples_new$condition
-        g <- plot.PCA.ind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
+        g <- plotPCAind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
                           groups = groups,plot.title = 'Gene PCA: bio-reps',
                           ellipse.type = ellipse.type,
                           add.label = T,adj.label = F)
@@ -1820,7 +1823,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         groups <- DDD.data$samples_new$brep
         data2pca.ave <- rowmean(data2pca,DDD.data$samples_new$condition,reorder = F)
         groups <- unique(DDD.data$samples_new$condition)
-        g <- plot.PCA.ind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
+        g <- plotPCAind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
                           groups = groups,plot.title = 'Gene PCA: average expression',
                           ellipse.type = 'none',add.label = T,adj.label = F)
       }
@@ -1863,6 +1866,16 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     ###---update remove.batch action button
 
     ###---transcript level
+    observe({
+      if(is.null(DDD.data$samples_new)){
+        max.n <- 6
+      } else {
+        max.n <- nrow(DDD.data$samples_new)
+      }
+      updateSliderInput(session, "ruvseq.k", max=max.n,min = 1,step = 1)
+    })
+    
+    
     observeEvent(input$remove.batch,{
       cat('\nEstimate transcript level batch effects...')
       trans_batch <- remove.batch.shiny(read.counts = DDD.data$trans_counts[DDD.data$target_high$trans_high,],
@@ -1870,7 +1883,8 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                         design = NULL,
                                         contrast=NULL,
                                         group = DDD.data$samples_new$condition,
-                                        method = input$ruvseq.method)
+                                        method = input$ruvseq.method,
+                                        k = input$ruvseq.k)
       save(trans_batch,file=paste0(DDD.data$data.folder,'/trans_batch.RData'))
       message(paste0('trans_batch.RData is saved in folder: ',DDD.data$data.folder))
       DDD.data$trans_batch <- trans_batch
@@ -1884,7 +1898,8 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                         design = NULL,
                                         contrast=NULL,
                                         group = DDD.data$samples_new$condition,
-                                        method = input$ruvseq.method)
+                                        method = input$ruvseq.method,
+                                        k = input$ruvseq.k)
       save(genes_batch,file=paste0(DDD.data$data.folder,'/genes_batch.RData'))
       message(paste0('genes_batch.RData is saved in folder: ',DDD.data$data.folder))
       DDD.data$genes_batch <- genes_batch
@@ -1934,7 +1949,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
           groups <- DDD.data$samples_new$brep
         if(input$pca.color.option=='Conditions')
           groups <- DDD.data$samples_new$condition
-        g <- plot.PCA.ind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
+        g <- plotPCAind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
                           groups = groups,plot.title = 'Transcript PCA: bio-reps',
                           ellipse.type = ellipse.type,
                           add.label = T,adj.label = F)
@@ -1946,7 +1961,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         groups <- DDD.data$samples_new$brep
         data2pca.ave <- rowmean(data2pca,DDD.data$samples_new$condition,reorder = F)
         groups <- unique(DDD.data$samples_new$condition)
-        g <- plot.PCA.ind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
+        g <- plotPCAind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
                           groups = groups,plot.title = 'Transcript PCA: average expression',
                           ellipse.type = 'none',add.label = T,adj.label = F)
       }
@@ -1977,7 +1992,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
           groups <- DDD.data$samples_new$brep
         if(input$pca.color.option=='Conditions')
           groups <- DDD.data$samples_new$condition
-        g <- plot.PCA.ind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
+        g <- plotPCAind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
                           groups = groups,plot.title = 'Gene PCA: bio-reps',
                           ellipse.type = ellipse.type,
                           add.label = T,adj.label = F)
@@ -1989,7 +2004,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         groups <- DDD.data$samples_new$brep
         data2pca.ave <- rowmean(data2pca,DDD.data$samples_new$condition,reorder = F)
         groups <- unique(DDD.data$samples_new$condition)
-        g <- plot.PCA.ind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
+        g <- plotPCAind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
                           groups = groups,plot.title = 'genescript PCA: average expression',
                           ellipse.type = 'none',add.label = T,adj.label = F)
       }
@@ -2268,7 +2283,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                             }
                      )
                      incProgress(0.7)
-                     DE_genes <- summary.DE.target(stat = genes_3D_stat$DE.stat,
+                     DE_genes <- summaryDEtarget(stat = genes_3D_stat$DE.stat,
                                                    cutoff = c(adj.pval=input$pval.cutoff,
                                                               log2FC=input$lfc.cutoff))
 
@@ -2454,7 +2469,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                      )
                      incProgress(0.7)
                      ##DE trans
-                     DE_trans <- summary.DE.target(stat = trans_3D_stat$DE.stat,
+                     DE_trans <- summaryDEtarget(stat = trans_3D_stat$DE.stat,
                                                    cutoff = c(adj.pval=input$pval.cutoff,
                                                               log2FC=input$lfc.cutoff))
                      DDD.data$DE_trans <- DE_trans
@@ -2468,7 +2483,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                      lfc <- DDD.data$genes_log2FC
                      lfc <- reshape2::melt(as.matrix(lfc))
                      colnames(lfc) <- c('target','contrast','log2FC')
-                     DAS_genes <- summary.DAS.target(stat = DAS.stat,
+                     DAS_genes <- summaryDAStarget(stat = DAS.stat,
                                                      lfc = lfc,
                                                      cutoff=c(input$pval.cutoff,input$deltaPS.cutoff))
                      DDD.data$DAS_genes <- DAS_genes
@@ -2478,7 +2493,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                      lfc <- DDD.data$trans_log2FC
                      lfc <- reshape2::melt(as.matrix(lfc))
                      colnames(lfc) <- c('target','contrast','log2FC')
-                     DTU_trans <- summary.DAS.target(stat = trans_3D_stat$DTU.stat,
+                     DTU_trans <- summaryDAStarget(stat = trans_3D_stat$DTU.stat,
                                                      lfc = lfc,cutoff = c(adj.pval=input$pval.cutoff,
                                                                           deltaPS=input$deltaPS.cutoff))
                      DDD.data$DTU_trans <- DTU_trans
@@ -2606,7 +2621,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
           x
         })
         data2plot <- do.call(rbind,data2plot)
-        plot.updown(data2plot,plot.title = title.idx[i],contrast = DDD.data$contrast)
+        plotUpdown(data2plot,plot.title = title.idx[i],contrast = DDD.data$contrast)
       })
       names(g) <- title.idx
       g
@@ -2678,7 +2693,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       DE.genes <- unique(DDD.data$DE_genes$target)
       DAS.genes <- unique(DDD.data$DAS_genes$target)
       genes.flow.chart <- function(){
-        plot.flow.chart(expressed = DDD.data$target_high$genes_high,
+        plotFlowChart(expressed = DDD.data$target_high$genes_high,
                         x = DE.genes,
                         y = DAS.genes,
                         type = 'genes',
@@ -2694,7 +2709,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       DE.trans<- unique(DDD.data$DE_trans$target)
       DTU.trans <- unique(DDD.data$DTU_trans$target)
       trans.flow.chart <- function(){
-        plot.flow.chart(expressed = DDD.data$target_high$trans_high,
+        plotFlowChart(expressed = DDD.data$target_high$trans_high,
                         x = DE.trans,
                         y = DTU.trans,
                         type = 'transcripts',
@@ -2749,7 +2764,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
           subset(DDD.data[[i]],contrast==j)$target
         })
         names(targets) <- input$across.contrast.group
-        g <- plot.euler.diagram(x = targets)
+        g <- plotEulerDiagram(x = targets)
         g
       })
       names(g.list) <- title.idx
@@ -2809,7 +2824,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     DDD.numbers <- reactive({
       if(is.null(DDD.data$DE_genes) | is.null(DDD.data$DAS_genes) | is.null(DDD.data$DE_trans)| is.null(DDD.data$DTU_trans))
         return(NULL)
-      summary.3D.number(DE_genes = DDD.data$DE_genes,
+      summary3Dnumber(DE_genes = DDD.data$DE_genes,
                          DAS_genes = DDD.data$DAS_genes,
                          DE_trans = DDD.data$DE_trans,
                          DTU_trans=DDD.data$DTU_trans,contrast = DDD.data$contrast)
@@ -2848,7 +2863,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       if(length(x)==0)
         return(NULL)
       names(x) <- c('DE','DE&DAS','DAS')
-      g <- plot.euler.diagram(x = x,fill = gg.color.hue(2))
+      g <- plotEulerDiagram(x = x,fill = gg.color.hue(2))
       g
     })
 
@@ -2886,7 +2901,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       if(length(x)==0)
         return(NULL)
       names(x) <- c('DE','DE&DTU','DTU')
-      g <- plot.euler.diagram(x = x,fill = gg.color.hue(2))
+      g <- plotEulerDiagram(x = x,fill = gg.color.hue(2))
       g
     })
 
@@ -3140,7 +3155,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         mapping <- mapping[DDD.data$target_high$trans_high,]
       }
 
-      g.pr <- plot.abundance(data.exp = data.exp,
+      g.pr <- plotAbundance(data.exp = data.exp,
                              gene = gene,
                              mapping = mapping,
                              genes.ann = DDD.data$genes.ann,
@@ -3149,7 +3164,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                              reps = reps,
                              y.lab = input$profile.data.type)
 
-      g.ps <- plot.PS(data.exp = data.exp,
+      g.ps <- plotPS(data.exp = data.exp,
                       gene = gene,
                       mapping = mapping,
                       genes.ann = DDD.data$genes.ann,
@@ -3267,7 +3282,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                      for(gene in genes){
                        incProgress(1/length(genes))
                        if(input$multiple.plot.type %in% c('Abundance','both')){
-                         g.pr <- plot.abundance(data.exp = data.exp,
+                         g.pr <- plotAbundance(data.exp = data.exp,
                                                 gene = gene,
                                                 mapping = mapping,
                                                 genes.ann = DDD.data$genes.ann,
@@ -3295,7 +3310,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                        }
 
                        if(input$multiple.plot.type %in% c('PS','both')){
-                         g.ps <- plot.PS(data.exp = data.exp,
+                         g.ps <- plotPS(data.exp = data.exp,
                                          gene = gene,
                                          mapping = mapping,
                                          genes.ann = DDD.data$genes.ann,
@@ -3328,7 +3343,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
 
 
       if(input$multiple.plot.type %in% c('PS','both')){
-        g.ps <- plot.PS(data.exp = data.exp,
+        g.ps <- plotPS(data.exp = data.exp,
                         gene = gene,
                         mapping = mapping,
                         genes.ann = DDD.data$genes.ann,
@@ -3553,8 +3568,8 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
 
     observeEvent(input$generate.report,{
       ###download report rmarkdown
-      download.file(url = 'https://github.com/wyguo/AtRTD2-DE-DAS-DTU-pipeline/blob/master/fig/DE%20DAS%20and%20DTU%20analysis%20report.Rmd',
-                    destfile = 'DE DAS and DTU analysis report.Rmd')
+      download.file(url = 'https://raw.githubusercontent.com/wyguo/ThreeDRNAseq/master/vignettes/report.Rmd',
+                    destfile = 'report.Rmd')
 
       if(!file.exists(paste0(DDD.data$result.folder,'/Parameter summary.csv')))
         write.csv(x$df,file=paste0(DDD.data$result.folder,'/Parameter summary.csv'),row.names = F)

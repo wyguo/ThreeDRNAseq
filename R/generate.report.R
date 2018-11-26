@@ -3,9 +3,8 @@
 #' @param report.folder the folder to save the reports.
 #' @param type the ouput document type. Options are "all", "html_document", "pdf_document" and "word_document".
 #' @return the generated html, pdf or word report will be saved into the provided \code{report.folder}.
-#' @examples 
-#' generate.report(input.Rmd = 'DE DAS and DTU analysis report.Rmd',
-#'                 report.folder = 'report')
+#' @export
+#' 
 generate.report <- function(input.Rmd,report.folder,
                             type=c('all','html_document','pdf_document','word_document')){
   if(!file.exists(report.folder))

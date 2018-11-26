@@ -2,7 +2,7 @@
 % Please edit documentation in R/mean.variance.R
 \name{check.mean.variance}
 \alias{check.mean.variance}
-\title{Compare the mean-variance trends of expression before and after low expression filters.}
+\title{Compare expression mean-variance trends before and after low expression filters.}
 \usage{
 check.mean.variance(counts.raw, counts.filtered, condition, span = 0.5,
   ...)
@@ -24,8 +24,8 @@ a list object with elements "fit.raw" and "fit.flitered", which are the \code{\l
 for \code{counts.raw} and \code{counts.filtered}, respectively.
 }
 \description{
-Compare the mean-variance trends of expression before and after low expression filters.
+Compare expression mean-variance trends before and after low expression filters.
 }
 \seealso{
-\code{\link{trend.mean.variance}}.
+\code{\link{trend.mean.variance}} and \code{\link[limma]{voom}}.
 }

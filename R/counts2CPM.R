@@ -1,11 +1,11 @@
 #' Convert read counts to counts per million reads (CPM)
 #' @param obj a read count matrix or a \code{\link{DGEList}} object.
 #' @param lib.size a numeric vector of library size (sequencing depth) of each sample. If \code{NULL}, library
-#' size is calculated from sum of all reads in a sample.
+#' size of a sample is calculated from sum of all reads in this sample.
 #' @param Log logcial, whether to take \eqn{\log_2} of CPM.
 #' 
 #' @details CPM is defined as:
-#' \deqn{\frac{counts}{lib.size}\times 10^6}.
+#' \deqn{\frac{counts}{lib.size}\times 10^6}
 #' To avoid taking \eqn{\log_2} of zero values, small offsets 0.5 and 1 were added to the numerator and 
 #' denominator, respectively, i.e.
 #' \deqn{\log_2 \frac{counts + 0.5}{lib.size+1}\times 10^6}

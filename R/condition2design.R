@@ -1,6 +1,6 @@
 #' Convert conditions to design matrix for linear regression
 #' @param condtion a vector of conditions of samples corresponding to the expression dataset.
-#' @param batch.effect batch effect terms estimated from xxx. Default is \code{NULL}.
+#' @param batch.effect batch effect terms estimated from \code{remove.batch}. Default is \code{NULL}.
 #' @return A design matrix for linear regression.
 #' @export
 condition2design <- function(condition,batch.effect=NULL){

@@ -10,9 +10,9 @@
 #'                         regulation = c('down_regulate','up_regulate','down_regulate','up_regulate'),
 #'                         number = c(305,727,1062,1805)
 #'                         )
-#' plot.updown(data2plot = data2plot,contrast = c('T10-T2','T19-T2'),plot.title = 'Up-down regulation')
+#' plotUpdown(data2plot = data2plot,contrast = c('T10-T2','T19-T2'),plot.title = 'Up-down regulation')
 #'
-plot.updown <- function(data2plot,contrast,plot.title=NULL){
+plotUpdown <- function(data2plot,contrast,plot.title=NULL){
   data2plot$contrast <- factor(data2plot$contrast,levels = unique(data2plot$contrast))
   data2plot$regulation <- factor(data2plot$regulation,levels = c('up_regulate','down_regulate'))
   g <- ggplot(data2plot,aes(x=contrast,y=number,group=regulation,
@@ -36,7 +36,7 @@ plot.updown <- function(data2plot,contrast,plot.title=NULL){
 #' Default is \code{NULL}.
 #' @param trans.expressed a vector of expressed transcripts. If not \code{NULL}, only the profiles of provided transcripts
 #' will be shown in the plot.
-#' @param reps a vecotr of replicate labels, which are used to calculate the average expression in each conditions.
+#' @param reps a vecotr of replicate labels, which provide the grouping information to calculate the average expression in each conditions.
 #' @param x.lab,y.lab characters for x-axis and y-axis labels, respectively.
 #' @param marker.size a number passed to \code{geom_point} to control the point size in the plot.
 #' @param legend.text.size a number to control the legend text size.
@@ -46,7 +46,7 @@ plot.updown <- function(data2plot,contrast,plot.title=NULL){
 #' @param show.annotation logical, whether to show the annotations provided in \code{genes.ann} and \code{trans.ann} on the plot.
 #' @param plot.gene logical, whether to show the gene level expression on the plot. The gene expression is the total of all the
 #' transcript expression.
-#' @details \code(plot.abundance) is used to plot the gene and/or trnascript level abundance while \code{plot.PS} is used to plot
+#' @details \code{plotAbundance} is used to plot the gene and/or trnascript level abundance while \code{plotPS} is used to plot
 #' the percent spliced (PS) of transcript. PS is defined as the ratio of transcript expression to the total of all transcript
 #' expression (i.e. gene expression) in the same gene.
 #'
@@ -55,9 +55,21 @@ plot.updown <- function(data2plot,contrast,plot.title=NULL){
 #' @rdname plot.abundance
 #' @examples
 #' data(exp.data)
-#'
+#' plotAbundance(data.exp = exp.data$trans_TPM,
+#'               gene = 'AT1G01020',
+#'               mapping = exp.data$mapping,
+#'               genes.ann = exp.data$genes.ann,
+#'               trans.ann = exp.data$trans.ann,
+#'               reps = exp.data$samples$condition)
+#' 
+#' plotPS(data.exp = exp.data$trans_TPM,
+#'               gene = 'AT1G01020',
+#'               mapping = exp.data$mapping,
+#'               genes.ann = exp.data$genes.ann,
+#'               trans.ann = exp.data$trans.ann,
+#'               reps = exp.data$samples$condition)
 #' @seealso \code{\link{data.error}}
-plot.abundance<- function(
+plotAbundance<- function(
   data.exp,
   gene,
   mapping,
@@ -160,7 +172,7 @@ plot.abundance<- function(
 
 #' @rdname plot.abundance
 #' @export
-plot.PS <- function(
+plotPS <- function(
   data.exp,
   gene,
   mapping,
@@ -248,6 +260,7 @@ plot.PS <- function(
 #' plotGO(go.table = go.table,col.idx = '-log10(FDR)',plot.title = 'GO annotation: DE genes')
 #'
 plotGO <- function(go.table,col.idx,plot.title='GO annotation'){
+  class(go.table) <- c("GO", class(go.table))
   data2plot <- go.table[,c(1,2,which(colnames(go.table)==col.idx))]
   colnames(data2plot) <- c('Category','Term','Value')
   data2plot <- by(data2plot,data2plot$Category,function(x){
@@ -278,50 +291,46 @@ plotGO <- function(go.table,col.idx,plot.title='GO annotation'){
 #' @param adj.label logical, whether to adjust the position of sample labels to avoid overlapping.
 #' @return a plot in \code{ggplot} format.
 #' @export
-#'
 #' @examples
-#' load('data/txi_genes.RData')
-#' load('data/samples.RData')
-#' load('data/target_high.RData')
-#' genes_counts <- txi_genes$counts[target_high$genes_high,][1:100,]
-#' samples <- samples[,c('condition','brep','srep')]
-#' exp.data <- list(genes_counts=genes_counts,samples=samples)
-#' save(exp.data,file='data/exp.data.RData')
-##------> sample information
-#' samples <- exp.data$samples
-#'
+#' data(exp.data)
+#' library(edgeR)
+#' library(RUVSeq)
+#' library(ggplot2)
+#' trans_counts <- exp.data$trans_counts
+#' 
+#' ##------> sample informationsamples <- exp.data$samples
+#' samples <- exp.data$samples[,c('condition','brep','srep')]
+#' 
 #' ##------> sum sequencing replicates
-#' genes_counts <- exp.data$genes_counts
 #' idx <- paste0(samples$condition,'_',samples$brep)
-#' y <- sumarrays(genes_counts,group = idx)
-#'
+#' y <- sumarrays(trans_counts,group = idx)
+#' 
 #' ##------> update sample information after sum
 #' samples <- samples[samples$srep==samples$srep[1],]
-#'
+#' 
 #' ##------> normalisation
 #' dge <- DGEList(counts=y)
 #' dge <- calcNormFactors(dge)
 #' data2pca <- t(counts2CPM(obj = dge,Log = T))
-#'
+#' 
 #' ##------> plot PCA
 #' groups <- samples$brep
-#' plot.PCA.ind(data2pca = data2pca,dim1 = 'PC1',dim2 = 'PC2',
+#' plotPCAind(data2pca = data2pca,dim1 = 'PC1',dim2 = 'PC2',
 #'              groups = groups,ellipse.type='polygon')
-#'
+#' 
 #' ##------> remove batch effects
-#' y.new <- remove.batch(read.counts = y,
+#' trans_batch <- remove.batch(read.counts = y,
 #'                       condition = samples$condition,
-#'                       method = 'RUVg')
-#'
+#'                       method = 'RUVr')
+#' 
 #' ##------> normalisation and plot PCA again
-#' dge <- DGEList(counts=genes_batch$normalizedCounts)
+#' dge <- DGEList(counts=trans_batch$normalizedCounts)
 #' dge <- suppressWarnings(calcNormFactors(dge))
 #' data2pca <- t(counts2CPM(obj = dge,Log = T))
-#' plot.PCA.ind(data2pca = data2pca,dim1 = 'PC1',dim2 = 'PC2',
+#' plotPCAind(data2pca = data2pca,dim1 = 'PC1',dim2 = 'PC2',
 #'              groups = groups,ellipse.type='polygon')
 
-
-plot.PCA.ind <- function(data2pca,
+plotPCAind <- function(data2pca,
                          dim1='PC1',dim2='PC2',
                          groups,
                          plot.title='PCA plot',
@@ -369,20 +378,7 @@ plot.PCA.ind <- function(data2pca,
 
 }
 
-# sample.name <- paste0(samples.new$condition,'.',samples.new$brep)
-# condition <- samples.new$condition
-# data.before <- trans_counts[targets_high$trans_high,]
-# data.after <- trans_counts_norm
-# g <- boxplot.normalised(data.before = data.before,data.after = data.after,
-#                         condition = condition,sample.name = sample.name)
-# q <- subplot(style(g$g1+theme(legend.position = 'none'), showlegend = FALSE),
-#              g$g2+labs(title='Data distribution'),nrows = 1,
-#              titleX=T,
-#              titleY = T,margin=0.04)
-# q %>% layout(annotations = list(
-#   list(x = 0.15 , y = 1.04, text = "Before normalisation", showarrow = F, xref='paper', yref='paper'),
-#   list(x = 0.8 , y = 1.04, text = "After normalisation", showarrow = F, xref='paper', yref='paper'))
-# )
+
 #
 #' Boxplot of expression distribution in each sample.
 #' @param data.before a numeric matrix of expression before normalisation, e.g. raw read counts.
@@ -426,5 +422,31 @@ boxplot.normalised <- function(data.before,data.after,condition,sample.name){
   return(list(g1=g1,g2=g2))
 }
 
-
+#' Plot Euler diagram
+#' @param x (1) a list of individuals in different sets for comparisons or (2) a vecotr of numbers of set relations.
+#' @param fill a vector of colours to fill the diagram. 
+#' @param shape geometric shape used in the diagram.
+#' @param ... arguments passed down to the \code{\link{eulerr::euler}} function.
+#' @return a Euler diagram
+#' @examples 
+#' x <- letters[1:10]
+#' y <- letters[5:15]
+#' z <- set2(x,y)
+#' combo <- c(x=length(z$x.only),y=length(z$y.only),"x&y"=length(z$xy))
+#' plotEulerDiagram(list(x=x,y=y))
+#' plotEulerDiagram(combo)
+#' @export
+#' @seealso \code{\link{eulerr::euler}}.
+#' 
+plotEulerDiagram <- function(x,
+                             fill = gg.color.hue(length(x)),
+                             shape = c("ellipse", "circle"),...){
+  shape <- match.arg(shape,c("ellipse", "circle"))
+  fit <- eulerr::euler(x,...)
+  # grid.newpage()
+  g <- plot(fit,quantities = TRUE,
+            labels = list(font =1),
+            fill=fill,shape = shape)
+  g
+}
 

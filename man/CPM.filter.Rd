@@ -7,7 +7,7 @@
 CPM.filter(counts, sample.n = 3, cpm.cut = 1, ...)
 }
 \arguments{
-\item{counts}{a data.frame or matrix of read counts.}
+\item{counts}{a matrix/data.frame or matrix of read counts.}
 
 \item{sample.n}{number of samples}
 

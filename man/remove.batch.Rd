@@ -30,13 +30,13 @@ be used as negative controls in the estimation of the factors of unwanted variat
 \item{...}{additional arguments passed to \code{\link[edgeR]{DGEList}}.}
 }
 \value{
-a list object with elements:
+A list object with elements:
     \itemize{
-      \item{ W: }{ the biological-replicates-by-factors matrix with the estiamted factors of batch effects, 
-      which can be passed to the design matrix of linear regression as a batch effect term.}
-      \item{ normalizedCounts: }{ a expression matrix the same dimension as the input read counts, in which
+      \item{\code{W:} the biological-replicates-by-factors matrix with the estiamted factors of batch effects, 
+      which can be passed to the design matrix of linear regression as batch effect terms.}
+      \item{\code{normalizedCounts:} a expression matrix the same dimension as the input read counts, in which
       the batch effects have been removed according to the estimated factors. }
-      \item{ method: }{ the method used to estimate the batch effects (RUVr, RUVg or RUVs).}
+      \item{\code{method:} the method used to estimate the batch effects (RUVr, RUVg or RUVs).}
     }
 }
 \description{
@@ -73,7 +73,7 @@ plot.PCA.ind(data2pca = data2pca,dim1 = 'PC1',dim2 = 'PC2',
 ##------> remove batch effects
 y.new <- remove.batch(read.counts = y,
                       condition = samples$condition,
-                      method = 'RUVg')
+                      method = 'RUVr')
 
 ##------> normalisation and plot PCA again
 dge <- DGEList(counts=genes_batch$normalizedCounts)

@@ -6,13 +6,13 @@
 #' no expression/AS change (no regulation). The same divisions to DE and/or DTU transcripts.
 #' @param expressed a vector of expressed genes/transcripts.
 #' @param x a vector of DE genes/transcripts.
-#' @param x a vector of DAS genes/DTU transcripts.
+#' @param y a vector of DAS genes/DTU transcripts.
 #' @param type a character to indicate the provided list type. Options are "genes" and "transcripts".
 #' @param pval.cutoff,lfc.cutoff,deltaPS.cutoff the cut-offs used to determine the significant
 #' genes/transcripts.
 #' @return a flow-chart plot.
 #' @export
-plot.flow.chart <- function(expressed,x,y,
+plotFlowChart <- function(expressed,x,y,
                             type=c('genes','transcripts'),
                             pval.cutoff=0.01,
                             lfc.cutoff=1,

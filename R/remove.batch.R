@@ -15,13 +15,13 @@
 #' If the negative controls (not differential expressed genes/transcripts) \code{cIdx=NULL}, the targets with p-value > 0.1
 #' from \code{\link[edgeR]{glmQLFit}} will be used as negative controls. See the packages \code{\link{edgeR}} and \code{\link{RUVSeq}}
 #' for detials.
-#' @return a list object with elements:
+#' @return A list object with elements:
 #'     \itemize{
-#'       \item{ W: }{ the biological-replicates-by-factors matrix with the estiamted factors of batch effects, 
-#'       which can be passed to the design matrix of linear regression as a batch effect term.}
-#'       \item{ normalizedCounts: }{ a expression matrix the same dimension as the input read counts, in which
+#'       \item{\code{W:} the biological-replicates-by-factors matrix with the estiamted factors of batch effects, 
+#'       which can be passed to the design matrix of linear regression as batch effect terms.}
+#'       \item{\code{normalizedCounts:} a expression matrix the same dimension as the input read counts, in which
 #'       the batch effects have been removed according to the estimated factors. }
-#'       \item{ method: }{ the method used to estimate the batch effects (RUVr, RUVg or RUVs).}
+#'       \item{\code{method:} the method used to estimate the batch effects (RUVr, RUVg or RUVs).}
 #'     }
 #' @export
 #' 
@@ -50,7 +50,7 @@
 #' ##------> remove batch effects
 #' y.new <- remove.batch(read.counts = y,
 #'                       condition = samples$condition,
-#'                       method = 'RUVg')
+#'                       method = 'RUVr')
 #' 
 #' ##------> normalisation and plot PCA again
 #' dge <- DGEList(counts=genes_batch$normalizedCounts)

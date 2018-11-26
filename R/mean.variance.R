@@ -42,7 +42,7 @@ trend.mean.variance <- function(obj, design, lib.size = NULL, span = 0.5, ...){
 }
 
 
-#' Compare the mean-variance trends of expression before and after low expression filters.
+#' Compare expression mean-variance trends before and after low expression filters.
 #' @param counts.raw a matrix/data.frame of raw read counts before low expression filters.
 #' @param counts.filtered a matrix/data.frame of read counts after low expression filters.
 #' @param condition a vector of characters to distinguish conditions of samples (e.g. c('A','A','B','B')), which is used to make the design
@@ -52,7 +52,7 @@ trend.mean.variance <- function(obj, design, lib.size = NULL, span = 0.5, ...){
 #' @return a list object with elements "fit.raw" and "fit.flitered", which are the \code{\link{trend.mean.variance}} fit results
 #' for \code{counts.raw} and \code{counts.filtered}, respectively.
 #' @export
-#' @seealso \code{\link{trend.mean.variance}}.
+#' @seealso \code{\link{trend.mean.variance}} and \code{\link[limma]{voom}}.
 check.mean.variance <- function(counts.raw,
                                 counts.filtered,
                                 condition,
@@ -86,7 +86,9 @@ check.mean.variance <- function(counts.raw,
 #' @param x.lab,y.lab a string of x-axis label and y-axis label, respectively.
 #' @param main plot title.
 #' @param ... additional arguments passed to \code{\link{plot}}.
-plot.mean.variance <- function(x,y,l,fit.line.col='red',
+#' @return a plot
+#' @export
+plotMeanVariance <- function(x,y,l,fit.line.col='red',
                                x.lab = "log2( count size + 0.5 )",
                                y.lab = "Sqrt(standard deviation)",
                                main="Mean-variance trend",lwd=1.5,...){

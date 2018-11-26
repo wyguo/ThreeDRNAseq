@@ -20,9 +20,9 @@ x <- letters[1:10]
 y <- letters[5:15]
 z <- set2(x,y)
 combo <- c(x=length(z$x.only),y=length(z$y.only),"x&y"=length(z$xy))
-plot.euler.diagram(combo)
+plotEulerDiagram(combo)
 
 }
 \seealso{
-\code{\link{plot.euler.diagram}} and \code{\link{eulerr::euler}}
+\code{\link{plotEulerDiagram}} and \code{\link{eulerr::euler}}
 }

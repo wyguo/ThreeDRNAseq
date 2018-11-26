@@ -20,7 +20,3 @@ the generated html, pdf or word report will be saved into the provided \code{rep
 \description{
 Generate html, pdf and word report from Rmd (RMardkown) file
 }
-\examples{
-generate.report(input.Rmd = 'DE DAS and DTU analysis report.Rmd',
-                report.folder = 'report')
-}
