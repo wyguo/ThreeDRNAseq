@@ -1,4 +1,6 @@
--   [Table of contents](#table-of-contents)
+Table of contents
+-----------------
+
 -   [Introduction](#introduction)
 -   [Install and load R packages](#install-and-load-r-packages)
     -   [Install ThreeDRNAseq package](#install-threedrnaseq-package)
@@ -35,9 +37,6 @@
 -   [References](#references)
 -   [Session information](#session-information)
 
-Table of contents
------------------
-
 Introduction
 ------------
 
@@ -46,6 +45,8 @@ Instead of mouse click analysis in the <a href="xxx" target="_blank">3D RNA-seq 
 To use our pipeline in your work, please cite:
 
 <a href="http://www.plantcell.org/content/30/7/1424" target="_blank">Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C., Panter,P.E., Knight,H., Nimmo,H., Zhang,R., and Brown,J.W.S. (2018) Rapid and dynamic alternative splicing impacts the Arabidopsis cold response transcriptome. Plant Cell.</a>
+
+[Go back to Table of contents](#table-of-contents)
 
 Install and load R packages
 ---------------------------
