@@ -1,6 +1,6 @@
 Package: ThreeDRNAseq
 Type: Package
-Title: RNA-seq data differential expression and differential alternative splicing analysis
+Title: 3D RNA-seq App enables RNA-seq data analysis to be done only within 3 Days.
 Version: 0.1.0
 Author: Wenbin Guo <wenbin.guo@hutton.ac.uk>
 Maintainer: Wenbin Guo <wenbin.guo@hutton.ac.uk>
@@ -17,9 +17,10 @@ Description: This package provides an interactive graphical user interface (GUI)
     pdf or word format. The analysis pipeline has been successfully used in different RNA-seq studies 
     from Arabidopsis, barley and potato. 
 License: GPL-3
-LazyData: TRUE
+Encoding: UTF-8
+LazyData: true
 Depends:
-    R (>= 3.2.3)
-RoxygenNote: 6.1.0
+    R (>= 3.5.0)
+RoxygenNote: 6.1.1
 Suggests: BiocStyle, knitr, rmarkdown
 VignetteBuilder: knitr

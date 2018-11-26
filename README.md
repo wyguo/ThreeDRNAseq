@@ -1,5 +1,5 @@
 
-<img src="vignettes/fig/header.png" align="right"/>
+<img src="vignettes/fig/header.gif" align="right"/>
 
 Description
 ===========
