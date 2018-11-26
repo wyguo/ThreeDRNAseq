@@ -12,7 +12,7 @@
 
 ThreeDRNAseq.app <- function(data.size.max=300) {
   message('Many thanks for using our 3DRNAseq shiny app o^_^o.')
-  message('The step-by-step user manual of this app can be found in: xxxx ')
+  message('The step-by-step user manual of this app can be found in:\n https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md')
   ## app.R ##
   library(shiny)
   library(shinydashboard)
@@ -113,13 +113,17 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                            width=13,status = 'primary', solidHeader = T,
                            # HTML('<h4><strong>Choose working directory</strong></h4>'),
                            # wellPanel(
-                           column(width = 2,
-                                  shinyDirButton("wdir", "Chose directory", "Upload",
-                                                 buttonType ="primary")
-                           ),
-                           column(width = 10,
-                                  verbatimTextOutput("wdir.info")
-                           )
+                           # column(width = 2,
+                           shinyDirButton("wdir", "Chose directory", "Upload",
+                                          buttonType ="primary"),
+                           br(),
+                           # ),
+                           # column(width = 10,
+                           verbatimTextOutput("wdir.info"),
+                           # ),
+                           actionButton(inputId = 'create.folders',label = 'Create folders to save results',
+                                        icon("folder",lib="font-awesome"),
+                                        style="color: #fff; background-color: #428bca; border-color: #2e6da4")
                        )
                 )
               ),
@@ -1235,7 +1239,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     })
 
     #####data save folder
-    data.folder <- observe({
+    data.folder <- observeEvent(input$create.folders,{
       data.folder <- paste0(DDD.data$path,'/data')
       if(!file.exists(data.folder))
         dir.create(data.folder,recursive = T)
@@ -1243,7 +1247,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     })
 
     #####figure save folder
-    figure.folder <- observe({
+    figure.folder <- observeEvent(input$create.folders,{
       figure.folder <- paste0(DDD.data$path,'/figure')
       if(!file.exists(figure.folder))
         dir.create(figure.folder,recursive = T)
@@ -1251,7 +1255,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     })
 
     #####results save folder
-    result.folder <- observe({
+    result.folder <- observeEvent(input$create.folders,{
       result.folder <- paste0(DDD.data$path,'/result')
       if(!file.exists(result.folder))
         dir.create(result.folder,recursive = T)
@@ -1259,7 +1263,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     })
     
     #####reports save folder
-    report.folder <- observe({
+    report.folder <- observeEvent(input$create.folders,{
       report.folder <- paste0(DDD.data$path,'/report')
       if(!file.exists(report.folder))
         dir.create(report.folder,recursive = T)
@@ -3505,8 +3509,15 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         srep.n <- length(unique(DDD.data$samples$srep))
       }
           
+      if(is.null(DDD.data$path)){
+        path.idx <- getwd()
+      } else {
+        path.idx <- DDD.data$path
+      }
+        
+      
       x <- rbind(
-        c('Folders','Directory',DDD.data$path),#
+        c('Folders','Directory',path.idx),#
         c('Folders','Data',DDD.data$data.folder),#
         c('','Results',DDD.data$result.folder),#
         c('','Figures',DDD.data$figure.folder),#

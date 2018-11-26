@@ -215,7 +215,7 @@ if(!file.exists('figure/Gene data distribution.png')){
 ## DE DAS and DTU analysis
 
 ### DE DAS and DTU definitions
-![](inst/figure/DDD_definition.png)
+![](https://github.com/wyguo/ThreeDRNAseq/raw/master/vignettes/user_manuals/3D_App_figure/DDD_definition.png)
 
 ### DE DAS and DTU summary
 ```{r,results='asis'}
