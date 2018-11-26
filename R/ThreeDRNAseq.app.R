@@ -3515,6 +3515,12 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         path.idx <- DDD.data$path
       }
         
+      if(is.null(DDD.data$data.folder)){
+        batch.idx <- 'No information'
+      } else {
+        batch.idx <- ifelse(length(list.files(DDD.data$data.folder,'*batch.RData'))>0,'Yes','No')
+      }
+      
       
       x <- rbind(
         c('Folders','Directory',path.idx),#
@@ -3527,7 +3533,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         c('','Sequencing replicate merged',srep.merge),
         c('','Low expression CPM cut-off',input$cpm.cut),
         c('','Sample number for CPM cut-off', input$sample.n.cut),
-        c('','Batch effect estimation',ifelse(length(list.files(DDD.data$data.folder,'*batch.RData'))>0,'Yes','No')),#
+        c('','Batch effect estimation',batch.idx),#
         c('','Batch effect estimation method',input$ruvseq.method),#
         c('','Normalization method',input$norm.method),
         c('DE DAS and DTU','Pipeline',input$DE.pipeline),
@@ -3579,8 +3585,8 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
 
     observeEvent(input$generate.report,{
       ###download report rmarkdown
-      download.file(url = 'https://raw.githubusercontent.com/wyguo/ThreeDRNAseq/master/vignettes/report.Rmd',
-                    destfile = 'report.Rmd')
+      # download.file(url = 'https://raw.githubusercontent.com/wyguo/ThreeDRNAseq/master/vignettes/report.Rmd',
+      #               destfile = 'report.Rmd')
 
       if(!file.exists(paste0(DDD.data$result.folder,'/Parameter summary.csv')))
         write.csv(x$df,file=paste0(DDD.data$result.folder,'/Parameter summary.csv'),row.names = F)

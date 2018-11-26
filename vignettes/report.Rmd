@@ -3,10 +3,6 @@ title: "DE DAS and DTU analysis"
 header-includes: \usepackage{caption}
 date: "Today"
 output:
-  word_document:
-    fig_caption: yes
-    toc: no
-    toc_depth: '4'
   pdf_document:
     fig_caption: yes
     toc: yes
@@ -20,6 +16,10 @@ output:
     toc_float:
       collapsed: no
       smooth_scroll: yes
+  word_document:
+    fig_caption: yes
+    toc: no
+    toc_depth: '4'
 ---
 
 ```{r setup, include=FALSE,eval=T}
@@ -215,7 +215,10 @@ if(!file.exists('figure/Gene data distribution.png')){
 ## DE DAS and DTU analysis
 
 ### DE DAS and DTU definitions
-![](https://github.com/wyguo/ThreeDRNAseq/raw/master/vignettes/user_manuals/3D_App_figure/DDD_definition.png)
+<!-- ![](https://github.com/wyguo/ThreeDRNAseq/raw/master/vignettes/user_manuals/3D_App_figure/DDD_definition.png) -->
+```{r}
+knitr::include_graphics(system.file("DDD_definition.png", package = "ThreeDRNAseq"))
+```
 
 ### DE DAS and DTU summary
 ```{r,results='asis'}
