@@ -259,7 +259,7 @@ devtools::install_github('wyguo/ThreeDRNAseq')</code></pre>
 ## Install packages of dependency
 ###---&gt; Install packages from Cran
 cran.package.list &lt;- c('shiny','shinydashboard','rhandsontable','shinyFiles','shinyjs','DT',
-                       'plotly','ggplot2','eulerr',
+                       'plotly','ggplot2','eulerr','ggrepel',
                        'gridExtra','fastcluster','Gmisc')
 for(i in cran.package.list){
    if(!(i %in% rownames(installed.packages()))){
