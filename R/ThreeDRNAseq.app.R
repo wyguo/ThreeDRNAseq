@@ -18,6 +18,8 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
   library(shinydashboard)
   library(rhandsontable)
   library(shinyFiles)
+  library(shinyjs)
+  library(DT)
   library(tximport)
   library(edgeR)
   library(limma)
@@ -123,7 +125,10 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                            # ),
                            actionButton(inputId = 'create.folders',label = 'Create folders to save results',
                                         icon("folder",lib="font-awesome"),
-                                        style="color: #fff; background-color: #428bca; border-color: #2e6da4")
+                                        style="color: #fff; background-color: #428bca; border-color: #2e6da4"),
+                           br(),
+                           HTML('If "data", "result", "figure" and "report" folders are not in working directory,
+                                please click this button to create.')
                        )
                 )
               ),
@@ -1231,19 +1236,25 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                      setwd(path.folder)
                    }
                    DDD.data$path <- path.folder
-
                  })
 
     output$wdir.info <- renderText({
       DDD.data$path
     })
+    
 
+    observe({
+      DDD.data$data.folder <- paste0(DDD.data$path,'/data')
+      DDD.data$figure.folder <- paste0(DDD.data$path,'/figure')
+      DDD.data$result.folder <- paste0(DDD.data$path,'/result')
+      DDD.data$report.folder <- paste0(DDD.data$path,'/report')
+    })
+    
     #####data save folder
     data.folder <- observeEvent(input$create.folders,{
       data.folder <- paste0(DDD.data$path,'/data')
       if(!file.exists(data.folder))
         dir.create(data.folder,recursive = T)
-      DDD.data$data.folder <- data.folder
     })
 
     #####figure save folder
@@ -1251,7 +1262,6 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       figure.folder <- paste0(DDD.data$path,'/figure')
       if(!file.exists(figure.folder))
         dir.create(figure.folder,recursive = T)
-      DDD.data$figure.folder <- figure.folder
     })
 
     #####results save folder
@@ -1259,7 +1269,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       result.folder <- paste0(DDD.data$path,'/result')
       if(!file.exists(result.folder))
         dir.create(result.folder,recursive = T)
-      DDD.data$result.folder <- result.folder
+    
     })
     
     #####reports save folder
@@ -3521,13 +3531,36 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         batch.idx <- ifelse(length(list.files(DDD.data$data.folder,'*batch.RData'))>0,'Yes','No')
       }
       
+      if(is.null(DDD.data$data.folder)){
+        data.folder.idx <- 'No information'
+      } else {
+        data.folder.idx <- DDD.data$data.folder
+      }
+      
+      if(is.null(DDD.data$figure.folder)){
+        figure.folder.idx <- 'No information'
+      } else {
+        figure.folder.idx <- DDD.data$figure.folder
+      }
+      
+      if(is.null(DDD.data$result.folder)){
+        result.folder.idx <- 'No information'
+      } else {
+        result.folder.idx <- DDD.data$result.folder
+      }
+      
+      if(is.null(DDD.data$report.folder)){
+        report.folder.idx <- 'No information'
+      } else {
+        report.folder.idx <- DDD.data$report.folder
+      }
       
       x <- rbind(
         c('Folders','Directory',path.idx),#
-        c('Folders','Data',DDD.data$data.folder),#
-        c('','Results',DDD.data$result.folder),#
-        c('','Figures',DDD.data$figure.folder),#
-        c('','Reports',DDD.data$report.folder),#
+        c('Folders','Data',data.folder.idx),#
+        c('','Results',result.folder.idx),#
+        c('','Figures',figure.folder.idx),#
+        c('','Reports',report.folder.idx),#
         c('Data generation','tximport method',input$tximport.method),
         c('Data pre-processing','Sequencing replicates',srep.n),
         c('','Sequencing replicate merged',srep.merge),

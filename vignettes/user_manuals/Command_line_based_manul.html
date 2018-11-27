@@ -258,10 +258,11 @@ devtools::install_github('wyguo/ThreeDRNAseq')</code></pre>
 <pre class="r"><code>#######################################################################################################
 ## Install packages of dependency
 ###---&gt; Install packages from Cran
-cran.package.list &lt;- c('shiny','shinydashboard','shinyFiles','plotly','eulerr',
-                       'gridExtra','Gmisc')
+cran.package.list &lt;- c('shiny','shinydashboard','rhandsontable','shinyFiles','shinyjs','DT',
+                       'plotly','ggplot2','eulerr',
+                       'gridExtra','fastcluster','Gmisc')
 for(i in cran.package.list){
-   if(!requireNamespace(i, quietly = TRUE)){
+   if(!(i %in% rownames(installed.packages()))){
      message('Installing package: ',i)
      install.packages(i,dependencies = T)
    } else next
@@ -272,7 +273,7 @@ bioconductor.package.list &lt;- c('tximport','edgeR','limma','RUVSeq','ComplexHe
 for(i in bioconductor.package.list){
   if (!requireNamespace(&quot;BiocManager&quot;, quietly = TRUE))
     install.packages(&quot;BiocManager&quot;)
-  if(!requireNamespace(i, quietly = TRUE)){
+  if(!(i %in% rownames(installed.packages()))){
     message('Installing package: ',i)
     BiocManager::install(&quot;tximport&quot;, version = &quot;3.8&quot;)
   } else next
