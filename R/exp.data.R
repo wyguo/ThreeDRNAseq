@@ -22,7 +22,6 @@
 #' data(exp.data)
 #' names(exp.data)
 #' lapply(exp.data, head)
-#' @export
 #' 
 #' @references Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C., Panter,P.E., Knight,H., Nimmo,H., Zhang,R., and Brown,J.W.S. 
 #' (2018) Rapid and dynamic alternative splicing impacts the Arabidopsis cold response transcriptome. Plant Cell, tpc.00177.2018.

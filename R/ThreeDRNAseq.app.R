@@ -127,6 +127,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                         icon("folder",lib="font-awesome"),
                                         style="color: #fff; background-color: #428bca; border-color: #2e6da4"),
                            br(),
+                           br(),
                            HTML('If "data", "result", "figure" and "report" folders are not in working directory,
                                 please click this button to create.')
                        )
@@ -1242,7 +1243,6 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       DDD.data$path
     })
     
-
     observe({
       DDD.data$data.folder <- paste0(DDD.data$path,'/data')
       DDD.data$figure.folder <- paste0(DDD.data$path,'/figure')
@@ -1255,6 +1255,9 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       data.folder <- paste0(DDD.data$path,'/data')
       if(!file.exists(data.folder))
         dir.create(data.folder,recursive = T)
+      DDD.data$data.folder <- data.folder
+      showNotification('data folder is created.')
+      message('data folder is created.')
     })
 
     #####figure save folder
@@ -1262,6 +1265,9 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       figure.folder <- paste0(DDD.data$path,'/figure')
       if(!file.exists(figure.folder))
         dir.create(figure.folder,recursive = T)
+      DDD.data$figure.folder <- figure.folder
+      showNotification('figure folder is created.')
+      message('figure folder is created.')
     })
 
     #####results save folder
@@ -1269,7 +1275,9 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       result.folder <- paste0(DDD.data$path,'/result')
       if(!file.exists(result.folder))
         dir.create(result.folder,recursive = T)
-    
+      DDD.data$result.folder <- result.folder
+      showNotification('result folder is created.')
+      message('result folder is created.')
     })
     
     #####reports save folder
@@ -1278,7 +1286,11 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       if(!file.exists(report.folder))
         dir.create(report.folder,recursive = T)
       DDD.data$report.folder <- report.folder
+      showNotification('report folder is created.')
+      message('report folder is created.')
     })
+    
+    
 
     ##mapping table####
     observe({
