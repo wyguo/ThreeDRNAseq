@@ -1811,7 +1811,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         groups <- unique(DDD.data$samples_new$condition)
         g <- plotPCAind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
                           groups = groups,plot.title = 'Transcript PCA: average expression',
-                          ellipse.type = 'none',add.label = T,adj.label = F)
+                          ellipse.type = 'none',add.label = T,adj.label = T)
       }
       g
     })
@@ -1851,7 +1851,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         groups <- unique(DDD.data$samples_new$condition)
         g <- plotPCAind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
                           groups = groups,plot.title = 'Gene PCA: average expression',
-                          ellipse.type = 'none',add.label = T,adj.label = F)
+                          ellipse.type = 'none',add.label = T,adj.label = T)
       }
       g
     })
@@ -1864,23 +1864,23 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       ##transcript level
       # graphics.off()
       png(filename = paste0(DDD.data$figure.folder,'/Transcript PCA ',input$pca.plot.type,'.png'),
-          width = 15/2.54,height = 13/2.54,units = 'in',res = 300)
+          width = 25/2.54,height = 21/2.54,units = 'in',res = 300)
       print(pca.trans.g())
       dev.off()
 
       pdf(file = paste0(DDD.data$figure.folder,'/Transcript PCA ',input$pca.plot.type,'.pdf'),
-          width = 15/2.54,height = 13/2.54)
+          width = 25/2.54,height = 21/2.54)
       print(pca.trans.g())
       dev.off()
       ###gene level
       # graphics.off()
       png(filename = paste0(DDD.data$figure.folder,'/Gene PCA ',input$pca.plot.type,'.png'),
-          width = 15/2.54,height = 13/2.54,units = 'in',res = 300)
+          width = 25/2.54,height = 21/2.54,units = 'in',res = 300)
       print(pca.genes.g())
       dev.off()
 
       pdf(file = paste0(DDD.data$figure.folder,'/Gene PCA ',input$pca.plot.type,'.pdf'),
-          width = 15/2.54,height = 13/2.54)
+          width = 25/2.54,height = 21/2.54)
       print(pca.genes.g())
       dev.off()
       message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
@@ -1989,7 +1989,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         groups <- unique(DDD.data$samples_new$condition)
         g <- plotPCAind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
                           groups = groups,plot.title = 'Transcript PCA: average expression',
-                          ellipse.type = 'none',add.label = T,adj.label = F)
+                          ellipse.type = 'none',add.label = T,adj.label = T)
       }
       g
     })
@@ -2032,7 +2032,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         groups <- unique(DDD.data$samples_new$condition)
         g <- plotPCAind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
                           groups = groups,plot.title = 'genescript PCA: average expression',
-                          ellipse.type = 'none',add.label = T,adj.label = F)
+                          ellipse.type = 'none',add.label = T,adj.label = T)
       }
       g
     })
@@ -2046,24 +2046,24 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       ###transcript level
       # graphics.off()
       png(filename = paste0(DDD.data$figure.folder,'/Transcript PCA batch effect removed ',input$pca.plot.type,'.png'),
-          width = 15/2.54,height = 13/2.54,units = 'in',res = 300)
+          width = 25/2.54,height = 21/2.54,units = 'in',res = 300)
       print(pca.trans.br.g())
       dev.off()
 
       pdf(file = paste0(DDD.data$figure.folder,'/Transcript PCA batch effect removed ',input$pca.plot.type,'.pdf'),
-          width = 15/2.54,height = 13/2.54)
+          width = 25/2.54,height = 21/2.54)
       print(pca.trans.br.g())
       dev.off()
 
       ###gene level
       # graphics.off()
       png(filename = paste0(DDD.data$figure.folder,'/Gene PCA batch effect removed ',input$pca.plot.type,'.png'),
-          width = 15/2.54,height = 13/2.54,units = 'in',res = 300)
+          width = 25/2.54,height = 21/2.54,units = 'in',res = 300)
       print(pca.genes.br.g())
       dev.off()
 
       pdf(file = paste0(DDD.data$figure.folder,'/Gene PCA batch effect removed ',input$pca.plot.type,'.pdf'),
-          width = 15/2.54,height = 13/2.54)
+          width = 25/2.54,height = 21/2.54)
       print(pca.genes.br.g())
       dev.off()
       message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
