@@ -1673,7 +1673,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         title('\n\nRaw counts')
         plotMeanVariance(x = fit.filtered$sx,y = fit.filtered$sy,
                            l = fit.filtered$l,lwd=2,col='black')
-        title('\n\nFiltered counts')
+        title(paste0('\n\nFiltered counts (cutoff: cpm=',input$cpm.cut,'; sample=',input$sample.n.cut,')'))
         lines(fit.raw$l, col = "gold",lty=4,lwd=2)
         legend('topright',col = c('red','gold'),lty=c(1,4),lwd=3,
                legend = c('low-exp removed','low-exp kept'))
@@ -1707,7 +1707,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         title('\n\nRaw counts')
         plotMeanVariance(x = fit.filtered$sx,y = fit.filtered$sy,
                            l = fit.filtered$l,lwd=2,col='black')
-        title('\n\nFiltered counts')
+        title(paste0('\n\nFiltered counts (cutoff: cpm=',input$cpm.cut,'; sample=',input$sample.n.cut,')'))
         lines(fit.raw$l, col = "gold",lty=4,lwd=2)
         legend('topright',col = c('red','gold'),lty=c(1,4),lwd=3,
                legend = c('low-exp removed','low-exp kept'))
@@ -1722,24 +1722,24 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     observeEvent(input$save.mv.plot,{
       ##transcript level
       png(filename = paste0(DDD.data$figure.folder,'/Transcript mean-variance trend.png'),
-          width = 25/2.54,height = 12/2.54,units = 'in',res = 300)
+          width = 27/2.54,height = 12/2.54,units = 'in',res = 300)
       mv.trans.plot()()
       dev.off()
 
       pdf(file = paste0(DDD.data$figure.folder,'/Transcript mean-variance trend.pdf'),
-          width = 25/2.54,height = 12/2.54)
+          width = 27/2.54,height = 12/2.54)
       mv.trans.plot()()
       dev.off()
 
       ###gene level
       # graphics.off()
       png(filename = paste0(DDD.data$figure.folder,'/Gene mean-variance trend.png'),
-          width = 25/2.54,height = 12/2.54,units = 'in',res = 300)
+          width = 27/2.54,height = 12/2.54,units = 'in',res = 300)
       mv.genes.plot()()
       dev.off()
 
       pdf(file = paste0(DDD.data$figure.folder,'/Gene mean-variance trend.pdf'),
-          width = 25/2.54,height = 12/2.54)
+          width = 27/2.54,height = 12/2.54)
       mv.genes.plot()()
       dev.off()
       message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
@@ -2829,8 +2829,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       ###save DE.genes
 
       lapply(names(g.across.contrast()),function(i){
-        figure.name <- paste0(DDD.data$figure.folder,'/',i,' euler plot across contrast ',
-                              paste0(input$across.contrast.group,collapse = '&'))
+        figure.name <- paste0(DDD.data$figure.folder,'/',i,' euler plot across contrast')
         png(paste0(figure.name,'.png'),
             width = 15/2.54,height = 12/2.54,units = 'in',res = 300)
         grid.arrange(g.across.contrast()[[i]],top=textGrob('DE genes', gp=gpar(cex=1.2)))
@@ -3652,6 +3651,12 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       withProgress(message = 'Generating report',
                    detail = 'This may take a while...', value = 0, {
                      incProgress(0.3)
+                     ##down load report
+                     report.file <- paste0(DDD.data$path,'/report.Rmd')
+                     if(!file.exists(paste0(DDD.data$path,'/report.Rmd')))
+                       download.file(url = 'https://raw.githubusercontent.com/wyguo/ThreeDRNAseq/master/vignettes/report.Rmd',
+                                     destfile = report.file)
+                     
                      ##generate report
                      generate.report(input.Rmd = paste0(DDD.data$path,"/report.Rmd"),
                                      report.folder = DDD.data$report.folder)

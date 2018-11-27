@@ -3,10 +3,6 @@ title: "DE DAS and DTU analysis"
 header-includes: \usepackage{caption}
 date: "Today"
 output:
-  pdf_document:
-    fig_caption: yes
-    toc: yes
-    toc_depth: '4'
   html_document:
     fig_caption: yes
     highlight: textmate
@@ -16,6 +12,10 @@ output:
     toc_float:
       collapsed: no
       smooth_scroll: yes
+  pdf_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: '4'
   word_document:
     fig_caption: yes
     toc: no
@@ -257,6 +257,42 @@ cat('<br>\n')
 cat('\n- DE transcripts compared with DTU transcripts  \n')
 knitr::kable(DEvsDTU,format = "markdown")
 
+```
+
+<br>
+<br>
+
+#### Up and down regulation
+```{r,echo=FALSE, out.width = '100%',fig.cap=('DE genes updown regulation numbers.')}
+if(!file.exists('figure/DE genes updown regulation numbers.png')){
+  cat('The file "figure/DE genes updown regulation numbers.png" is not in the "figure" folder of working directory.')
+} else {
+  knitr::include_graphics("figure/DE genes updown regulation numbers.png")
+}
+```
+
+```{r,echo=FALSE, out.width = '100%',fig.cap=('DAS genes updown regulation numbers.')}
+if(!file.exists('figure/DAS genes updown regulation numbers.png')){
+  cat('The file "figure/DAS genes updown regulation numbers.png" is not in the "figure" folder of working directory.')
+} else {
+  knitr::include_graphics("figure/DAS genes updown regulation numbers.png")
+}
+```
+
+```{r,echo=FALSE, out.width = '100%',fig.cap=('DE transcripts updown regulation numbers.')}
+if(!file.exists('figure/DE transcripts updown regulation numbers.png')){
+  cat('The file "figure/DE transcripts updown regulation numbers.png" is not in the "figure" folder of working directory.')
+} else {
+  knitr::include_graphics("figure/DE transcripts updown regulation numbers.png")
+}
+```
+
+```{r,echo=FALSE, out.width = '100%',fig.cap=('DTU transcripts updown regulation numbers.')}
+if(!file.exists('figure/DTU transcripts updown regulation numbers.png')){
+  cat('The file "figure/DTU transcripts updown regulation numbers.png" is not in the "figure" folder of working directory.')
+} else {
+  knitr::include_graphics("figure/DTU transcripts updown regulation numbers.png")
+}
 ```
 
 <br>
