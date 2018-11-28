@@ -1300,6 +1300,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         return(NULL)
       # withProgress(message = 'Loading mapping information', value = 0, {
       mapping <- read.csv(inFile$datapath, header = T)
+      colnames(mapping) <- c('TXNAME','GENEID')
       rownames(mapping) <- mapping$TXNAME
       save(mapping,file=paste0(DDD.data$data.folder,'/mapping.RData'))
       DDD.data$mapping <- mapping
@@ -1321,9 +1322,13 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       samples <- read.csv(inFile$datapath, header = T)
       # })
       if('srep' %in% colnames(samples)){
-        samples$sample.name <- paste0(samples$condition,'_',samples$brep,'_',samples$srep)
+        if(length(unique(samples$srep))==1){
+          samples$sample.name <- paste0(samples$condition,'_',samples$brep)
+        } else {
+          samples$sample.name <- paste0(samples$condition,'_',samples$brep,'_',samples$srep)
+        }
       } else {
-        samples$sample.name <- paste0(samples$condition,'_',samples$brep)
+        
       }
       save(samples,file=paste0(DDD.data$data.folder,'/samples.RData'))
 
@@ -1339,6 +1344,13 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     
     ##------------------->> generate  expression  <<--------------------
     ##--------------------generate genes expression---------------------
+    observe({
+      if(is.null(DDD.data$samples))
+        return(NULL)
+      if(grep('abundance.h5',DDD.data$samples$path))
+        updateSelectInput(session,inputId = "tximport.quant.method",selected = "kallisto")
+    })
+    
     observe({
       if(input$generate.new.genes.data=='Load txi_genes.RData'){
         updateActionButton(session,inputId = 'run.txi.genes',label = 'Load',icon = icon('upload'))
@@ -1500,7 +1512,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       if(is.null(DDD.data$samples)){
         info <- HTML('Load samples.csv to check seq-reps.')
       } else {
-        if(all(DDD.data$samples$srep=='srep1')){
+        if(all(DDD.data$samples$srep=='srep1') | !('srep' %in% colnames(DDD.data$samples))){
           info <- HTML('The data has no sequencing replicates. Please skip.')
         } else if(!is.null(DDD.data$samples_new)) {
           info <- HTML('The sequencing replicates have been merged.')
