@@ -269,7 +269,7 @@ for(i in cran.package.list){
 }
 
 ###---&gt; Install packages from Bioconductor
-bioconductor.package.list &lt;- c('tximport','edgeR','limma','RUVSeq','ComplexHeatmap')
+bioconductor.package.list &lt;- c('tximport','edgeR','limma','RUVSeq','ComplexHeatmap','rhdf5')
 for(i in bioconductor.package.list){
   if (!requireNamespace(&quot;BiocManager&quot;, quietly = TRUE))
     install.packages(&quot;BiocManager&quot;)

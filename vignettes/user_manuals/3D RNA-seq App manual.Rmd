@@ -81,7 +81,7 @@ for(i in cran.package.list){
 }
 
 ###---> Install packages from Bioconductor
-bioconductor.package.list <- c('tximport','edgeR','limma','RUVSeq','ComplexHeatmap')
+bioconductor.package.list <- c('tximport','edgeR','limma','RUVSeq','ComplexHeatmap','rhdf5')
 for(i in bioconductor.package.list){
   if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")

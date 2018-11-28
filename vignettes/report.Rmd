@@ -254,8 +254,8 @@ cat('\n- DE transcripts compared with DTU transcripts  \n')
 knitr::kable(DEvsDTU,format = "markdown")
 cat('<br>\n')
 
-cat('\n- DE transcripts compared with DTU transcripts  \n')
-knitr::kable(DEvsDTU,format = "markdown")
+# cat('\n- DE transcripts compared with DTU transcripts  \n')
+# knitr::kable(DEvsDTU,format = "markdown")
 
 ```
 
