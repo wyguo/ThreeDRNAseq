@@ -351,16 +351,17 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                            radioButtons(inputId = 'pca.plot.type',label = 'Plot type',
                                         choices = c('Bio-reps','Average expression'),
                                         selected = 'Bio-reps',inline = T),
-                           radioButtons(inputId = 'pca.color.option',label = 'Colour on',
-                                        choices = c('Bio-reps','Conditions'),
-                                        selected = 'Bio-reps',inline = T),
+                           # radioButtons(inputId = 'pca.color.option',label = 'Colour on',
+                           #              choices = c('Bio-reps','Conditions'),
+                           #              selected = 'Bio-reps',inline = T),
+                           uiOutput('pca.color.option.ui'),
                            radioButtons(inputId = 'pca.add.circle',label = 'Add polygon to clusters',
                                         choices = c('none','ellipse','polygon'),
                                         selected = 'none',inline = T),
                            HTML('<ol>
                                 <li style="margin-left: -20px;">Select PCs to visualise</li>
                                 <li style="margin-left: -20px;">Select "Plot type", either show all Bio-reps or average expression of conditions</li>
-                                <li style="margin-left: -20px;">Select colour according to Bio-reps or Condtions</li>
+                                <li style="margin-left: -20px;">Select colour according to columns in the samples.csv (multi-select allowed)</li>
                                 <li style="margin-left: -20px;">Select "ellipse" or "polygon" to highlight the clusters</li>
                                 </ol>')
                            )
@@ -1779,6 +1780,17 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                         selected = 'PC2'
       )
     })
+    
+    ###---pca color options
+    output$pca.color.option.ui <- renderUI({
+      span(
+        selectInput(inputId = 'pca.color.option',
+                    label = 'Colour on groups',
+                    selected = 'brep',multiple = T,
+                    choices = colnames(DDD.data$samples_new))
+      )
+    })
+    
 
     ###---trans level
     pca.trans.g <- eventReactive(input$plot.pca.button,{
@@ -1793,10 +1805,11 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       ##--Bio-reps
       if(input$pca.plot.type=='Bio-reps'){
         rownames(data2pca) <- gsub('_','.',rownames(data2pca))
-        if(input$pca.color.option=='Bio-reps')
-          groups <- DDD.data$samples_new$brep
-        if(input$pca.color.option=='Conditions')
-          groups <- DDD.data$samples_new$condition
+        # if(input$pca.color.option=='Bio-reps')
+        #   groups <- DDD.data$samples_new$brep
+        # if(input$pca.color.option=='Conditions')
+        #   groups <- DDD.data$samples_new$condition
+        groups <- interaction(DDD.data$samples_new[,input$pca.color.option])
         g <- plotPCAind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
                           groups = groups,plot.title = 'Transcript PCA: bio-reps',
                           ellipse.type = ellipse.type,
@@ -1833,10 +1846,11 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       ##--Bio-reps
       if(input$pca.plot.type=='Bio-reps'){
         rownames(data2pca) <- gsub('_','.',rownames(data2pca))
-        if(input$pca.color.option=='Bio-reps')
-          groups <- DDD.data$samples_new$brep
-        if(input$pca.color.option=='Conditions')
-          groups <- DDD.data$samples_new$condition
+        # if(input$pca.color.option=='Bio-reps')
+        #   groups <- DDD.data$samples_new$brep
+        # if(input$pca.color.option=='Conditions')
+        #   groups <- DDD.data$samples_new$condition
+        groups <- interaction(DDD.data$samples_new[,input$pca.color.option])
         g <- plotPCAind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
                           groups = groups,plot.title = 'Gene PCA: bio-reps',
                           ellipse.type = ellipse.type,
@@ -1971,10 +1985,11 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       ##--Bio-reps
       if(input$pca.plot.type=='Bio-reps'){
         rownames(data2pca) <- gsub('_','.',rownames(data2pca))
-        if(input$pca.color.option=='Bio-reps')
-          groups <- DDD.data$samples_new$brep
-        if(input$pca.color.option=='Conditions')
-          groups <- DDD.data$samples_new$condition
+        # if(input$pca.color.option=='Bio-reps')
+        #   groups <- DDD.data$samples_new$brep
+        # if(input$pca.color.option=='Conditions')
+        #   groups <- DDD.data$samples_new$condition
+        groups <- interaction(DDD.data$samples_new[,input$pca.color.option])
         g <- plotPCAind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
                           groups = groups,plot.title = 'Transcript PCA: bio-reps',
                           ellipse.type = ellipse.type,
@@ -2014,10 +2029,11 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       ##--Bio-reps
       if(input$pca.plot.type=='Bio-reps'){
         rownames(data2pca) <- gsub('_','.',rownames(data2pca))
-        if(input$pca.color.option=='Bio-reps')
-          groups <- DDD.data$samples_new$brep
-        if(input$pca.color.option=='Conditions')
-          groups <- DDD.data$samples_new$condition
+        # if(input$pca.color.option=='Bio-reps')
+        #   groups <- DDD.data$samples_new$brep
+        # if(input$pca.color.option=='Conditions')
+        #   groups <- DDD.data$samples_new$condition
+        groups <- interaction(DDD.data$samples_new[,input$pca.color.option])
         g <- plotPCAind(data2pca = data2pca,dim1 = dim1,dim2 = dim2,
                           groups = groups,plot.title = 'Gene PCA: bio-reps',
                           ellipse.type = ellipse.type,
@@ -2031,7 +2047,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         data2pca.ave <- rowmean(data2pca,DDD.data$samples_new$condition,reorder = F)
         groups <- unique(DDD.data$samples_new$condition)
         g <- plotPCAind(data2pca = data2pca.ave,dim1 = 'PC1',dim2 = 'PC2',
-                          groups = groups,plot.title = 'genescript PCA: average expression',
+                          groups = groups,plot.title = 'Gene PCA: average expression',
                           ellipse.type = 'none',add.label = T,adj.label = T)
       }
       g
