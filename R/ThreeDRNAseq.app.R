@@ -3458,6 +3458,9 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       col.idx<- input$select.go.table.column
       data2plot <- go.table()[,c(1,2,which(colnames(go.table())==col.idx))]
       colnames(data2plot) <- c('Category','Term','Value')
+      ####
+      text.cut <- max(100,ceiling(quantile(nchar(data2plot$Term),0.9)))
+      data2plot$Term <- substr(data2plot$Term,1,text.cut)
       data2plot <- by(data2plot,data2plot$Category,function(x){
         x[order(x$Value,decreasing = T),]
       })
@@ -3522,6 +3525,8 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         x[order(x$Value,decreasing = T),]
       })
       data2plot <- do.call(rbind,data2plot)
+      text.cut <- max(100,ceiling(quantile(nchar(data2plot$Term),0.9)))
+      data2plot$Term <- substr(data2plot$Term,1,text.cut)
       data2plot$Term <- factor(data2plot$Term,levels = rev(data2plot$Term))
 
       g <- ggplot(data2plot,aes(x=Term,y=Value))+
