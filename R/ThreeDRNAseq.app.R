@@ -11,7 +11,7 @@
 #' @export
 
 ThreeDRNAseq.app <- function(data.size.max=300) {
-  message('Many thanks for using our 3DRNAseq shiny app o^_^o.')
+  message('Many thanks for using our 3D RNA-seq shiny App o^_^o!')
   message('The step-by-step user manual of this app can be found in:\n https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md')
   ## app.R ##
   library(shiny)
@@ -323,7 +323,19 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                        ),
                        actionButton(inputId = 'save.mv.plot',label = 'Save',
                                     icon = icon('download',lib = 'font-awesome'),
-                                    style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right")
+                                    style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right; margin-top: 25px;"),
+                       div(style="float:right;margin-right: 25px;",
+                           numericInput(inputId = "mv.plot.res",label = 'PNG plot resolution',value = '150',
+                                        min = 0,max = 600,step = 60,width = "100%")
+                       ),
+                       div(style="float:right;margin-right: 25px;",
+                           numericInput(inputId = "mv.plot.height",label = 'Plot height (inch)',
+                                        value = 4.5,width = "100%",step = 0.2)
+                       ),
+                       div(style="float:right;margin-right: 25px;",
+                           numericInput(inputId = "mv.plot.width",label = 'Plot width (inch)',
+                                        value = 11.5,width = "100%",step = 0.2)
+                       )
                 )
               ),
               br(),
@@ -377,7 +389,19 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                        ),
                        actionButton(inputId = 'save.pca.plot',label = 'Save',
                                     icon = icon('download',lib = 'font-awesome'),
-                                    style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right"),
+                                    style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right; margin-top: 25px"),
+                       div(style="float:right;margin-right: 25px;",
+                           numericInput(inputId = "pca.plot.res",label = 'PNG plot resolution',value = '150',
+                                        min = 0,max = 600,step = 60,width = "100%")
+                       ),
+                       div(style="float:right;margin-right: 25px;",
+                           numericInput(inputId = "pca.plot.height",label = 'Plot height (inch)',
+                                        value = 8,width = "100%",step = 0.2)
+                       ),
+                       div(style="float:right;margin-right: 25px;",
+                           numericInput(inputId = "pca.plot.width",label = 'Plot width (inch)',
+                                        value = 9,width = "100%",step = 0.2)
+                       ),
                        br(),
                        br(),
                        br(),
@@ -387,6 +411,8 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
               fluidRow(column(width = 3,
                               box(title = 'Step 3-continued: Batch effect estimation',width = 13,
                                   status = 'primary',solidHeader = T,
+                                  HTML('<h4><strong>If no distinct batch effects between bio-reps, please skip this step.</strong></h4>'),
+                                  hr(),
                                   radioButtons(inputId = 'ruvseq.method',label = 'RUVSeq method',
                                                choices = c('RUVr','RUVs','RUVg'),selected = 'RUVr',
                                                inline = T),
@@ -402,8 +428,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                   br(),
                                   verbatimTextOutput("br.saved.info"),
                                   br(),
-                                  HTML('The parameters to plot PCA are inherited from previous PCA panel.
-                                       If no distinct batch effects between bio-reps, <strong>please skip this step</strong>.')
+                                  HTML('The parameters to plot PCA are inherited from previous PCA panel.')
                                   )
                               ),
                        column(width = 9,
@@ -454,7 +479,19 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                        ),
                        actionButton(inputId = 'save.dist.plot',label = 'Save',
                                     icon = icon('download',lib = 'font-awesome'),
-                                    style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right"),
+                                    style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right; margin-top: 25px"),
+                       div(style="float:right;margin-right: 25px;",
+                           numericInput(inputId = "dist.plot.res",label = 'PNG plot resolution',value = '150',
+                                        min = 0,max = 600,step = 60,width = "100%")
+                       ),
+                       div(style="float:right;margin-right: 25px;",
+                           numericInput(inputId = "dist.plot.height",label = 'Plot height (inch)',
+                                        value = 7,width = "100%",step = 0.2)
+                       ),
+                       div(style="float:right;margin-right: 25px;",
+                           numericInput(inputId = "dist.plot.width",label = 'Plot width (inch)',
+                                        value = 8,width = "100%",step = 0.2)
+                       ),
                        br(),
                        br(),
                        br(),
@@ -636,7 +673,27 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                               )
                        ),
                        actionButton(inputId = 'save.up.down.bar.plot',label = 'Save',icon = icon('download',lib = 'font-awesome'),
-                                    style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right"),
+                                    style="color: #fff; background-color: #428bca; border-color: #2e6da4;float:right; margin-top: 25px;"),
+                       div(style="float:right;margin-right: 25px;",
+                           numericInput(inputId = "updown.x.rotate",label = 'Rotate x-labels',value = '0',
+                                        min = 0,max = 360,step = 15,width = "100%")
+                       ),
+                       div(style="float:right;margin-right: 25px;",
+                           numericInput(inputId = "updown.x.hjust",label = 'Horizontal adjust x-labels',value = '0.5',
+                                        min = 0,max = 1,step = 0.1,width = "100%")
+                       ),
+                       div(style="float:right;margin-right: 25px;",
+                           numericInput(inputId = "updown.plot.res",label = 'PNG plot resolution',value = '150',
+                                        min = 0,max = 600,step = 60,width = "100%")
+                       ),
+                       div(style="float:right;margin-right: 25px;",
+                           numericInput(inputId = "updown.plot.height",label = 'Plot height (inch)',
+                                        value = 5,width = "100%",step = 0.2)
+                       ),
+                       div(style="float:right;margin-right: 25px;",
+                           numericInput(inputId = "updown.plot.width",label = 'Plot width (inch)',
+                                        value = 8,width = "100%",step = 0.2)
+                       ),
                        br(),
                        br(),
                        br(),
@@ -656,7 +713,23 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                        plotOutput("DTU.trans.euler")
                            ),
                            actionButton(inputId = 'save.across.contrast.euler.plot',label = 'Save',icon = icon('download',lib = 'font-awesome'),
-                                        style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right")
+                                        style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right; margin-top: 25px"),
+                           div(style="float:right;margin-right: 25px;",
+                               numericInput(inputId = "across.contrast.euler.plot.res",label = 'PNG plot resolution',value = '150',
+                                            min = 0,max = 600,step = 60,width = "100%")
+                           ),
+                           div(style="float:right;margin-right: 25px;",
+                               numericInput(inputId = "across.contrast.euler.plot.height",label = 'Plot height (inch)',
+                                            value = 4.7,width = "100%",step = 0.2)
+                           ),
+                           div(style="float:right;margin-right: 25px;",
+                               numericInput(inputId = "across.contrast.euler.plot.width",label = 'Plot width (inch)',
+                                            value = 5,width = "100%",step = 0.2)
+                           ),
+                           div(style="float:right;margin-right: 25px;",
+                               numericInput(inputId = "across.contrast.euler.plot.scale",label = 'Plot scales (0-1)',
+                                            value = 1,min = 0,max = 1,step = 0.1,width = "100%")
+                           )
                        ),
                        box(title='Comparison across targets in individual conatrast groups',
                            width = 13,status = 'primary', solidHeader = T,
@@ -667,7 +740,23 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                            ),
                            actionButton(inputId = 'save.across.target.euler.plot',label = 'Save',
                                         icon = icon('download',lib = 'font-awesome'),
-                                        style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right")
+                                        style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right; margin-top: 25px"),
+                           div(style="float:right;margin-right: 25px;",
+                               numericInput(inputId = "across.target.euler.plot.res",label = 'PNG plot resolution',value = '150',
+                                            min = 0,max = 600,step = 60,width = "100%")
+                           ),
+                           div(style="float:right;margin-right: 25px;",
+                               numericInput(inputId = "across.target.euler.plot.height",label = 'Plot height (inch)',
+                                            value = 4.7,width = "100%",step = 0.2)
+                           ),
+                           div(style="float:right;margin-right: 25px;",
+                               numericInput(inputId = "across.target.euler.plot.width",label = 'Plot width (inch)',
+                                            value = 5,width = "100%",step = 0.2)
+                           ),
+                           div(style="float:right;margin-right: 25px;",
+                               numericInput(inputId = "across.target.euler.plot.scale",label = 'Plot scales (0-1)',
+                                            value = 1,min = 0,max = 1,step = 0.1,width = "100%")
+                           )
                        ),
                        box(title='Union set of all contrast groups',
                            width = 13,status = 'primary', solidHeader = T,
@@ -676,7 +765,20 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                            plotOutput("trans.flow.chart"),
                            actionButton(inputId = 'save.union.flow.chart',label = 'Save',
                                         icon = icon('download',lib = 'font-awesome'),
-                                        style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right")
+                                        style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right; margin-top: 25px"),
+                           div(style="float:right;margin-right: 25px;",
+                               numericInput(inputId = "flow.plot.res",label = 'PNG plot resolution',value = '150',
+                                            min = 0,max = 600,step = 60,width = "100%")
+                           ),
+                           div(style="float:right;margin-right: 25px;",
+                               numericInput(inputId = "flow.plot.height",label = 'Plot height (inch)',
+                                            value = 5,width = "100%",step = 0.2)
+                           ),
+                           div(style="float:right;margin-right: 25px;",
+                               numericInput(inputId = "flow.plot.width",label = 'Plot width (inch)',
+                                            value = 8.7,width = "100%",step = 0.2)
+                           )
+                           
                        )
                 )
               )
@@ -727,11 +829,22 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                     plotOutput('heatmap.plot.panel',height = 730),
                     actionButton(inputId = 'save.target.in.cluster',label = 'Save target list in clusters',
                                  icon = icon('download',lib = 'font-awesome'),
-                                 style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right"),
+                                 style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right; margin-top: 25px; margin-left: 25px"),
                     actionButton(inputId = 'save.heatmap',label = 'Save heatmap',
                                  icon = icon('download',lib = 'font-awesome'),
-                                 style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right")
-
+                                 style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right; margin-top: 25px"),
+                    div(style="float:right;margin-right: 25px;",
+                        numericInput(inputId = "heatmap.plot.res",label = 'PNG plot resolution',value = '150',
+                                     min = 0,max = 600,step = 60,width = "100%")
+                    ),
+                    div(style="float:right;margin-right: 25px;",
+                        numericInput(inputId = "heatmap.plot.height",label = 'Plot height (inch)',
+                                     value = 8,width = "100%",step = 0.2)
+                    ),
+                    div(style="float:right;margin-right: 25px;",
+                        numericInput(inputId = "heatmap.plot.width",label = 'Plot width (inch)',
+                                     value = 4.5,width = "100%",step = 0.2)
+                    )
                 )
               ),
               fluidRow(
@@ -742,7 +855,8 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                     column(width = 6,
                            wellPanel(
                              HTML('<h4><strong>Visualise single gene plot</strong></h4>'),
-                             textInput(inputId = 'gene.id',label = 'Input a gene',value = 'AT1G01060'),
+                             textInput(inputId = 'gene.id',label = 'Input a gene',value = ''),
+                             HTML('E.g. AT1G01060 in Arabidopsis (gene name must match to provided transcript-gene mapping).'),
                              br(),
                              radioButtons(inputId = 'profile.data.type',label = 'Select data type',
                                           choices = c('TPM','Read counts'),inline = T),
@@ -784,10 +898,22 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                     plotlyOutput('ps.plot.panel'),
                     actionButton(inputId = 'save.ps.plot',label = 'Save PS plot',
                                  icon = icon('download',lib = 'font-awesome'),
-                                 style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right"),
+                                 style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right; margin-top: 25px; margin-left: 25px"),
                     actionButton(inputId = 'save.abundance.plot',label = 'Save abundance plot',
                                  icon = icon('download',lib = 'font-awesome'),
-                                 style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right")
+                                 style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right; margin-top: 25px"),
+                    div(style="float:right;margin-right: 25px;",
+                        numericInput(inputId = "ps.plot.res",label = 'PNG plot resolution',value = '150',
+                                     min = 0,max = 600,step = 60,width = "100%")
+                    ),
+                    div(style="float:right;margin-right: 25px;",
+                        numericInput(inputId = "ps.plot.height",label = 'Plot height (inch)',
+                                     value = 4.5,width = "100%",step = 0.2)
+                    ),
+                    div(style="float:right;margin-right: 25px;",
+                        numericInput(inputId = "ps.plot.width",label = 'Plot width (inch)',
+                                     value = 7,width = "100%",step = 0.2)
+                    )
                 )
               ),
               fluidRow(
@@ -813,6 +939,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                            uiOutput('show.go.table.column'),
                            radioButtons(inputId = 'go.plot.label',label = 'Select gene list type',
                                         choices  = c('DE genes','DAS genes'),inline = T),
+                           numericInput(inputId = 'go.text.cut',label = 'GO term text length',value = 50),
                            actionButton(inputId = 'make.go.plot',label = 'Plot',
                                         icon = icon('pencil',lib = 'font-awesome'),
                                         style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right")
@@ -834,7 +961,19 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
             uiOutput('show.go.plot.panel'),
             actionButton(inputId = 'save.go.plot',label = 'Save',
                          icon = icon('download',lib = 'font-awesome'),
-                         style="color: #fff; background-color: #428bca; border-color: #2e6da4;float: right")
+                         style="color: #fff; background-color: #428bca; border-color: #2e6da4;float: right; margin-top: 25px"),
+            div(style="float:right;margin-right: 25px;",
+                numericInput(inputId = "go.plot.res",label = 'PNG plot resolution',value = '150',
+                             min = 0,max = 600,step = 60,width = "100%")
+            ),
+            div(style="float:right;margin-right: 25px;",
+                numericInput(inputId = "go.plot.height",label = 'Plot height (inch)',
+                             value = 4.5,width = "100%",step = 0.2)
+            ),
+            div(style="float:right;margin-right: 25px;",
+                numericInput(inputId = "go.plot.width",label = 'Plot width (inch)',
+                             value = 7.8,width = "100%",step = 0.2)
+            )
         )
       )
       ),
@@ -1347,7 +1486,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     observe({
       if(is.null(DDD.data$samples))
         return(NULL)
-      if(grep('abundance.h5',DDD.data$samples$path))
+      if(grep('abundance.h5',DDD.data$samples$path[1]))
         updateSelectInput(session,inputId = "tximport.quant.method",selected = "kallisto")
     })
     
@@ -1735,24 +1874,26 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     observeEvent(input$save.mv.plot,{
       ##transcript level
       png(filename = paste0(DDD.data$figure.folder,'/Transcript mean-variance trend.png'),
-          width = 27/2.54,height = 12/2.54,units = 'in',res = 300)
+          width = input$mv.plot.width,height = input$mv.plot.height,res=input$mv.plot.res, 
+          units = 'in')
       mv.trans.plot()()
       dev.off()
-
+      
       pdf(file = paste0(DDD.data$figure.folder,'/Transcript mean-variance trend.pdf'),
-          width = 27/2.54,height = 12/2.54)
+          width = input$mv.plot.width,height = input$mv.plot.height)
       mv.trans.plot()()
       dev.off()
-
+      
       ###gene level
       # graphics.off()
       png(filename = paste0(DDD.data$figure.folder,'/Gene mean-variance trend.png'),
-          width = 27/2.54,height = 12/2.54,units = 'in',res = 300)
+          width = input$mv.plot.width,height = input$mv.plot.height,res=input$mv.plot.res, 
+          units = 'in')
       mv.genes.plot()()
       dev.off()
-
+      
       pdf(file = paste0(DDD.data$figure.folder,'/Gene mean-variance trend.pdf'),
-          width = 27/2.54,height = 12/2.54)
+          width = input$mv.plot.width,height = input$mv.plot.height)
       mv.genes.plot()()
       dev.off()
       message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
@@ -1890,23 +2031,23 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       ##transcript level
       # graphics.off()
       png(filename = paste0(DDD.data$figure.folder,'/Transcript PCA ',input$pca.plot.type,'.png'),
-          width = 25/2.54,height = 21/2.54,units = 'in',res = 300)
+          width = input$pca.plot.width,height = input$pca.plot.height,res=input$pca.plot.res, units = 'in')
       print(pca.trans.g())
       dev.off()
 
       pdf(file = paste0(DDD.data$figure.folder,'/Transcript PCA ',input$pca.plot.type,'.pdf'),
-          width = 25/2.54,height = 21/2.54)
+          width = input$pca.plot.width,height = input$pca.plot.height)
       print(pca.trans.g())
       dev.off()
       ###gene level
       # graphics.off()
       png(filename = paste0(DDD.data$figure.folder,'/Gene PCA ',input$pca.plot.type,'.png'),
-          width = 25/2.54,height = 21/2.54,units = 'in',res = 300)
+          width = input$pca.plot.width,height = input$pca.plot.height,res=input$pca.plot.res, units = 'in')
       print(pca.genes.g())
       dev.off()
 
       pdf(file = paste0(DDD.data$figure.folder,'/Gene PCA ',input$pca.plot.type,'.pdf'),
-          width = 25/2.54,height = 21/2.54)
+          width = input$pca.plot.width,height = input$pca.plot.height)
       print(pca.genes.g())
       dev.off()
       message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
@@ -2074,24 +2215,24 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       ###transcript level
       # graphics.off()
       png(filename = paste0(DDD.data$figure.folder,'/Transcript PCA batch effect removed ',input$pca.plot.type,'.png'),
-          width = 25/2.54,height = 21/2.54,units = 'in',res = 300)
+          width = input$pca.plot.width,height = input$pca.plot.height,res=input$pca.plot.res, units = 'in')
       print(pca.trans.br.g())
       dev.off()
 
       pdf(file = paste0(DDD.data$figure.folder,'/Transcript PCA batch effect removed ',input$pca.plot.type,'.pdf'),
-          width = 25/2.54,height = 21/2.54)
+          width = input$pca.plot.width,height = input$pca.plot.height)
       print(pca.trans.br.g())
       dev.off()
 
       ###gene level
       # graphics.off()
       png(filename = paste0(DDD.data$figure.folder,'/Gene PCA batch effect removed ',input$pca.plot.type,'.png'),
-          width = 25/2.54,height = 21/2.54,units = 'in',res = 300)
+          width = input$pca.plot.width,height = input$pca.plot.height,res=input$pca.plot.res, units = 'in')
       print(pca.genes.br.g())
       dev.off()
 
       pdf(file = paste0(DDD.data$figure.folder,'/Gene PCA batch effect removed ',input$pca.plot.type,'.pdf'),
-          width = 25/2.54,height = 21/2.54)
+          width = input$pca.plot.width,height = input$pca.plot.height)
       print(pca.genes.br.g())
       dev.off()
       message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
@@ -2204,24 +2345,24 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       ##transcript level
       # graphics.off()
       png(filename = paste0(DDD.data$figure.folder,'/Transcript data distribution.png'),
-          width = 20/2.54,height = 20/2.54,units = 'in',res = 300)
+          width = input$dist.plot.width,height = input$dist.plot.height,res=input$dist.plot.res, units = 'in')
       gridExtra::grid.arrange(trans.dist.g()$g1,trans.dist.g()$g2,ncol=1)
       dev.off()
 
       pdf(file = paste0(DDD.data$figure.folder,'/Transcript data distribution.pdf'),
-          width = 20/2.54,height = 20/2.54)
+          width = input$dist.plot.width,height = input$dist.plot.height)
       gridExtra::grid.arrange(trans.dist.g()$g1,trans.dist.g()$g2,ncol=1)
       dev.off()
 
       ##gene level
       # graphics.off()
       png(filename = paste0(DDD.data$figure.folder,'/Gene data distribution.png'),
-          width = 20/2.54,height = 20/2.54,units = 'in',res = 300)
+          width = input$dist.plot.width,height = input$dist.plot.height,res=input$dist.plot.res, units = 'in')
       gridExtra::grid.arrange(genes.dist.g()$g1,genes.dist.g()$g2,ncol=1)
       dev.off()
 
       pdf(file = paste0(DDD.data$figure.folder,'/Gene data distribution.pdf'),
-          width = 20/2.54,height = 20/2.54)
+          width = input$dist.plot.width,height = input$dist.plot.height)
       gridExtra::grid.arrange(genes.dist.g()$g1,genes.dist.g()$g2,ncol=1)
       dev.off()
       message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
@@ -2675,7 +2816,9 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
           x
         })
         data2plot <- do.call(rbind,data2plot)
-        plotUpdown(data2plot,plot.title = title.idx[i],contrast = DDD.data$contrast)
+        plotUpdown(data2plot,plot.title = title.idx[i],
+                   contrast = DDD.data$contrast,
+                   angle = input$updown.x.rotate,hjust = input$updown.x.hjust)
       })
       names(g) <- title.idx
       g
@@ -2708,12 +2851,13 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     observeEvent(input$save.up.down.bar.plot,{
       lapply(names(g.updown()),function(i){
         png(paste0(DDD.data$figure.folder,'/',i,' updown regulation numbers.png'),
-            width = length(DDD.data$contrast)*5/2.54,10/2.54,units = 'in',res = 300)
+            width = input$updown.plot.width,height = input$updown.plot.height,units = 'in',
+            res = input$updown.plot.res)
         print(g.updown()[[i]])
         dev.off()
 
         pdf(paste0(DDD.data$figure.folder,'/',i,' updown regulation numbers.pdf'),
-            width = length(DDD.data$contrast)*5/2.54,10/2.54)
+            width = input$updown.plot.width,height = input$updown.plot.height)
         print(g.updown()[[i]])
         dev.off()
       })
@@ -2778,24 +2922,26 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     observeEvent(input$save.union.flow.chart,{
       ##transcript level
       png(filename = paste0(DDD.data$figure.folder,'/Union set DE genes vs DAS genes.png'),
-          width = 22/2.54,height = 13/2.54,units = 'in',res = 300)
+          width = input$flow.plot.width,height = input$flow.plot.height,
+          res=input$flow.plot.res, units = 'in')
       genes.flow.chart()()
       dev.off()
 
       pdf(file = paste0(DDD.data$figure.folder,'/Union set DE genes vs DAS genes.pdf'),
-          width = 22/2.54,height = 13/2.54)
+          width = input$flow.plot.width,height = input$flow.plot.height)
       genes.flow.chart()()
       dev.off()
 
       ###gene level
       # graphics.off()
       png(filename = paste0(DDD.data$figure.folder,'/Union set DE transcripts vs DTU transcripts.png'),
-          width = 22/2.54,height = 13/2.54,units = 'in',res = 300)
+          width = input$flow.plot.width,height = input$flow.plot.height,
+          res=input$flow.plot.res, units = 'in')
       trans.flow.chart()()
       dev.off()
 
       pdf(file = paste0(DDD.data$figure.folder,'/Union set DE transcripts vs DTU transcripts.pdf'),
-          width = 22/2.54,height = 13/2.54)
+          width = input$flow.plot.width,height = input$flow.plot.height)
       trans.flow.chart()()
       dev.off()
 
@@ -2818,7 +2964,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
           subset(DDD.data[[i]],contrast==j)$target
         })
         names(targets) <- input$across.contrast.group
-        g <- plotEulerDiagram(x = targets)
+        g <- plotEulerDiagram(x = targets,scale.plot = input$across.contrast.euler.plot.scale)
         g
       })
       names(g.list) <- title.idx
@@ -2859,11 +3005,13 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       lapply(names(g.across.contrast()),function(i){
         figure.name <- paste0(DDD.data$figure.folder,'/',i,' euler plot across contrast')
         png(paste0(figure.name,'.png'),
-            width = 15/2.54,height = 12/2.54,units = 'in',res = 300)
+            width = input$across.contrast.euler.plot.width,
+            height = input$across.contrast.euler.plot.height,
+            res=input$across.contrast.euler.plot.res, units = 'in')
         grid.arrange(g.across.contrast()[[i]],top=textGrob('DE genes', gp=gpar(cex=1.2)))
         dev.off()
         pdf(paste0(figure.name,'.pdf'),
-            width = 15/2.54,height = 12/2.54)
+            width = input$across.contrast.euler.plot.width,height = input$across.contrast.euler.plot.height)
         grid.arrange(g.across.contrast()[[i]],top=textGrob('DE genes', gp=gpar(cex=1.2)))
         dev.off()
       })
@@ -2916,7 +3064,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       if(length(x)==0)
         return(NULL)
       names(x) <- c('DE','DE&DAS','DAS')
-      g <- plotEulerDiagram(x = x,fill = gg.color.hue(2))
+      g <- plotEulerDiagram(x = x,fill = gg.color.hue(2),scale.plot = input$across.target.euler.plot.scale)
       g
     })
 
@@ -2954,7 +3102,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       if(length(x)==0)
         return(NULL)
       names(x) <- c('DE','DE&DTU','DTU')
-      g <- plotEulerDiagram(x = x,fill = gg.color.hue(2))
+      g <- plotEulerDiagram(x = x,fill = gg.color.hue(2),scale.plot = input$across.target.euler.plot.scale)
       g
     })
 
@@ -2968,23 +3116,25 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       ##DE vs DAS genes
       figure.name <- paste0(DDD.data$figure.folder,'/DE vs DAS gene euler plot in contrast ',input$across.target)
       png(paste0(figure.name,'.png'),
-          width = 15/2.54,height = 12/2.54,units = 'in',res = 300)
+          width = input$across.target.euler.plot.width,height = input$across.target.euler.plot.height,
+          res=input$across.target.euler.plot.res, units = 'in')
       grid.arrange(g.across.target1(),top=textGrob('DE vs DAS genes', gp=gpar(cex=1.2)))
       dev.off()
       pdf(paste0(figure.name,'.pdf'),
-          width = 15/2.54,height = 12/2.54)
+          width = input$across.target.euler.plot.width,height = input$across.target.euler.plot.height)
       grid.arrange(g.across.target1(),top=textGrob('DE vs DAS genes', gp=gpar(cex=1.2)))
       dev.off()
 
       ##DE vs DTU transcript
       figure.name <- paste0(DDD.data$figure.folder,'/DE vs DTU transcript euler plot in contrast ',input$across.target)
       png(paste0(figure.name,'.png'),
-          width = 15/2.54,height = 12/2.54,units = 'in',res = 300)
+          width = input$across.target.euler.plot.width,height = input$across.target.euler.plot.height,
+          res=input$across.target.euler.plot.res, units = 'in')
       grid.arrange(g.across.target2(),top=textGrob('DE vs DTU transcripts', gp=gpar(cex=1.2)))
       dev.off()
 
       pdf(paste0(figure.name,'.pdf'),
-          width = 15/2.54,height = 12/2.54)
+          width = input$across.target.euler.plot.width,height = input$across.target.euler.plot.height)
       grid.arrange(g.across.target2(),top=textGrob('DE vs DTU transcripts', gp=gpar(cex=1.2)))
       dev.off()
       message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
@@ -3133,18 +3283,25 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       showNotification(paste0('Table is saved in folder: ',DDD.data$result.folder))
     })
 
+    ##update heigt and width
+    observe({
+      updateNumericInput(session,inputId = 'heatmap.plot.width',
+                         value = round(pmax(10,1*length(unique(DDD.data$samples$condition)))/2.54,1))
+    })
+    
     observeEvent(input$save.heatmap,{
       withProgress(message = 'Saving heatmap...', detail = 'This may take a while...',
                    value = 0.5, {
                      ##DE vs DTU transcript
                      figure.name <- paste0(DDD.data$figure.folder,'/Heatmap ', input$heatmap.target.type)
                      png(paste0(figure.name,'.png'),
-                         width = pmax(10,1*length(unique(DDD.data$samples$condition)))/2.54,height = 20/2.54,units = 'in',res = 300)
+                         width = input$heatmap.plot.width,height = input$heatmap.plot.height,
+                         res=input$heatmap.plot.res, units = 'in')
                      draw(heatmap.g()$g,column_title='Conditions',column_title_side = "bottom")
                      dev.off()
 
                      pdf(paste0(figure.name,'.pdf'),
-                         width = pmax(10,1*length(unique(DDD.data$samples$condition)))/2.54,height = 20/2.54)
+                         width = input$heatmap.plot.width,height = input$heatmap.plot.height)
                      draw(heatmap.g()$g,column_title='Conditions',column_title_side = "bottom")
                      dev.off()
                    })
@@ -3244,6 +3401,12 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       ggplotly(g.profiles()$g.ps)
     })
 
+    ##update heigt and width
+    observe({
+      updateNumericInput(session,inputId = 'ps.plot.width',
+                         value = round((16+floor((length(unique(g.profiles()$g.pr$data))-1)/15))/2.54,1))
+    })
+    
     observeEvent(input$save.abundance.plot,{
       n <- length(unique(g.profiles()$g.pr$data))-1
       gene <- g.profiles()$gene
@@ -3252,15 +3415,13 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         dir.create(folder2save,recursive = T)
 
       png(paste0(folder2save,'/Abundance ',gene,'.png'),
-          width = (16+floor(n/15))/2.54,
-          height = 10/2.54,
-          units = 'in',res = 300)
+          width = input$ps.plot.width,height = input$ps.plot.height,
+          res=input$ps.plot.res, units = 'in')
       print(g.profiles()$g.pr)
       dev.off()
 
       pdf(paste0(folder2save,'/Abundance ',gene,'.pdf'),
-          width = (16+floor(n/15))/2.54,
-          height = 10/2.54)
+          width = input$ps.plot.width,height = input$ps.plot.height)
       print(g.profiles()$g.pr)
       dev.off()
 
@@ -3278,15 +3439,13 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         dir.create(folder2save,recursive = T)
 
       png(paste0(folder2save,'/PS ',gene,'.png'),
-          width = (16+floor(n/15))/2.54,
-          height = 10/2.54,
-          units = 'in',res = 300)
+          width = input$ps.plot.width,height = input$ps.plot.height,
+          res=input$ps.plot.res, units = 'in')
       print(g.profiles()$g.ps)
       dev.off()
 
       pdf(paste0(folder2save,'/PS ',gene,'.pdf'),
-          width = (16+floor(n/15))/2.54,
-          height = 10/2.54)
+          width = input$ps.plot.width,height = input$ps.plot.height)
       print(g.profiles()$g.ps)
       dev.off()
 
@@ -3459,16 +3618,14 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       data2plot <- go.table()[,c(1,2,which(colnames(go.table())==col.idx))]
       colnames(data2plot) <- c('Category','Term','Value')
       ####
-      text.cut <- max(100,ceiling(quantile(nchar(data2plot$Term),0.9)))
-      data2plot$Term <- substr(data2plot$Term,1,text.cut)
       data2plot <- by(data2plot,data2plot$Category,function(x){
         x[order(x$Value,decreasing = T),]
       })
       data2plot <- do.call(rbind,data2plot)
       idx<-sapply(data2plot$Term,function(x){
         x<-as.vector(x)
-        if(nchar(x)>100)
-          x<-paste0(substr(x,1,100),'...')
+        if(nchar(x)>input$go.text.cut)
+          x<-paste0(substr(x,1,input$go.text.cut),'...')
         x
       })
       data2plot$Term <- factor(idx,levels = rev(idx))
@@ -3515,20 +3672,32 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
 
     })
 
+    ## update height
+    observe({
+      updateNumericInput(session,inputId = 'go.plot.height',
+                         value = round(pmax(10,row.height()*0.4)/2.54,1))
+    })
+    
+    
     observeEvent(input$save.go.plot,{
       if(is.null(data2goplot()))
         return(NULL)
-      col.idx <- input$select.go.table.column
+      col.idx<- input$select.go.table.column
       data2plot <- go.table()[,c(1,2,which(colnames(go.table())==col.idx))]
       colnames(data2plot) <- c('Category','Term','Value')
+      ####
       data2plot <- by(data2plot,data2plot$Category,function(x){
         x[order(x$Value,decreasing = T),]
       })
       data2plot <- do.call(rbind,data2plot)
-      text.cut <- max(100,ceiling(quantile(nchar(data2plot$Term),0.9)))
-      data2plot$Term <- substr(data2plot$Term,1,text.cut)
-      data2plot$Term <- factor(data2plot$Term,levels = rev(data2plot$Term))
-
+      idx<-sapply(data2plot$Term,function(x){
+        x<-as.vector(x)
+        if(nchar(x)>input$go.text.cut)
+          x<-paste0(substr(x,1,input$go.text.cut),'...')
+        x
+      })
+      data2plot$Term <- factor(idx,levels = rev(idx))
+      
       g <- ggplot(data2plot,aes(x=Term,y=Value))+
         geom_bar(stat='identity',aes(fill=Category))+
         coord_flip() +
@@ -3537,12 +3706,12 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         facet_grid(Category~.,scales = 'free_y',space='free_y')+
         labs(y=col.idx,title=paste0('GO annotation ',input$go.plot.label))
       png(paste0(DDD.data$figure.folder,'/',input$go.plot.label,' GO annotation plot.png'),
-          width = 20/2.54,height = pmax(10,row.height()*0.4)/2.54,
-          units = 'in',res = 300)
+          width = input$go.plot.width,height = input$go.plot.height,
+          res=input$go.plot.res, units = 'in')
       print(g)
       dev.off()
       pdf(paste0(DDD.data$figure.folder,'/',input$go.plot.label,' GO annotation plot.pdf'),
-          width = 20/2.54,height = pmax(10,row.height()*0.4)/2.54)
+          width = input$go.plot.width,height = input$go.plot.height)
       print(g)
       dev.off()
       message(paste0('Figure is saved in folder: ',DDD.data$figure.folder))

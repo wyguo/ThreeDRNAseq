@@ -80,7 +80,7 @@ if(!requireNamespace("ThreeDRNAseq", quietly = TRUE))
 ###---> Install packages from Cran
 cran.package.list <- c('shiny','shinydashboard','rhandsontable','shinyFiles','shinyjs','DT',
                        'plotly','ggplot2','eulerr','ggrepel',
-                       'gridExtra','fastcluster','Gmisc')
+                       'gridExtra','fastcluster','Gmisc','rmarkdown')
 for(i in cran.package.list){
    if(!(i %in% rownames(installed.packages()))){
      message('Installing package: ',i)
@@ -134,6 +134,16 @@ for(i in bioconductor.package.list){
 <td align="left"></td>
 <td align="left">shinyFiles</td>
 <td align="left"><a href="https://cran.r-project.org/web/packages/shinyFiles/index.html" class="uri">https://cran.r-project.org/web/packages/shinyFiles/index.html</a></td>
+</tr>
+<tr class="odd">
+<td align="left"></td>
+<td align="left">shinyjs</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/shinyjs/index.html" class="uri">https://cran.r-project.org/web/packages/shinyjs/index.html</a></td>
+</tr>
+<tr class="even">
+<td align="left"></td>
+<td align="left">DT</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/DT/index.html" class="uri">https://cran.r-project.org/web/packages/DT/index.html</a></td>
 </tr>
 <tr class="odd">
 <td align="left">Read csv file</td>
@@ -199,6 +209,11 @@ for(i in bioconductor.package.list){
 <td align="left"></td>
 <td align="left">grid</td>
 <td align="left"><a href="https://cran.r-project.org/web/packages/grid/index.html" class="uri">https://cran.r-project.org/web/packages/grid/index.html</a></td>
+</tr>
+<tr class="even">
+<td align="left">Generate report</td>
+<td align="left">rmarkdown</td>
+<td align="left"><a href="https://cran.r-project.org/web/packages/rmarkdown/index.html" class="uri">https://cran.r-project.org/web/packages/rmarkdown/index.html</a></td>
 </tr>
 </tbody>
 </table>

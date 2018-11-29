@@ -5,7 +5,7 @@
 \title{Plot Euler diagram}
 \usage{
 plotEulerDiagram(x, fill = gg.color.hue(length(x)),
-  shape = c("ellipse", "circle"), ...)
+  shape = c("ellipse", "circle"), scale.plot = 1, ...)
 }
 \arguments{
 \item{x}{(1) a list of individuals in different sets for comparisons or (2) a vecotr of numbers of set relations.}

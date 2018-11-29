@@ -3,6 +3,8 @@
 #' @param data2plot a matrix/data.frame with three columns: "contrast", "regulation" and "number". See examples for details.
 #' @param contrast a vector of contrast groups, e.g. c('C-A','B-A').
 #' @param plot.title the the plot titile.
+#' @param angle the angle to rotate x-axis labels. 
+#' @param hjust numeric value of horizontal adjust for x-axis labels.
 #' @return a bar plot in \code{ggplot} format.
 #' @export
 #' @examples
@@ -12,7 +14,7 @@
 #'                         )
 #' plotUpdown(data2plot = data2plot,contrast = c('T10-T2','T19-T2'),plot.title = 'Up-down regulation')
 #'
-plotUpdown <- function(data2plot,contrast,plot.title=NULL){
+plotUpdown <- function(data2plot,contrast,plot.title=NULL,angle=0,hjust=0.5){
   data2plot$contrast <- factor(data2plot$contrast,levels = unique(data2plot$contrast))
   data2plot$regulation <- factor(data2plot$regulation,levels = c('up_regulate','down_regulate'))
   g <- ggplot(data2plot,aes(x=contrast,y=number,group=regulation,
@@ -21,8 +23,7 @@ plotUpdown <- function(data2plot,contrast,plot.title=NULL){
     geom_text(size = 3, position = position_stack(vjust = 0.5))+
     theme_bw()+
     labs(title=plot.title)
-  if(length(data2plot$contrast)>10)
-    g <- g+theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  g <- g+theme(axis.text.x = element_text(angle = angle, hjust = hjust))
   g
 }
 
@@ -440,13 +441,20 @@ boxplot.normalised <- function(data.before,data.after,condition,sample.name){
 #' 
 plotEulerDiagram <- function(x,
                              fill = gg.color.hue(length(x)),
-                             shape = c("ellipse", "circle"),...){
+                             shape = c("ellipse", "circle"),scale.plot=1,
+                             ...){
   shape <- match.arg(shape,c("ellipse", "circle"))
   fit <- eulerr::euler(x,...)
   # grid.newpage()
   g <- plot(fit,quantities = TRUE,
             labels = list(font =1),
             fill=fill,shape = shape)
+  vp = viewport(height=unit(1*scale.plot, "npc"), 
+                width=unit(1*scale.plot, "npc"))
+  g <- arrangeGrob(g,vp=vp)
   g
+  # grid.newpage()
+  # grid.rect(vp=vp,gp=gpar(lty=1, col="white", lwd=0))
+  # grid.draw(g)
 }
 

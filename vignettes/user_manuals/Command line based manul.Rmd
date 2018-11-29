@@ -64,7 +64,7 @@ devtools::install_github('wyguo/ThreeDRNAseq')
 ###---> Install packages from Cran
 cran.package.list <- c('shiny','shinydashboard','rhandsontable','shinyFiles','shinyjs','DT',
                        'plotly','ggplot2','eulerr','ggrepel',
-                       'gridExtra','fastcluster','Gmisc')
+                       'gridExtra','fastcluster','Gmisc','rmarkdown')
 for(i in cran.package.list){
    if(!(i %in% rownames(installed.packages()))){
      message('Installing package: ',i)
@@ -90,6 +90,8 @@ for(i in bioconductor.package.list){
 |                        |shinydashboard |https://rstudio.github.io/shinydashboard/                               |
 |                        |rhandsontable  |https://jrowen.github.io/rhandsontable/                                 |
 |                        |shinyFiles     |https://cran.r-project.org/web/packages/shinyFiles/index.html           |
+|                        |shinyjs        |https://cran.r-project.org/web/packages/shinyjs/index.html              |
+|                        |DT             |https://cran.r-project.org/web/packages/DT/index.html                   |
 |Read csv file           |readr          |https://cran.r-project.org/web/packages/readr/index.html                |
 |Expression generator    |tximport       |http://bioconductor.org/packages/release/bioc/html/tximport.html        |
 |Batch effect estimation |RUVSeq         |https://bioconductor.org/packages/release/bioc/html/RUVSeq.html         |
@@ -103,6 +105,7 @@ for(i in bioconductor.package.list){
 |                        |plotly         |https://cran.r-project.org/web/packages/plotly/index.html               |
 |                        |gridExtra      |https://cran.r-project.org/web/packages/gridExtra/index.html            |
 |                        |grid           |https://cran.r-project.org/web/packages/grid/index.html                 |
+|Generate report         |rmarkdown      |https://cran.r-project.org/web/packages/rmarkdown/index.html            |
 
 Table: The main R packages used in the 3D RNA-seq analysis. If any other R packages are missing from your PC, please install accordingly.
 

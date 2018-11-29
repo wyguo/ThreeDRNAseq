@@ -4,7 +4,8 @@
 \alias{plotUpdown}
 \title{Bar plot of up- and down-regulation}
 \usage{
-plotUpdown(data2plot, contrast, plot.title = NULL)
+plotUpdown(data2plot, contrast, plot.title = NULL, angle = 0,
+  hjust = 0.5)
 }
 \arguments{
 \item{data2plot}{a matrix/data.frame with three columns: "contrast", "regulation" and "number". See examples for details.}
@@ -12,6 +13,10 @@ plotUpdown(data2plot, contrast, plot.title = NULL)
 \item{contrast}{a vector of contrast groups, e.g. c('C-A','B-A').}
 
 \item{plot.title}{the the plot titile.}
+
+\item{angle}{the angle to rotate x-axis labels.}
+
+\item{hjust}{numeric value of horizontal adjust for x-axis labels.}
 }
 \value{
 a bar plot in \code{ggplot} format.
