@@ -45,8 +45,8 @@ Command-line based 3D analysis manual: <a href="https://github.com/wyguo/ThreeDR
 </button>
 </a>
 
-Installation
-------------
+Installation and Run
+--------------------
 
 ThreeDRNAseq R package can be installed from Github by using <a href='https://cran.r-project.org/web/packages/devtools/index.html' target='_blank'>devtools</a> R package
 
@@ -89,6 +89,12 @@ for(i in bioconductor.package.list){
     BiocManager::install(i, version = "3.8")
   } else next
 }
+```
+### Run 3D RNA-seq App
+Please type the command in your RStudio
+```r
+library(ThreeDRNAseq)
+ThreeDRNAseq.app()
 ```
 
 <table>

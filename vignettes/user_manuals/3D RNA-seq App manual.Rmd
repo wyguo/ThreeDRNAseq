@@ -47,7 +47,7 @@ The 3D RNA-seq pipeline includes complex steps of expression data generation, da
 Command-line based 3D analysis manual:
 <a href="https://github.com/wyguo/ThreeDRNAseq/tree/master/vignettes/user_manuals" target="_blank"><button class='button'><font color="black">Click me!</font></button></a>
 
-## Installation
+## Installation and Run
 
 ThreeDRNAseq R package can be installed from Github by using <a href='https://cran.r-project.org/web/packages/devtools/index.html' target='_blank'>devtools</a> R package
 
@@ -90,6 +90,13 @@ for(i in bioconductor.package.list){
     BiocManager::install(i, version = "3.8")
   } else next
 }
+```
+
+### Run 3D RNA-seq App
+Please type the command in your RStudio
+```{r}
+library(ThreeDRNAseq)
+ThreeDRNAseq.app()
 ```
 
 |Usage                   |Package        |Link                                                                    |
