@@ -91,7 +91,7 @@ for(i in bioconductor.package.list){
 }
 ```
 ### Run 3D RNA-seq App
-Please type the command in your RStudio and the App will be lauched in default web broswer (Google Chrome is recommended for image visualisation issues).
+Please type the command in your RStudio and the App will be launched in default web browser (Google Chrome is recommended for image visualisation issues).
 ```r
 library(ThreeDRNAseq)
 ThreeDRNAseq.app()
