@@ -19,6 +19,7 @@ sumarrays<-function(x,group=NULL){
   x<-rowsum(t(x),group = group)
   #order the columns as the input group odering
   x<-data.frame(t(x)[,unique(group)])
+  colnames(x) <- unique(group)
   return(x)
 }
 
