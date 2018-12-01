@@ -51,10 +51,11 @@ To use our pipeline in your work, please cite:
 ## use devtools R package to install ThreeDRNAseq from Github
 ###---> If devtools is not installed, please install
 if(!requireNamespace("devtools", quietly = TRUE))
-  install.packages('devtools')
+  install.packages('devtools',dependencies = T)
 
 ###---> Install ThreeDRNAseq
-devtools::install_github('wyguo/ThreeDRNAseq')
+if(!requireNamespace("ThreeDRNAseq", quietly = TRUE))
+  devtools::install_github('wyguo/ThreeDRNAseq')
 ```
 
 ### Install dependency packages

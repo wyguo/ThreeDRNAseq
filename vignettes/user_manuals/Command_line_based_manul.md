@@ -65,7 +65,7 @@ Install and load R packages
 ## use devtools R package to install ThreeDRNAseq from Github
 ###---> If devtools is not installed, please install
 if(!requireNamespace("devtools", quietly = TRUE))
-  install.packages('devtools')
+  install.packages('devtools',dependencies = T)
 
 ###---> Install ThreeDRNAseq
 if(!requireNamespace("ThreeDRNAseq", quietly = TRUE))

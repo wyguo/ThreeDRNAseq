@@ -58,7 +58,7 @@ ThreeDRNAseq R package can be installed from Github by using <a href='https://cr
 ## use devtools R package to install ThreeDRNAseq from Github
 ###---> If devtools is not installed, please install
 if(!requireNamespace("devtools", quietly = TRUE))
-  install.packages('devtools')
+  install.packages('devtools',dependencies = TRUE)
 
 ###---> Install ThreeDRNAseq
 devtools::install_github('wyguo/ThreeDRNAseq')
