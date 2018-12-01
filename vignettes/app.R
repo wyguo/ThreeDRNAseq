@@ -1,3 +1,60 @@
+#######################################################################################################
+###---> Install packages from Cran
+packages = c('shiny','shinydashboard','rhandsontable','shinyFiles','shinyjs','DT',
+             'plotly','ggplot2','eulerr','ggrepel',
+             'gridExtra','fastcluster','Gmisc','rmarkdown')
+package.check <- lapply(packages, FUN = function(x) {
+  if (!require(x, character.only = TRUE)) {
+    install.packages(x, dependencies = TRUE,repos = 'https://cran.ma.imperial.ac.uk/')
+    library(x, character.only = TRUE)
+  }
+})
+
+
+###---> Install packages from Bioconductor
+bioconductor.package.list <- c('tximport','edgeR','limma','RUVSeq','ComplexHeatmap','rhdf5')
+for(i in bioconductor.package.list){
+  if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager",repos = 'https://cran.ma.imperial.ac.uk/')
+  if(!(i %in% rownames(installed.packages()))){
+    message('Installing package: ',i)
+    BiocManager::install(i, version = "3.8")
+  } else next
+}
+
+####Other packages may be required for the analysis, please install accordingly.
+
+##Load R packages
+library(shiny)
+library(shinydashboard)
+library(rhandsontable)
+library(shinyFiles)
+library(shinyjs)
+library(DT)
+library(tximport)
+library(edgeR)
+library(limma)
+library(plotly)
+library(ggplot2)
+library(RUVSeq)
+library(eulerr)
+library(gridExtra)
+library(grid)
+library(ComplexHeatmap)
+library(fastcluster)
+library(Gmisc)
+options(stringsAsFactors=F)
+
+
+
+
+
+
+
+
+
+
+
 ##########################################################################
 # ========================== define R functions ======================== #
 #' Sum Over Replicate Arrays
@@ -2098,52 +2155,6 @@ transAbundance2PS <- function(transAbundance=NULL,
 ##########################################################################
 
 
-#######################################################################################################
-###---> Install packages from Cran
-packages = c('shiny','shinydashboard','rhandsontable','shinyFiles','shinyjs','DT',
-             'plotly','ggplot2','eulerr','ggrepel',
-             'gridExtra','fastcluster','Gmisc','rmarkdown','XML')
-package.check <- lapply(packages, FUN = function(x) {
-  if (!require(x, character.only = TRUE)) {
-    install.packages(x, dependencies = TRUE,repos = 'https://cran.ma.imperial.ac.uk/')
-    library(x, character.only = TRUE)
-  }
-})
-
-
-###---> Install packages from Bioconductor
-bioconductor.package.list <- c('tximport','edgeR','limma','RUVSeq','ComplexHeatmap','rhdf5')
-for(i in bioconductor.package.list){
-  if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager",repos = 'https://cran.ma.imperial.ac.uk/')
-  if(!(i %in% rownames(installed.packages()))){
-    message('Installing package: ',i)
-    BiocManager::install(i, version = "3.8")
-  } else next
-}
-
-##
-
-##Load R packages
-library(shiny)
-library(shinydashboard)
-library(rhandsontable)
-library(shinyFiles)
-library(shinyjs)
-library(DT)
-library(tximport)
-library(edgeR)
-library(limma)
-library(plotly)
-library(ggplot2)
-library(RUVSeq)
-library(eulerr)
-library(gridExtra)
-library(grid)
-library(ComplexHeatmap)
-library(fastcluster)
-library(Gmisc)
-options(stringsAsFactors=F)
 
 ##dashboardHeader######################################################
 # ========================== dashboardHeader ======================== #
