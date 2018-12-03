@@ -1484,9 +1484,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     ##------------------->> generate  expression  <<--------------------
     ##--------------------generate genes expression---------------------
     observe({
-      if(is.null(DDD.data$samples))
-        return(NULL)
-      if(grep('abundance.h5',DDD.data$samples$path[1]))
+      if('abundance.h5' %in% DDD.data$samples$path)
         updateSelectInput(session,inputId = "tximport.quant.method",selected = "kallisto")
     })
     
