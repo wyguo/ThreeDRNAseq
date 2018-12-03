@@ -369,29 +369,29 @@ if(!file.exists('figure/DAS genes GO annotation plot.png')){
 ```
 
 ### R packages used for the analysis
-```{r}
-x <- rbind(c('Make the shiny app','shiny','https://shiny.rstudio.com/'),
-                c('','shinydashboard','https://rstudio.github.io/shinydashboard/'),
-                c('','rhandsontable','https://jrowen.github.io/rhandsontable/'),
-                c('','shinyFiles','https://cran.r-project.org/web/packages/shinyFiles/index.html'),
-                c('Read csv file','readr','https://cran.r-project.org/web/packages/readr/index.html'),
-                c('Expression generator','tximport','http://bioconductor.org/packages/release/bioc/html/tximport.html'),
-                c('Batch effect estimation','RUVSeq','https://bioconductor.org/packages/release/bioc/html/RUVSeq.html'),
-                c('3D analysis','limma','https://bioconductor.org/packages/release/bioc/html/limma.html'),
-                c('','edgeR','https://bioconductor.org/packages/release/bioc/html/edgeR.html'),
-                c('Heatmap','ComplexHeatmap','https://bioconductor.org/packages/release/bioc/html/ComplexHeatmap.html'),
-                c('Cluster of heatmap','fastcluster','https://cran.r-project.org/web/packages/fastcluster/index.html'),
-                c('Flow charts','Gmisc','https://cran.r-project.org/web/packages/Gmisc/index.html'),
-                c('Euler plots','eulerr','https://cran.r-project.org/web/packages/eulerr/index.html'),
-                c('Other plots','ggplot2','https://cran.r-project.org/web/packages/ggplot2/index.html'),
-                c('','plotly','https://cran.r-project.org/web/packages/plotly/index.html'),
-                c('','gridExtra','https://cran.r-project.org/web/packages/gridExtra/index.html'),
-                c('','grid','https://cran.r-project.org/web/packages/grid/index.html')
-                )
-x <- data.frame(x)
-colnames(x) <- c('Usage','Package','Link')
-knitr::kable(x,format = "markdown") 
-```
+
+|Usage                   |Package        |Link                                                                    |
+|:-----------------------|:--------------|:-----------------------------------------------------------------------|
+|Make the shiny app      |shiny          |https://shiny.rstudio.com/                                              |
+|                        |shinydashboard |https://rstudio.github.io/shinydashboard/                               |
+|                        |rhandsontable  |https://jrowen.github.io/rhandsontable/                                 |
+|                        |shinyFiles     |https://cran.r-project.org/web/packages/shinyFiles/index.html           |
+|                        |shinyjs        |https://cran.r-project.org/web/packages/shinyjs/index.html              |
+|                        |DT             |https://cran.r-project.org/web/packages/DT/index.html                   |
+|Read csv file           |readr          |https://cran.r-project.org/web/packages/readr/index.html                |
+|Expression generator    |tximport       |http://bioconductor.org/packages/release/bioc/html/tximport.html        |
+|Batch effect estimation |RUVSeq         |https://bioconductor.org/packages/release/bioc/html/RUVSeq.html         |
+|3D analysis             |limma          |https://bioconductor.org/packages/release/bioc/html/limma.html          |
+|                        |edgeR          |https://bioconductor.org/packages/release/bioc/html/edgeR.html          |
+|Heatmap                 |ComplexHeatmap |https://bioconductor.org/packages/release/bioc/html/ComplexHeatmap.html |
+|Cluster of heatmap      |fastcluster    |https://cran.r-project.org/web/packages/fastcluster/index.html          |
+|Flow charts             |Gmisc          |https://cran.r-project.org/web/packages/Gmisc/index.html                |
+|Euler plots             |eulerr         |https://cran.r-project.org/web/packages/eulerr/index.html               |
+|Other plots             |ggplot2        |https://cran.r-project.org/web/packages/ggplot2/index.html              |
+|                        |plotly         |https://cran.r-project.org/web/packages/plotly/index.html               |
+|                        |gridExtra      |https://cran.r-project.org/web/packages/gridExtra/index.html            |
+|                        |grid           |https://cran.r-project.org/web/packages/grid/index.html                 |
+|Generate report         |rmarkdown      |https://cran.r-project.org/web/packages/rmarkdown/index.html            |
 
 Table: The main R packages used in the 3D RNA-seq analysis. If any other R packages are missing from your local PC, please install accordingly. 
 
