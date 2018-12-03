@@ -32,7 +32,8 @@ transAbundance2PS <- function(transAbundance=NULL,
                               condition,
                               mapping){
   colnames(mapping) <- c('TXNAME','GENEID')
-  rownames(transAbundance) <- mapping$TXNAME
+  if(!is.null(transAbundance))
+    rownames(transAbundance) <- mapping$TXNAME
   
   if(is.null(PS)){
     transAbundance.mean <- t(rowmean(t(transAbundance),group = condition,reorder = F))

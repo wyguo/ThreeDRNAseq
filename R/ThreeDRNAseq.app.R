@@ -402,6 +402,14 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                            numericInput(inputId = "pca.plot.width",label = 'Plot width (inch)',
                                         value = 9,width = "100%",step = 0.2)
                        ),
+                       div(style="float:right;margin-right: 25px;",
+                           numericInput(inputId = "pca.plot.x.limit.upper",label = 'x upper limit',
+                                        value = 200,width = "100%",step = 0.2)
+                       ),
+                       div(style="float:right;margin-right: 25px;",
+                           numericInput(inputId = "pca.plot.x.limit.lower",label = 'x lower limit',
+                                        value = -200,width = "100%",step = 0.2)
+                       ),
                        br(),
                        br(),
                        br(),
@@ -881,9 +889,25 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                           choices = c('Abundance','PS','Both'),inline = T),
                              radioButtons(inputId = 'multi.plot.format',label = 'Select format',
                                           choices = c('png','pdf','both'),inline = T),
+                             div(style="display: inline-block; margin-right: 25px;",
+                                 numericInput(inputId = "ps.multiplot.res",label = 'PNG plot resolution',value = '150',
+                                              min = 0,max = 600,step = 60,width = "100%")
+                             ),
+                             div(style="display: inline-block; margin-right: 25px;",
+                                 numericInput(inputId = "ps.multiplot.height",label = 'Plot height (inch)',
+                                              value = 4.5,width = "100%",step = 0.2)
+                             ),
+                             div(style="display: inline-block; margin-right: 25px;",
+                                 numericInput(inputId = "ps.multiplot.width",label = 'Plot width (inch)',
+                                              value = 7,width = "100%",step = 0.2)
+                                 
+                             ),
+                             textInput(inputId = 'multiplot.folder.namae',
+                                       label = 'Figure save folder',value = 'figure',width = "100%",
+                                       placeholder = 'New folder with this name will be created in the figure folder'),
                              actionButton(inputId = 'make.multiple.plot',label = 'Run',
                                           icon = icon('send outline icon',lib = 'font-awesome'),
-                                          style="color: #fff; background-color: #428bca; border-color: #2e6da4; float"),
+                                          style="color: #fff; background-color: #428bca; border-color: #2e6da4"),
                              br()
                            )
                     )
@@ -2030,23 +2054,23 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       # graphics.off()
       png(filename = paste0(DDD.data$figure.folder,'/Transcript PCA ',input$pca.plot.type,'.png'),
           width = input$pca.plot.width,height = input$pca.plot.height,res=input$pca.plot.res, units = 'in')
-      print(pca.trans.g())
+      print(pca.trans.g()+coord_cartesian(xlim=c(input$pca.plot.x.limit.lower,input$pca.plot.x.limit.upper)))
       dev.off()
 
       pdf(file = paste0(DDD.data$figure.folder,'/Transcript PCA ',input$pca.plot.type,'.pdf'),
           width = input$pca.plot.width,height = input$pca.plot.height)
-      print(pca.trans.g())
+      print(pca.trans.g()+coord_cartesian(xlim=c(input$pca.plot.x.limit.lower,input$pca.plot.x.limit.upper)))
       dev.off()
       ###gene level
       # graphics.off()
       png(filename = paste0(DDD.data$figure.folder,'/Gene PCA ',input$pca.plot.type,'.png'),
           width = input$pca.plot.width,height = input$pca.plot.height,res=input$pca.plot.res, units = 'in')
-      print(pca.genes.g())
+      print(pca.genes.g()+coord_cartesian(xlim=c(input$pca.plot.x.limit.lower,input$pca.plot.x.limit.upper)))
       dev.off()
 
       pdf(file = paste0(DDD.data$figure.folder,'/Gene PCA ',input$pca.plot.type,'.pdf'),
           width = input$pca.plot.width,height = input$pca.plot.height)
-      print(pca.genes.g())
+      print(pca.genes.g()+coord_cartesian(xlim=c(input$pca.plot.x.limit.lower,input$pca.plot.x.limit.upper)))
       dev.off()
       message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
       showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
@@ -2214,24 +2238,24 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       # graphics.off()
       png(filename = paste0(DDD.data$figure.folder,'/Transcript PCA batch effect removed ',input$pca.plot.type,'.png'),
           width = input$pca.plot.width,height = input$pca.plot.height,res=input$pca.plot.res, units = 'in')
-      print(pca.trans.br.g())
+      print(pca.trans.br.g()+coord_cartesian(xlim=c(input$pca.plot.x.limit.lower,input$pca.plot.x.limit.upper)))
       dev.off()
 
       pdf(file = paste0(DDD.data$figure.folder,'/Transcript PCA batch effect removed ',input$pca.plot.type,'.pdf'),
           width = input$pca.plot.width,height = input$pca.plot.height)
-      print(pca.trans.br.g())
+      print(pca.trans.br.g()+coord_cartesian(xlim=c(input$pca.plot.x.limit.lower,input$pca.plot.x.limit.upper)))
       dev.off()
 
       ###gene level
       # graphics.off()
       png(filename = paste0(DDD.data$figure.folder,'/Gene PCA batch effect removed ',input$pca.plot.type,'.png'),
           width = input$pca.plot.width,height = input$pca.plot.height,res=input$pca.plot.res, units = 'in')
-      print(pca.genes.br.g())
+      print(pca.genes.br.g()+coord_cartesian(xlim=c(input$pca.plot.x.limit.lower,input$pca.plot.x.limit.upper)))
       dev.off()
 
       pdf(file = paste0(DDD.data$figure.folder,'/Gene PCA batch effect removed ',input$pca.plot.type,'.pdf'),
           width = input$pca.plot.width,height = input$pca.plot.height)
-      print(pca.genes.br.g())
+      print(pca.genes.br.g()+coord_cartesian(xlim=c(input$pca.plot.x.limit.lower,input$pca.plot.x.limit.upper)))
       dev.off()
       message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
       showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
@@ -3479,11 +3503,11 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       }
 
       ###plot abundance
-      folder2Abundance <- paste0(DDD.data$figure.folder,'/Abundance plot')
+      folder2Abundance <- paste0(DDD.data$figure.folder,'/',input$multiplot.folder.namae,'/Abundance plot')
       if(!file.exists(folder2Abundance))
         dir.create(folder2Abundance,recursive = T)
 
-      folder2PS <- paste0(DDD.data$figure.folder,'/PS plot')
+      folder2PS <- paste0(DDD.data$figure.folder,'/',input$multiplot.folder.namae,'/PS plot')
       if(!file.exists(folder2PS))
         dir.create(folder2PS,recursive = T)
 
@@ -3491,7 +3515,8 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                    detail = 'This may take a while...', value = 0, {
                      for(gene in genes){
                        incProgress(1/length(genes))
-                       if(input$multiple.plot.type %in% c('Abundance','both')){
+                       if(input$multiple.plot.type %in% c('Abundance','Both')){
+                         message(paste0('Plotting abundance prfiles => Gene: ', gene, ' (',which(genes %in% gene), ' of ', length(genes),')'))
                          g.pr <- plotAbundance(data.exp = data.exp,
                                                 gene = gene,
                                                 mapping = mapping,
@@ -3503,23 +3528,24 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                          n <- length(unique(g.pr$data))-1
                          if(input$multi.plot.format %in% c('png','both')){
                            png(paste0(folder2Abundance,'/Abundance ',gene,'.png'),
-                               width = (16+floor(n/15))/2.54,
-                               height = 10/2.54,
-                               units = 'in',res = 300)
+                               width = input$ps.multiplot.width+floor(n/15)/2.54,
+                               height = input$ps.multiplot.height,
+                               units = 'in',res = input$ps.multiplot.res)
                            print(g.pr)
                            dev.off()
                          }
 
                          if(input$multi.plot.format %in% c('pdf','both')){
                            pdf(paste0(folder2Abundance,'/Abundance ',gene,'.pdf'),
-                               width = (16+floor(n/15))/2.54,
-                               height = 10/2.54)
+                               width = input$ps.multiplot.width+floor(n/15)/2.54,
+                               height = input$ps.multiplot.height)
                            print(g.pr)
                            dev.off()
                          }
                        }
 
-                       if(input$multiple.plot.type %in% c('PS','both')){
+                       if(input$multiple.plot.type %in% c('PS','Both')){
+                         message(paste0('Plotting PS prfiles => Gene: ', gene, ' (',which(genes %in% gene), ' of ', length(genes),')'))
                          g.ps <- plotPS(data.exp = data.exp,
                                          gene = gene,
                                          mapping = mapping,
@@ -3531,16 +3557,16 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                          n <- length(unique(g.ps$data))
                          if(input$multi.plot.format %in% c('png','both')){
                            png(paste0(folder2PS,'/PS ',gene,'.png'),
-                               width = (16+floor(n/15))/2.54,
-                               height = 10/2.54,
-                               units = 'in',res = 300)
+                               width = input$ps.multiplot.width+floor(n/15)/2.54,
+                               height = input$ps.multiplot.height,
+                               units = 'in',res = input$ps.multiplot.res)
                            print(g.ps)
                            dev.off()
                          }
                          if(input$multi.plot.format %in% c('pdf','both')){
                            pdf(paste0(folder2PS,'/PS ',gene,'.pdf'),
-                               width = (16+floor(n/15))/2.54,
-                               height = 10/2.54)
+                               width = input$ps.multiplot.width+floor(n/15)/2.54,
+                               height = input$ps.multiplot.height)
                            print(g.ps)
                            dev.off()
                          }
@@ -3549,20 +3575,6 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                      }
                    })
 
-
-
-
-      if(input$multiple.plot.type %in% c('PS','both')){
-        g.ps <- plotPS(data.exp = data.exp,
-                        gene = gene,
-                        mapping = mapping,
-                        genes.ann = DDD.data$genes.ann,
-                        trans.ann = DDD.data$trans.ann,
-                        trans.expressed = NULL,
-                        reps = reps,
-                        y.lab = 'PS')
-
-      }
     })
 
     ##---------------GO plot----------------
