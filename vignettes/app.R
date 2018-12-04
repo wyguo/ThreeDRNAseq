@@ -1,12 +1,21 @@
 #######################################################################################################
 ## use devtools R package to install ThreeDRNAseq from Github
 ###---> If devtools is not installed, please install
-if(!requireNamespace("devtools", quietly = TRUE))
-  install.packages('devtools',dependencies = TRUE)
+# if(!requireNamespace("devtools", quietly = TRUE))
+#   install.packages('devtools',dependencies = TRUE)
+# 
+# ###---> Install ThreeDRNAseq
+# if(!requireNamespace("ThreeDRNAseq", quietly = TRUE))
+#   devtools::install_github('wyguo/ThreeDRNAseq')
 
-###---> Install ThreeDRNAseq
-if(!requireNamespace("ThreeDRNAseq", quietly = TRUE))
-  devtools::install_github('wyguo/ThreeDRNAseq')
+sourceDir <- function(path, trace = TRUE, ...) {
+  for (nm in list.files(path, pattern = "[.][RrSsQq]$")) {
+    #if(trace) cat(nm,":")
+    source(file.path(path, nm), ...)
+    #if(trace) cat("/n")
+  }
+}
+sourceDir('R')
 
 ###---> Install packages from Cran
 packages = c('shiny','shinydashboard','rhandsontable','shinyFiles','shinyjs','DT',
