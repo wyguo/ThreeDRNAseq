@@ -368,6 +368,10 @@ The table in this page lists the parameters for 3D analysis and the locations of
 <p id='Section_saved_files'></p>
 <br>
 
+## Downstream analysis
+### Transcript isoform switch analysis
+Transcript isoform switches occur when a pair of alternatively spliced isoforms reverse the order of their relative expression levels as shown
+
 ## Saved files in local directory
 
 ### Saved files in the "data" folder
