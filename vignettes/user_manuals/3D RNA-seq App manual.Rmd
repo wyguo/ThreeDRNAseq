@@ -2,31 +2,33 @@
 title: "3D RNA-seq App"
 author: "Wenbin Guo"
 date: "23 October 2018"
-output:
-  md_document:
-    variant: markdown_github
-vignette: >
-  %\VignetteIndexEntry{Introduction to ThreeDRNAseq}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 # output:
-#   html_document:
-#     fig_caption: yes
-#     highlight: textmate
-#     theme: cerulean
-#     toc: yes
-#     toc_depth: 4
-#     toc_float:
-#       collapsed: no
-#       smooth_scroll: yes
-#   pdf_document:
-#     fig_caption: yes
-#     toc: yes
-#     toc_depth: '4'
-#   word_document:
-#     fig_caption: yes
-#     toc: no
-#     toc_depth: '4'
+#   md_document:
+#     toc: true
+#     preserve_yaml: true
+#     variant: markdown_github
+# vignette: >
+#   %\VignetteIndexEntry{Introduction to ThreeDRNAseq}
+#   %\VignetteEngine{knitr::rmarkdown}
+#   %\VignetteEncoding{UTF-8}
+output:
+  html_document:
+    fig_caption: yes
+    highlight: textmate
+    theme: cerulean
+    toc: yes
+    toc_depth: 4
+    toc_float: 
+      collapsed: no
+      smooth_scroll: yes
+  pdf_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: '4'
+  word_document:
+    fig_caption: yes
+    toc: no
+    toc_depth: '4'
 subtitle: Interactive shiny App user manual
 ---
 
@@ -37,22 +39,40 @@ options(stringsAsFactors = F)
 ```
 
 <div align="justify">
+<p id='table-of-contents'></p>
 
 ## How to use this manual
 
-The 3D RNA-seq pipeline includes complex steps of expression data generation, data pre-processing, 3D analysis and result summary. This manual provides step-by-step instructions to use the 3D RNA-seq App. To use this App in your work, please cite: 
+The 3D RNA-seq App includes complex steps of
+
+- Gene and transcript expression (read counts and TPMs) generation.
+- Data pre-processing (filter low expressed genes/transcripts, PCA plot to check data variation, batch effect estimation, data normalisation, etc.).
+- 3D analysis of differential expressed (DE) genes/transcripts, differential alternative spliced (DAS) genes and differential transcript usage (DTU) transcripts.
+- Significant 3D result summary.
+- Advanced plot (heatmap, profile, GO enrichment plots of 3D genes/transcripts).
+- One click to generate report with publication-quality results and figures.
+
+This manual provides step-by-step instructions to use the 3D RNA-seq App. To use this App in your work, please cite: 
 
 [Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C., Panter,P.E., Knight,H., Nimmo,H., Zhang,R., and Brown,J.W.S. (2018) Rapid and dynamic alternative splicing impacts the Arabidopsis cold response transcriptome. Plant Cell.](http://www.plantcell.org/content/30/7/1424){target="_blank"}
 
-Command-line based 3D analysis manual:
-<a href="https://github.com/wyguo/ThreeDRNAseq/tree/master/vignettes/user_manuals" target="_blank"><button class='button'><font color="black">Click me!</font></button></a>
+
+## How to launch the App
+![](3D_App_figure/app.png)
+
+There are three ways to use ThreeDRNAseq pipeline:
+
+- Command-line free (for all users): the App is hold by our server. Users can directly open the App on your default browser by click the link: xxxx (In preparation).
+- Minor command-line (for basic R users): users can access the 3D RNA-seq App through RStudio. Please go to Section <a href='#Section_installation_and_Run'>"Installation and Run"</a> for details
+- Command-line based (for advanced R users): Instead of 3D RNA-seq App, users can use command line to do the analysis for more flexible control of intemediate results and figures. The command-line-based user manual: <a href="https://github.com/wyguo/ThreeDRNAseq/tree/master/vignettes/user_manuals" target="_blank">https://github.com/wyguo/ThreeDRNAseq/tree/master/vignettes/user_manuals</a>
+
+<p id='Section_installation_and_Run'></p>
 
 ## Installation and Run
-
 ThreeDRNAseq R package can be installed from Github by using <a href='https://cran.r-project.org/web/packages/devtools/index.html' target='_blank'>devtools</a> R package
 
 ### Install ThreeDRNAseq package
-
+In the RStudio, please run the following command to install ThreeDRNAseq R package and the packates of dependencies.
 ``` {r}
 ##################################################################################################
 ## use devtools R package to install ThreeDRNAseq from Github
@@ -61,7 +81,8 @@ if(!requireNamespace("devtools", quietly = TRUE))
   install.packages('devtools',dependencies = TRUE)
 
 ###---> Install ThreeDRNAseq
-devtools::install_github('wyguo/ThreeDRNAseq')
+if(!requireNamespace("ThreeDRNAseq", quietly = TRUE))
+  devtools::install_github('wyguo/ThreeDRNAseq')
 ```
 
 ### Install dependency packages
@@ -92,11 +113,21 @@ for(i in bioconductor.package.list){
 }
 ```
 
+![](3D_App_figure/RStudio.png)
+
 ### Run 3D RNA-seq App
-Please type the command in your RStudio and the App will be launched in default web browser (Google Chrome is recommended for image visualisation issues).
+Please type the following command in your RStudio to launch the App in the default web browser (Google Chrome is recommended for image visualisation issues).
+
+Launch the App from ThreeDRNAseq R package
 ```{r}
 library(ThreeDRNAseq)
 ThreeDRNAseq.app()
+```
+
+Alternatively, users can launch the App from Github page
+```{r}
+library(shiny)
+runGitHub("ThreeDRNAseq", "wyguo")
 ```
 
 |Usage                   |Package        |Link                                                                    |
@@ -114,7 +145,6 @@ ThreeDRNAseq.app()
 |                        |edgeR          |https://bioconductor.org/packages/release/bioc/html/edgeR.html          |
 |Heatmap                 |ComplexHeatmap |https://bioconductor.org/packages/release/bioc/html/ComplexHeatmap.html |
 |Cluster of heatmap      |fastcluster    |https://cran.r-project.org/web/packages/fastcluster/index.html          |
-|Flow charts             |Gmisc          |https://cran.r-project.org/web/packages/Gmisc/index.html                |
 |Euler plots             |eulerr         |https://cran.r-project.org/web/packages/eulerr/index.html               |
 |Other plots             |ggplot2        |https://cran.r-project.org/web/packages/ggplot2/index.html              |
 |                        |plotly         |https://cran.r-project.org/web/packages/plotly/index.html               |
@@ -122,10 +152,14 @@ ThreeDRNAseq.app()
 |                        |grid           |https://cran.r-project.org/web/packages/grid/index.html                 |
 |Generate report         |rmarkdown      |https://cran.r-project.org/web/packages/rmarkdown/index.html            |
 
-Table: The main R packages used in the 3D RNA-seq analysis. If any other R packages are missing from your PC, please install accordingly.
+Table: This take shows the main R packages used in the 3D RNA-seq analysis. If any other R packages are missing from your PC, please install accordingly.
+
+<a href='#table-of-contents'>Go back to Table of contents</a>
 
 ## Example data
-Example data can be downloaded from: xxx
+Example data can be downloaded from Google drive: 
+
+<a href="https://drive.google.com/open?id=1VFxWwi6q3Lv1o79RlKDtk1q-BJXa81wD" target="_blank">https://drive.google.com/open?id=1VFxWwi6q3Lv1o79RlKDtk1q-BJXa81wD</a>
 
 The example RNA-seq data is a subset from study of Arabidopsis in response to cold (Calixto et al., 2018). Datasets of three time-points (red circles) were extracted from the whole study:
 
@@ -138,15 +172,12 @@ The example RNA-seq data is a subset from study of Arabidopsis in response to co
 |T10         |Second time-point of Day 1, temperature $4^oC$ of cold transition  |
 |T19         |Second time-point of Day 4, temperature $4^oC$ of cold acclimation |
 
-Each time-point has 3 biological replicates and each biological replicate has 3 sequencing replicates. Transcript quantification was generated by using Salmon (Patro et al., 2017) and AtRTD2-QUASI (Zhang et al., 2017) as transcriptome reference. Expression comparisons were designed as "T10 vs T2" and "T19-T2" to identify the cold response genes and transcripts at both transcription and AS level.
+Each time-point has 3 biological replicates and each biological replicate has 3 sequencing replicates. Transcript quantification was generated by using [Salmon](https://combine-lab.github.io/salmon/){target="_blank"} (Patro et al., 2017) and [AtRTD2-QUASI](https://www.ncbi.nlm.nih.gov/pubmed/28402429){target="_blank"} (Zhang et al., 2017) as transcriptome reference. Expression comparisons were designed as "T10 vs T2" and "T19 vs T2" to identify the cold response genes and transcripts at both transcriptional and AS level.
 
-Data download links:
-- Google drive: <a href="https://drive.google.com/open?id=1VFxWwi6q3Lv1o79RlKDtk1q-BJXa81wD" target="_blank">https://drive.google.com/open?id=1VFxWwi6q3Lv1o79RlKDtk1q-BJXa81wD</a>
-<br>
 
 ## Prepare input data
 
-The following datasets are required in the pipeline (<a href='#Figure1'>Figure 1</a>):
+The following datasets are required in the pipeline (<a href='#Figure1'>Figure 1</a>; also see the example datasets):
 
 - Gene-transcript mapping information in a csv file **"mapping.csv"** (<a href='#Figure1'>Figure 1A</a>). In the spreadsheet, the first column is the transcript list with column name "TXNAME" and the second column is the gene list with column name "GENEID".
 - Sample information in a csv file **"samples.csv"** (<a href='#Figure1'>Figure 1B</a>). The spreadsheet must include columns (highlighted in read colour):
@@ -177,24 +208,27 @@ Four folders will be created in the working directory to save the analysis resul
 
 The detailed descriptions of files saved in the above folders can be found in Section <a href='#Section_saved_files'>"Saved files in local directory"</a>.
 
-## 3D RNA-seq App
+<a href='#table-of-contents'>Go back to Table of contents</a>
 
-The App includes 7 pages in the sidebar menu: Introduction, Data generation, Data pre-processing, DE DAS and DTU analysis, Result summary, Advanced plot and Generate report.
+## 3D RNA-seq App: Step-by-step manual
+
+When the 3D RNA-seq App is launched, users can see 7 pages in the sidebar menu: Introduction, Data generation, Data pre-processing, DE DAS and DTU analysis, Result summary, Advanced plot and Generate report.
 <center>
 ![](3D_App_figure/menu.png){align="middle"}
 </center>
 <br>
 
 ### Data generation
+Firstly, transcript level and gene level read counts and TPMs (transcript per million reads) are generated by using the [tximport](https://bioconductor.org/packages/release/bioc/html/tximport.html){target="_blank"} R package (Soneson et al., 2016).
 
 #### Set directory and load datasets
 
-To begin with, users can choose a working directory to save the output data, results and figures.
+To begin with, users can choose a working directory and click "Create folders to save results" to create the output data, result and figure and report folders.
 
 ![](3D_App_figure/wkd.png)
 **Figure 2**: Choose working directory. Please click the "triangles" in the left-side "Directories" box to access and select sub-folders. The click and select in the right-side "Content" box is invalid.
 
-The whole pipeline has a number of steps and each step is related to several intermediate datasets (see Section "Output data"). This table summarise the generation and usage steps of these datasets and whether (True or False) they have been loaded in workspace ready for use. To avoid running the pipeline from very beginning every time the App get refreshed, the following options are provided:
+The whole pipeline has a number of steps and each step is related to several intermediate datasets (see Section <a href="#Section_output_data">"Output data"</a>). This table summarise the generation and usage steps of these datasets and whether (True or False) they have been loaded in workspace ready for use. To avoid running the pipeline from very beginning every time the App get refreshed, the following options are provided:
 
   - If all/part of the required datasets (in .RData format) do not exist in the "data" folder of working directory (see Section: <a href='#Section_saved_files'>"Saved files in local directory"</a>), users can generate these datasets from corresponding steps.
   - If all/part of the required datasets (in .RData format) already exist in the "data" folder, users can click "Load all" button to load them. 
@@ -215,7 +249,7 @@ The whole pipeline has a number of steps and each step is related to several int
 
 #### Generate gene and transcript expression
 
-The csv files "mapping.csv" and "samples.csv" (see <a href='#Figure1'> Figure 1A</a> and <a href='#Figure1'>B</a>) are loaded (<a href='#Figure4'>Figure 4A</a>) and visualised (<a href='#Figure4'>Figure 4C</a>) in this step. The [tximport](https://bioconductor.org/packages/release/bioc/html/tximport.html){target="_blank"} R package (Soneson et al., 2016) is used to generate gene and transcript expression of read counts and TPMs (transcript per million reads) based on three options: "no" (default), "scaledTPM" and "lengthScaledTPM". The "lengthScaledTPM" is recommended since it scales the expression using the transcript length and then the library size over samples (see the [tximport](https://bioconductor.org/packages/release/bioc/html/tximport.html){target="_blank"} documentation for details). The generated gene and transcript expression will be save as R data object txi_genes.RData and txi_trans.RData in the "data" folder, respectively. Spreadsheets of read counts and TPMs will be saved as csv files in the "result" folder.
+The csv files "mapping.csv" and "samples.csv" (see <a href='#Figure1'> Figure 1A</a> and <a href='#Figure1'>B</a>) are loaded (<a href='#Figure4'>Figure 4A</a>) and visualised (<a href='#Figure4'>Figure 4C</a>) in this step. The [tximport](https://bioconductor.org/packages/release/bioc/html/tximport.html){target="_blank"} R package (Soneson et al., 2016) is used to generate gene and transcript expression of read counts and TPMs (transcript per million reads) based on three options: "no" (default), "scaledTPM" and "lengthScaledTPM". The "lengthScaledTPM" is recommended since it scales the expression using the transcript length and then the library size over samples (see the [tximport](https://bioconductor.org/packages/release/bioc/html/tximport.html){target="_blank"} documentation for details). The generated gene and transcript expression will be save as R data object txi_genes.RData and txi_trans.RData in the "data" folder, respectively. If "txi_genes.RData" and "txi_trans.RData" are already in "data" folder, users can load them directly and skip the data generation step to save time. Spreadsheets of read counts and TPMs will be saved as csv files in the "result" folder.
 
 
 ![](3D_App_figure/expression_generation.png)
