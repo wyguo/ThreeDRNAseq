@@ -127,7 +127,8 @@ ThreeDRNAseq.app()
 Alternatively, users can launch the App from Github page
 ```{r}
 library(shiny)
-runGitHub("ThreeDRNAseq", "wyguo")
+runGitHub("ThreeDRNAseq", "wyguo",subdir = "vignettes")
+
 ```
 
 |Usage                   |Package        |Link                                                                    |
