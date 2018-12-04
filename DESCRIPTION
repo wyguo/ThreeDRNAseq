@@ -33,8 +33,7 @@ Imports:
     shinyFiles,
     plotly,
     eulerr,
-    gridExtra,
-    Gmisc
+    gridExtra
 RoxygenNote: 6.1.1
 Suggests: BiocStyle, knitr, rmarkdown
 VignetteBuilder: knitr
