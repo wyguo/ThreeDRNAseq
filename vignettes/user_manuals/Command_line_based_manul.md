@@ -906,7 +906,7 @@ condition <- samples_new$condition
 ###--- trans level
 data.before <- trans_counts[target_high$trans_high,]
 data.after <- counts2CPM(obj = trans_dge,Log = T)
-g <- boxplot.normalised(data.before = data.before,
+g <- boxplotNormalised(data.before = data.before,
                         data.after = data.after,
                         condition = condition,
                         sample.name = sample.name)
@@ -940,7 +940,7 @@ dev.off()
 ###--- genes level
 data.before <- genes_counts[target_high$genes_high,]
 data.after <- counts2CPM(obj = genes_dge,Log = T)
-g <- boxplot.normalised(data.before = data.before,
+g <- boxplotNormalised(data.before = data.before,
                         data.after = data.after,
                         condition = condition,
                         sample.name = sample.name)

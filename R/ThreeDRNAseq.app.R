@@ -2320,7 +2320,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       condition <- DDD.data$samples_new$condition
       data.before <- DDD.data$trans_counts[DDD.data$target_high$trans_high,]
       data.after <- counts2CPM(obj = DDD.data$trans_dge,Log = T)
-      g <- boxplot.normalised(data.before = data.before,
+      g <- boxplotNormalised(data.before = data.before,
                               data.after = data.after,
                               condition = condition,
                               sample.name = sample.name)
@@ -2345,7 +2345,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       condition <- DDD.data$samples_new$condition
       data.before <- DDD.data$genes_counts[DDD.data$target_high$genes_high,]
       data.after <- counts2CPM(obj = DDD.data$genes_dge,Log = T)
-      g <- boxplot.normalised(data.before = data.before,
+      g <- boxplotNormalised(data.before = data.before,
                               data.after = data.after,
                               condition = condition,
                               sample.name = sample.name)
