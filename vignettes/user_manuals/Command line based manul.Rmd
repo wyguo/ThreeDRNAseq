@@ -1174,7 +1174,7 @@ data2plot <- t(scale(data2plot))
 hc.dist <- dist(data2plot,method = dist.method)
 hc <- fastcluster::hclust(hc.dist,method = cluster.method)
 clusters <- cutree(hc, k = cluster.number)
-clusters <- reorder.clusters(clusters = clusters,dat = data2plot)
+clusters <- reorderClusters(clusters = clusters,dat = data2plot)
 
 ### save the target list in each cluster to result folder
 x <- split(names(clusters),clusters)
@@ -1225,7 +1225,7 @@ data2plot <- t(scale(data2plot))
 hc.dist <- dist(data2plot,method = dist.method)
 hc <- fastcluster::hclust(hc.dist,method = cluster.method)
 clusters <- cutree(hc, k = cluster.number)
-clusters <- reorder.clusters(clusters = clusters,dat = data2plot)
+clusters <- reorderClusters(clusters = clusters,dat = data2plot)
 
 ### save the target list in each cluster to result folder
 x <- split(names(clusters),clusters)
@@ -1277,7 +1277,7 @@ data2plot <- t(scale(data2plot))
 hc.dist <- dist(data2plot,method = dist.method)
 hc <- fastcluster::hclust(hc.dist,method = cluster.method)
 clusters <- cutree(hc, k = cluster.number)
-clusters <- reorder.clusters(clusters = clusters,dat = data2plot)
+clusters <- reorderClusters(clusters = clusters,dat = data2plot)
 
 ### save the target list in each cluster to result folder
 x <- split(names(clusters),clusters)
@@ -1329,7 +1329,7 @@ data2plot <- t(scale(data2plot))
 hc.dist <- dist(data2plot,method = dist.method)
 hc <- fastcluster::hclust(hc.dist,method = cluster.method)
 clusters <- cutree(hc, k = cluster.number)
-clusters <- reorder.clusters(clusters = clusters,dat = data2plot)
+clusters <- reorderClusters(clusters = clusters,dat = data2plot)
 
 ### save the target list in each cluster to result folder
 x <- split(names(clusters),clusters)

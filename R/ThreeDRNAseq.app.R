@@ -1042,63 +1042,63 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
 
     #Log in ##############################################################
     # ============================= password ============================ #
-    values <- reactiveValues(authenticated = FALSE)
-
-    # Return the UI for a modal dialog with data selection input. If 'failed'
-    # is TRUE, then display a message that the previous value was invalid.
-    dataModal <- function(failed = FALSE) {
-      modalDialog(
-        textInput("username", "Username:",value = 'User'),
-        passwordInput("password", "Password:",value = ''),
-        footer = tagList(
-          # modalButton("Cancel"),
-          div(style="display:inline-block;vertical-align:middle;height:40px;float: left",
-              verbatimTextOutput('log.info')
-          ),
-          div(style="display:inline-block;vertical-align:middle;height:40px",
-              actionButton("ok", "OK",
-                           style="color: #fff; background-color: #428bca; border-color: #2e6da4")
-          )
-        ),size = 's'
-      )
-    }
-
-    # Show modal when button is clicked.
-    # This `observe` is suspended only whith right user credential
-
-    obs1 <- observe({
-      showModal(dataModal())
-    })
-
-    # When OK button is pressed, attempt to authenticate. If successful,
-    # remove the modal.
-
-    obs2 <- observe({
-      req(input$ok)
-      isolate({
-        Username <- input$username
-        Password <- input$password
-      })
-      Id.username <- which(my_username == Username)
-      Id.password <- which(my_password == Password)
-      if (length(Id.username) > 0 & length(Id.password) > 0) {
-        if (Id.username == Id.password) {
-          Logged <<- TRUE
-          values$authenticated <- TRUE
-          obs1$suspend()
-          removeModal()
-        } else {
-          values$authenticated <- FALSE
-        }
-      }
-    })
-
-    observeEvent(input$ok,{
-      output$log.info <- renderText({
-        if (values$authenticated) "OK!!!!!"
-        else "Wrong password!!!"
-      })
-    })
+    # values <- reactiveValues(authenticated = FALSE)
+    # 
+    # # Return the UI for a modal dialog with data selection input. If 'failed'
+    # # is TRUE, then display a message that the previous value was invalid.
+    # dataModal <- function(failed = FALSE) {
+    #   modalDialog(
+    #     textInput("username", "Username:",value = 'User'),
+    #     passwordInput("password", "Password:",value = ''),
+    #     footer = tagList(
+    #       # modalButton("Cancel"),
+    #       div(style="display:inline-block;vertical-align:middle;height:40px;float: left",
+    #           verbatimTextOutput('log.info')
+    #       ),
+    #       div(style="display:inline-block;vertical-align:middle;height:40px",
+    #           actionButton("ok", "OK",
+    #                        style="color: #fff; background-color: #428bca; border-color: #2e6da4")
+    #       )
+    #     ),size = 's'
+    #   )
+    # }
+    # 
+    # # Show modal when button is clicked.
+    # # This `observe` is suspended only whith right user credential
+    # 
+    # obs1 <- observe({
+    #   showModal(dataModal())
+    # })
+    # 
+    # # When OK button is pressed, attempt to authenticate. If successful,
+    # # remove the modal.
+    # 
+    # obs2 <- observe({
+    #   req(input$ok)
+    #   isolate({
+    #     Username <- input$username
+    #     Password <- input$password
+    #   })
+    #   Id.username <- which(my_username == Username)
+    #   Id.password <- which(my_password == Password)
+    #   if (length(Id.username) > 0 & length(Id.password) > 0) {
+    #     if (Id.username == Id.password) {
+    #       Logged <<- TRUE
+    #       values$authenticated <- TRUE
+    #       obs1$suspend()
+    #       removeModal()
+    #     } else {
+    #       values$authenticated <- FALSE
+    #     }
+    #   }
+    # })
+    # 
+    # observeEvent(input$ok,{
+    #   output$log.info <- renderText({
+    #     if (values$authenticated) "OK!!!!!"
+    #     else "Wrong password!!!"
+    #   })
+    # })
     # ============================= password ============================ #
 
     DDD.data <- reactiveValues(
@@ -3272,7 +3272,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         hc.dist <- dist(data2plot,method = input$dist.method)
         hc <- fastcluster::hclust(hc.dist,method = input$cluster.method)
         clusters <- cutree(hc, k = input$cluster.number)
-        clusters <- reorder.clusters(clusters = clusters,dat = data2plot)
+        clusters <- reorderClusters(clusters = clusters,dat = data2plot)
         incProgress(0.3)
         g <- Heatmap(as.matrix(data2plot), name = 'Z-scores',
                      cluster_rows = TRUE,

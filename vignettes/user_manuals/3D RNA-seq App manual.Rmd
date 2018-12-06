@@ -8,10 +8,16 @@ date: "23 October 2018"
 #     preserve_yaml: true
 #     variant: markdown_github
 # vignette: >
-#   %\VignetteIndexEntry{Introduction to ThreeDRNAseq}
 #   %\VignetteEngine{knitr::rmarkdown}
-#   %\VignetteEncoding{UTF-8}
 output:
+  word_document:
+    fig_caption: yes
+    toc: no
+    toc_depth: '4'
+  pdf_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: '4'
   html_document:
     fig_caption: yes
     highlight: textmate
@@ -21,14 +27,6 @@ output:
     toc_float: 
       collapsed: no
       smooth_scroll: yes
-  pdf_document:
-    fig_caption: yes
-    toc: yes
-    toc_depth: '4'
-  word_document:
-    fig_caption: yes
-    toc: no
-    toc_depth: '4'
 subtitle: Interactive shiny App user manual
 ---
 
