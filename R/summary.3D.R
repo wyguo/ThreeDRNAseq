@@ -3,6 +3,7 @@
 #' third and fourth columns of DE gene/transcript statistics (i.e. "adj.pval" and "log2FC", respectively). 
 #' @param cutoff a numeric vector of cut-offs to "adj.pval" and "log2FC".
 #' @return a data.frame object, which is a subset of input \code{stat} after applying the \code{cutoff}.
+#' @export
 #' 
 summaryDEtarget <- function(stat,cutoff=c(adj.pval=0.01,log2FC=1)){
   names(cutoff) <- c('adj.pval','log2FC')
@@ -18,6 +19,7 @@ summaryDEtarget <- function(stat,cutoff=c(adj.pval=0.01,log2FC=1)){
 #' third and fourth columns of DAS gene/DTU transcript statistics (i.e. "adj.pval" and "maxdeltaPS"/"deltaPS", respectively). 
 #' @param cutoff a numeric vector of cut-offs for the statistics.
 #' @return a data.frame object, which is a subset of input \code{stat} after applying the \code{cutoff}.
+#' @export
 #' 
 summaryDAStarget <- function(stat,lfc,cutoff=c(adj.pval=0.01,deltaPS=0.1)){
   names(cutoff) <- c('adj.pval','deltaPS')

@@ -90,7 +90,7 @@ if(!requireNamespace("ThreeDRNAseq", quietly = TRUE))
 ## Install packages of dependency
 ###---> Install packages from Cran
 cran.package.list <- c('shiny','shinydashboard','rhandsontable','shinyFiles','shinyjs','DT',
-                       'plotly','ggplot2','eulerr','ggrepel',
+                       'plotly','ggplot2','eulerr','ggrepel','statmod',
                        'gridExtra','fastcluster','rmarkdown')
 for(i in cran.package.list){
    if(!(i %in% rownames(installed.packages()))){
@@ -106,7 +106,7 @@ for(i in bioconductor.package.list){
     install.packages("BiocManager")
   if(!(i %in% rownames(installed.packages()))){
     message('Installing package: ',i)
-    BiocManager::install(i, version = "3.8")
+    BiocManager::install(i, version = "3.8",dependencies = T)
   } else next
 }
 ```

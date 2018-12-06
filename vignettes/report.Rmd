@@ -57,6 +57,7 @@ Table: Overview of parameters used for the DE, DAS and DTU analysis.
 ## Experimental design
 ```{r,results='asis'}
 cat('  \nConditions ( n=',length(unique(samples$condition)),'):',paste0(unique(samples$condition),collapse = ', '))
+cat('  \nBlocks ( n=',length(unique(samples_new$block)),'):',paste0(unique(samples_new$block),collapse = ', '))
 cat('  \nBiological replicate number:',length(unique(samples$brep)))
 cat('  \nSequencing replicate number:',length(unique(samples$srep)))
 cat('  \nContrast groups for expression comparisons:')

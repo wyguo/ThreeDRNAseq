@@ -176,7 +176,6 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                        "text/comma-separated-values,text/plain",
                                        ".csv")
                            ),
-                           br(),
                            HTML('This file includes the gene-transcript mapping information. See examples in the manual.'),
                            hr(),
                            fileInput("sample.input", "Choose samples.csv file",
@@ -185,11 +184,25 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                        "text/comma-separated-values,text/plain",
                                        ".csv")
                            ),
-                           br(),
-                           HTML('This file includes the information of conditions for linear regression,
-                                biological replicates, sequencing replicates and the complete paths of
-                                transcript quantification.
-                                See details in the manual.')
+                           HTML('This csv file includes sample information of conditions,
+                                biological replicates, sequencing replicates, complete paths of
+                                transcript quantification, etc. See details in the manual.'),
+                           hr(),
+                           selectInput(inputId = 'select.condition',
+                                       label = 'Select condition column',
+                                       selected = '',multiple = T,
+                                       choices = 'NA'),
+                           HTML('If "condition" column is in the spreadsheet of samples.csv, users can
+                                select columns from spreadsheet to generate a new column of condtions. If multiple columns are 
+                                selected (e.g. columns A, B and C), conditions will be generated as "A.B.C".'),
+                           hr(),
+                           selectInput(inputId = 'select.block',
+                                       label = 'Select condition block',
+                                       selected = '',multiple = T,
+                                       choices = 'NA'),
+                           HTML('If users want to use blocking factor in the limma pipeline, please either specify a "block" 
+                                column in the samples.csv spreadsheet or select from here. If multiple columns are 
+                                selected (e.g. columns A, B and C), blocks will be generated as "A.B.C".')
                            )
                            ),
                 #generate gene expression####
@@ -250,21 +263,21 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                            ),
               # output sample table####
               fluidRow(
-                tabBox(width = 13,
+                tabBox(width = 13,selected = 'Samples',
                        # Title can include an icon
                        # title = tagList(shiny::icon("gear"), "Loaded tables"),
                        title = "Loaded tables",side = 'right',
                        tabPanel("Mapping",
                                 "Part of gene-transcript mapping table:",
-                                DT::dataTableOutput("mapping.output")
+                                DT::DTOutput("mapping.output")
                        ),
                        tabPanel("Samples",
                                 "The sample information:",
-                                DT::dataTableOutput("sample.output")
+                                DT::DTOutput("sample.output")
                        )
                 )
               )
-                       ),
+              ),
  
       #========================>> Data pre-processing panel <<=======================
       tabItem('preprocessing',
@@ -1012,6 +1025,9 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                   DT::DTOutput('para.summary'),
                   br(),
                   br(),
+                  actionButton(inputId = 'add.row',label='Add empty row to provide additional information',
+                               icon = icon('plus',lib = 'font-awesome'),
+                               style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: left"),
                   actionButton(inputId = 'save.para.summary',label = 'Save',
                                icon = icon('download',lib = 'font-awesome'),
                                style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right")
@@ -1110,6 +1126,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
       mapping=NULL,
       samples=NULL,
       samples_new=NULL,
+      sample_name=NULL,
       trans_counts=NULL,
       genes_counts=NULL,
       trans_TPM=NULL,
@@ -1473,38 +1490,75 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     output$mapping.output <- DT::renderDataTable({
       DDD.data$mapping[1:25,]
     },options = list(scrollX = TRUE,
-                     columnDefs = list(list(className = 'dt-center', targets="_all"))
-    ),rownames= FALSE)
+                     columnDefs = list(list(className = 'dt-center', targets="_all"))),rownames= FALSE)
 
     ##sample table####
-    samples <- observe({
+    
+    
+    observe({
       inFile <- input$sample.input
       if (is.null(inFile))
         return(NULL)
-      # withProgress(message = 'Loading sample information', value = 0, {
       samples <- read.csv(inFile$datapath, header = T)
-      # })
-      if('srep' %in% colnames(samples)){
-        if(length(unique(samples$srep))==1){
-          samples$sample.name <- paste0(samples$condition,'_',samples$brep)
-        } else {
-          samples$sample.name <- paste0(samples$condition,'_',samples$brep,'_',samples$srep)
-        }
-      } else {
-        
-      }
-      save(samples,file=paste0(DDD.data$data.folder,'/samples.RData'))
-
+      
+      if('srep' %in% colnames(samples))
+        samples$srep <- 'srep1'
+      
       DDD.data$samples <- samples
-
+      save(samples,file=paste0(DDD.data$data.folder,'/samples.RData'))
     })
-
-    output$sample.output <- DT::renderDataTable({
-      if(!is.null(DDD.data$samples_new))
-        DDD.data$samples_new else DDD.data$samples
-    },options = list(scrollX = TRUE,
-                     columnDefs = list(list(className = 'dt-left', targets="_all"))))
     
+    ##select condition####
+    observe({
+      if(!is.null(DDD.data$samples)){
+        updateSelectInput(session,inputId = "select.condition",
+                          choices = colnames(DDD.data$samples)[-which(colnames(DDD.data$samples) %in% c('brep','srep','path'))])
+        updateSelectInput(session,inputId = "select.block",
+                          choices = colnames(DDD.data$samples)[-which(colnames(DDD.data$samples) %in% c('brep','srep','path'))])
+      }
+    })
+    
+    samples <- reactive({
+      if(is.null(input$select.condition) & is.null(input$select.block))
+        return(NULL)
+      samples <- DDD.data$samples
+      
+      if(!is.null(input$select.condition)){
+        condition <- interaction(DDD.data$samples[,input$select.condition])
+        samples$condition <- condition
+      }
+      
+      if(!is.null(input$select.block)){
+        block <- interaction(DDD.data$samples[,input$select.block])
+        samples$block <- block
+      }
+      DDD.data$sample_name <- samples$sample.name <- paste0(samples$condition,'_',samples$brep,'_',samples$srep)
+      samples
+    })
+    
+    options(DT.options = list(scrollX = TRUE,scrollCollapse=TRUE,columnDefs = list(list(className = 'dt-left', targets="_all"))))
+    output$sample.output <- DT::renderDataTable({
+      if(is.null(samples()) & is.null(DDD.data$samples))
+        return(NULL)
+      if(is.null(samples()))
+        samples.table <- DDD.data$samples else samples.table <- samples()
+      condition.idx <- c('condition','block','brep','srep','path')
+      color.idx <- c('yellow','yellow','lightgreen','lightgreen','red')
+      idx <- which(condition.idx %in% colnames(samples.table))
+      condition.idx <- condition.idx[idx]
+      color.idx <- color.idx[idx]
+      if(length(condition.idx)>1){
+        x <-  datatable(samples.table)
+        for(i in seq_along(condition.idx)){
+          x <- formatStyle(x,condition.idx[i],backgroundColor = color.idx[i])
+        }
+        x
+      } else {
+        samples.table
+      }
+    })
+    
+
     ##------------------->> generate  expression  <<--------------------
     ##--------------------generate genes expression---------------------
     observe({
@@ -1545,13 +1599,13 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                 type = input$tximport.quant.method, tx2gene = DDD.data$mapping,
                                 countsFromAbundance = input$tximport.method)
           incProgress(0.7)
-          colnames(txi_genes$counts)<-DDD.data$samples$sample.name
+          colnames(txi_genes$counts)<-DDD.data$sample_name
           write.csv(txi_genes$counts,file=paste0(DDD.data$result.folder,'/counts_genes.csv'))
           incProgress(0.8)
-          colnames(txi_genes$abundance)<-DDD.data$samples$sample.name
+          colnames(txi_genes$abundance)<-DDD.data$sample_name
           write.csv(txi_genes$abundance,file=paste0(DDD.data$result.folder,'/TPM_genes.csv'))
           incProgress(0.9)
-          colnames(txi_genes$length)<-DDD.data$samples$sample.name
+          colnames(txi_genes$length)<-DDD.data$sample_name
           save(txi_genes,file=paste0(DDD.data$data.folder,'/txi_genes.RData'))
           genes_TPM <- txi_genes$abundance
           save(genes_TPM,file=paste0(DDD.data$data.folder,'/genes_TPM.RData'))
@@ -1622,13 +1676,13 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                                countsFromAbundance = input$tximport.method,
                                txOut = T,dropInfReps = T)
           incProgress(0.7)
-          colnames(txi_trans$counts)<-DDD.data$samples$sample.name
+          colnames(txi_trans$counts)<-DDD.data$sample_name
           write.csv(txi_trans$counts,file=paste0(DDD.data$result.folder,'/counts_trans.csv'))
           incProgress(0.8)
-          colnames(txi_trans$abundance)<-DDD.data$samples$sample.name
+          colnames(txi_trans$abundance)<-DDD.data$sample_name
           write.csv(txi_trans$abundance,file=paste0(DDD.data$result.folder,'/TPM_trans.csv'))
           incProgress(0.9)
-          colnames(txi_trans$length)<-DDD.data$samples$sample.name
+          colnames(txi_trans$length)<-DDD.data$sample_name
           save(txi_trans,file=paste0(DDD.data$data.folder,'/txi_trans.RData'))
           trans_TPM <- txi_trans$abundance
           save(trans_TPM,file=paste0(DDD.data$data.folder,'/trans_TPM.RData'))
@@ -2474,20 +2528,21 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                      switch(DE.pipeline,
                             limma={
                               genes_3D_stat <- limma.pipeline(dge = DDD.data$genes_dge,
-                                                               design = design,
-                                                               deltaPS = DDD.data$deltaPS,
-                                                               contrast = DDD.data$contrast,
-                                                               diffAS = F,
-                                                               adjust.method = input$p.adjust.method)
+                                                              design = design,
+                                                              deltaPS = DDD.data$deltaPS,
+                                                              contrast = DDD.data$contrast,
+                                                              diffAS = F,
+                                                              adjust.method = input$p.adjust.method,
+                                                              block = DDD.data$samples_new$block)
                             },
                             glmQL={
                               genes_3D_stat <- edgeR.pipeline(dge = DDD.data$genes_dge,
-                                                               design = design,
-                                                               deltaPS = DDD.data$deltaPS,
-                                                               contrast = DDD.data$contrast,
-                                                               diffAS = F,
-                                                               method = 'glmQL',
-                                                               adjust.method = input$p.adjust.method)
+                                                              design = design,
+                                                              deltaPS = DDD.data$deltaPS,
+                                                              contrast = DDD.data$contrast,
+                                                              diffAS = F,
+                                                              method = 'glmQL',
+                                                              adjust.method = input$p.adjust.method)
                             },
                             glm={
                               genes_3D_stat <- edgeR.pipeline(dge = DDD.data$genes_dge,
@@ -2659,11 +2714,12 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
                      switch(DE.pipeline,
                             limma={
                               trans_3D_stat <- limma.pipeline(dge = DDD.data$trans_dge,
-                                                               design = design,
-                                                               deltaPS = DDD.data$deltaPS,
-                                                               contrast = DDD.data$contrast,
-                                                               diffAS = T,
-                                                               adjust.method = input$p.adjust.method)
+                                                              design = design,
+                                                              deltaPS = DDD.data$deltaPS,
+                                                              contrast = DDD.data$contrast,
+                                                              diffAS = T,
+                                                              adjust.method = input$p.adjust.method,
+                                                              block = DDD.data$samples_new$block)
                             },
                             glmQL={
                               trans_3D_stat <- edgeR.pipeline(dge = DDD.data$trans_dge,
@@ -3513,6 +3569,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
 
       withProgress(message = paste0('Plotting ',length(genes),' genes'),
                    detail = 'This may take a while...', value = 0, {
+                     graphics.off()
                      for(gene in genes){
                        incProgress(1/length(genes))
                        if(input$multiple.plot.type %in% c('Abundance','Both')){
@@ -3814,6 +3871,12 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     observe({
       df <- data.para()
       x$df <- df
+    })
+    
+    observeEvent(input$add.row,{
+      newRow <- data.frame(t(c('','','')))
+      colnames(newRow) <- c('Step','Description','Parameter (Double click to edit if not correct)')
+      x$df <- rbind(x$df,newRow)
     })
 
 

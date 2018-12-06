@@ -14,6 +14,7 @@
 #' @param diffAS logical, whether to perform DAS analysis. If \code{TRUE}, the \code{\link[limma]{diffSplice}} (limma pipeline)
 #' or \code{\link[edgeR]{diffSpliceDGE}} (edgeR pipeline) function is used to peform DAS gene and DTU transcript analysis.
 #' @param adjust.method method the adjust p-values for multiple comparisons. Default is "BH" and full details can be found in \code{\link{p.adjust}.}
+#' @param block vector or factor specifying a blocking variable on the arrays. Has length equal to the number of arrays. 
 #' @details
 #' \bold{Abbreviation}
 #' \itemize{
@@ -166,7 +167,8 @@ limma.pipeline <- function(dge,
                            design,
                            deltaPS=NULL,
                            diffAS=F,
-                           adjust.method='BH'){
+                           adjust.method='BH',
+                           block=NULL){
   start.time <- Sys.time()
   results <- list()
   ##########################################################
@@ -177,9 +179,22 @@ limma.pipeline <- function(dge,
   targets <- rownames(voom.object$E)
 
   ##########################################################
+  ##--Fit block
+  if(!is.null(block)){
+    message('Fit block information')
+    corfit <- duplicateCorrelation(voom.object,design,block=block)
+    correlation <- corfit$consensus
+    results$corfit <- corfit
+  } else {
+    correlation <- NULL
+  }
+  results$block <- block
+  results$correlation <- correlation
+  
+  ##########################################################
   ##--Fit a basic linear model
   message('Fit a basic linear model ...')
-  fit.lmFit <- lmFit(voom.object, design)
+  fit.lmFit <- lmFit(voom.object, design,block = block,correlation = correlation)
   results$fit.lmFit <- fit.lmFit
 
   ##########################################################

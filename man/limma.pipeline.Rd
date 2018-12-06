@@ -6,7 +6,7 @@
 \title{Dfferential expression (DE) and alternative splicing (DAS) analysis}
 \usage{
 limma.pipeline(dge, contrast, span = 0.5, design, deltaPS = NULL,
-  diffAS = F, adjust.method = "BH")
+  diffAS = F, adjust.method = "BH", block = NULL)
 
 edgeR.pipeline(dge, method = c("glm", "glmQL"), design, contrast,
   diffAS = F, deltaPS = NULL, adjust.method = "BH")
@@ -30,6 +30,8 @@ expression mean-variance trend.}
 or \code{\link[edgeR]{diffSpliceDGE}} (edgeR pipeline) function is used to peform DAS gene and DTU transcript analysis.}
 
 \item{adjust.method}{method the adjust p-values for multiple comparisons. Default is "BH" and full details can be found in \code{\link{p.adjust}.}}
+
+\item{block}{vector or factor specifying a blocking variable on the arrays. Has length equal to the number of arrays.}
 
 \item{method}{method to use in the \code{\link{edgeR.pipeline}}. Options are "glm" or "glmQL".}
 }
