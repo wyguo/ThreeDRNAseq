@@ -391,7 +391,7 @@ plotPCAind <- function(data2pca,
 #' before and after normalisation.
 #' @export
 #'
-boxplot.normalised <- function(data.before,data.after,condition,sample.name){
+boxplotNormalised <- function(data.before,data.after,condition,sample.name){
   data2plot <- data.before
   data2plot <- t(apply(data2plot,2,function(x) boxplot.stats(x)$stats))
   data2plot <- cbind(condition=condition,samples=sample.name,data.frame(data2plot))

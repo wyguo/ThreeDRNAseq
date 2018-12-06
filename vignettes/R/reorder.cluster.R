@@ -1,4 +1,9 @@
-reorder.clusters <- function(clusters,dat){
+#' Reorder the clusters according to their average exprssion 
+#' @param clusters a vector of clusters of targets
+#' @param data expression data of these target
+#' @return a vector of ordered clusters
+#' @export
+reorderClusters <- function(clusters,dat){
   targets <- rownames(dat)
   names(clusters) <- targets
   idx0 <- rowmean(dat,group = clusters,reorder = T)
