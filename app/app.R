@@ -1122,7 +1122,7 @@ server <- function(input, output, session) {
     figure.folder=NULL,
     result.folder=NULL,
     report.folder=NULL,
-    path=getwd(),
+    path='/srv/shiny-server',
     mapping=NULL,
     samples=NULL,
     samples_new=NULL,
