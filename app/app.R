@@ -1,11 +1,11 @@
 sourceDir <- function(path, trace = TRUE, ...) {
-  for (nm in list.files(path, pattern = "[.][RrSsQq]$")) {
+  for (nm in list.files(path, pattern = '*.R')) {
     #if(trace) cat(nm,":")
     source(file.path(path, nm), ...)
     #if(trace) cat("/n")
   }
 }
-sourceDir('R')
+sourceDir(path = 'R',encoding = 'UTF-8')
 
 #######################################################################################################
 #######################################################################################################
@@ -111,14 +111,14 @@ mainbody <- dashboardBody(
             tags$head(tags$style("#TxtOut {white-space: normal;}")),
             fluidRow(
               column(width = 12,
-                     box(title = 'Choose working directory',
+                     box(title = 'Working directory',
                          width=13,status = 'primary', solidHeader = T,
                          # HTML('<h4><strong>Choose working directory</strong></h4>'),
                          # wellPanel(
                          # column(width = 2,
-                         shinyDirButton("wdir", "Chose directory", "Upload",
-                                        buttonType ="primary"),
-                         br(),
+                         # shinyDirButton("wdir", "Chose directory", "Upload",
+                         #                buttonType ="primary"),
+                         # br(),
                          # ),
                          # column(width = 10,
                          verbatimTextOutput("wdir.info"),
@@ -1398,28 +1398,28 @@ server <- function(input, output, session) {
   
   
   ##---------------working directory-----------------
-  shinyDirChoose(input, 'wdir', roots = c(getVolumes()()))
-  wdir <- reactive({
-    input$wdir
-  })
-  
-  observeEvent(ignoreNULL = T,
-               eventExpr = {
-                 input$wdir
-               },
-               handlerExpr = {
-                 if(is.integer(wdir())){
-                   path.folder <- NULL
-                 } else {
-                   root <- getVolumes()()[wdir()$root]
-                   root <- gsub('[\\]','',normalizePath(root))
-                   current_wk <- unlist(wdir()$path[-1])
-                   path.folder <- file.path(root, paste(current_wk, collapse = .Platform$file.sep))
-                   setwd(path.folder)
-                 }
-                 DDD.data$path <- path.folder
-               })
-  
+  # shinyDirChoose(input, 'wdir', roots = c(getVolumes()()))
+  # wdir <- reactive({
+  #   input$wdir
+  # })
+  # 
+  # observeEvent(ignoreNULL = T,
+  #              eventExpr = {
+  #                input$wdir
+  #              },
+  #              handlerExpr = {
+  #                if(is.integer(wdir())){
+  #                  path.folder <- NULL
+  #                } else {
+  #                  root <- getVolumes()()[wdir()$root]
+  #                  root <- gsub('[\\]','',normalizePath(root))
+  #                  current_wk <- unlist(wdir()$path[-1])
+  #                  path.folder <- file.path(root, paste(current_wk, collapse = .Platform$file.sep))
+  #                  setwd(path.folder)
+  #                }
+  #                DDD.data$path <- path.folder
+  #              })
+  # 
   output$wdir.info <- renderText({
     DDD.data$path
   })
