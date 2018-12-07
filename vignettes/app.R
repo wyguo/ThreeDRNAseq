@@ -17,31 +17,33 @@ sourceDir <- function(path, trace = TRUE, ...) {
 }
 sourceDir('R')
 
+#######################################################################################################
+## Install packages of dependency
 ###---> Install packages from Cran
-packages = c('shiny','shinydashboard','rhandsontable','shinyFiles','shinyjs','DT',
-             'plotly','ggplot2','eulerr','ggrepel',
-             'gridExtra','fastcluster','rmarkdown')
-package.check <- lapply(packages, FUN = function(x) {
-  if (!require(x, character.only = TRUE)) {
-    install.packages(x, dependencies = TRUE,repos = 'https://cran.ma.imperial.ac.uk/')
-    library(x, character.only = TRUE)
-  }
-})
-
+cran.package.list <- c('shiny','shinydashboard','rhandsontable','shinyFiles','shinyjs','DT',
+                       'plotly','ggplot2','eulerr','ggrepel','statmod',
+                       'gridExtra','fastcluster','rmarkdown')
+for(i in cran.package.list){
+  if(!(i %in% rownames(installed.packages()))){
+    message('Installing package: ',i)
+    install.packages(i,dependencies = T)
+  } else next
+}
 
 ###---> Install packages from Bioconductor
 bioconductor.package.list <- c('tximport','edgeR','limma','RUVSeq','ComplexHeatmap','rhdf5')
 for(i in bioconductor.package.list){
   if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager",repos = 'https://cran.ma.imperial.ac.uk/')
+    install.packages("BiocManager")
   if(!(i %in% rownames(installed.packages()))){
     message('Installing package: ',i)
-    BiocManager::install(i, version = "3.8")
+    BiocManager::install(i, version = "3.8",dependencies = T)
   } else next
 }
-
 ####Other packages may be required for the analysis, please install accordingly.
-
+#######################################################################################################
+#######################################################################################################
+data.size.max <- 500
 message('Many thanks for using our 3D RNA-seq shiny App o^_^o!')
 message('The step-by-step user manual of this app can be found in:\n https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md')
 ## app.R ##
@@ -62,6 +64,7 @@ library(gridExtra)
 library(grid)
 library(ComplexHeatmap)
 library(fastcluster)
+
 options(stringsAsFactors=F)
 
 ##dashboardHeader######################################################
@@ -206,7 +209,6 @@ mainbody <- dashboardBody(
                                      "text/comma-separated-values,text/plain",
                                      ".csv")
                          ),
-                         br(),
                          HTML('This file includes the gene-transcript mapping information. See examples in the manual.'),
                          hr(),
                          fileInput("sample.input", "Choose samples.csv file",
@@ -215,11 +217,25 @@ mainbody <- dashboardBody(
                                      "text/comma-separated-values,text/plain",
                                      ".csv")
                          ),
-                         br(),
-                         HTML('This file includes the information of conditions for linear regression,
-                              biological replicates, sequencing replicates and the complete paths of
-                              transcript quantification.
-                              See details in the manual.')
+                         HTML('This csv file includes sample information of conditions,
+                              biological replicates, sequencing replicates, complete paths of
+                              transcript quantification, etc. See details in the manual.'),
+                         hr(),
+                         selectInput(inputId = 'select.condition',
+                                     label = 'Select condition column',
+                                     selected = '',multiple = T,
+                                     choices = 'NA'),
+                         HTML('If "condition" column is in the spreadsheet of samples.csv, users can
+                              select columns from spreadsheet to generate a new column of condtions. If multiple columns are 
+                              selected (e.g. columns A, B and C), conditions will be generated as "A.B.C".'),
+                         hr(),
+                         selectInput(inputId = 'select.block',
+                                     label = 'Select condition block',
+                                     selected = '',multiple = T,
+                                     choices = 'NA'),
+                         HTML('If users want to use blocking factor in the limma pipeline, please either specify a "block" 
+                              column in the samples.csv spreadsheet or select from here. If multiple columns are 
+                              selected (e.g. columns A, B and C), blocks will be generated as "A.B.C".')
                          )
                          ),
               #generate gene expression####
@@ -280,21 +296,21 @@ mainbody <- dashboardBody(
                          ),
             # output sample table####
             fluidRow(
-              tabBox(width = 13,
+              tabBox(width = 13,selected = 'Samples',
                      # Title can include an icon
                      # title = tagList(shiny::icon("gear"), "Loaded tables"),
                      title = "Loaded tables",side = 'right',
                      tabPanel("Mapping",
                               "Part of gene-transcript mapping table:",
-                              DT::dataTableOutput("mapping.output")
+                              DT::DTOutput("mapping.output")
                      ),
                      tabPanel("Samples",
                               "The sample information:",
-                              DT::dataTableOutput("sample.output")
+                              DT::DTOutput("sample.output")
                      )
               )
             )
-                     ),
+                         ),
     
     #========================>> Data pre-processing panel <<=======================
     tabItem('preprocessing',
@@ -1042,6 +1058,9 @@ mainbody <- dashboardBody(
                 DT::DTOutput('para.summary'),
                 br(),
                 br(),
+                actionButton(inputId = 'add.row',label='Add empty row to provide additional information',
+                             icon = icon('plus',lib = 'font-awesome'),
+                             style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: left"),
                 actionButton(inputId = 'save.para.summary',label = 'Save',
                              icon = icon('download',lib = 'font-awesome'),
                              style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: right")
@@ -1068,65 +1087,67 @@ my_password <- "3DRNAseq"
 
 server <- function(input, output, session) {
   # set data size
+  options(shiny.maxRequestSize = data.size.max*1024^2)
+  
   #Log in ##############################################################
   # ============================= password ============================ #
-  values <- reactiveValues(authenticated = FALSE)
-  
-  # Return the UI for a modal dialog with data selection input. If 'failed'
-  # is TRUE, then display a message that the previous value was invalid.
-  dataModal <- function(failed = FALSE) {
-    modalDialog(
-      textInput("username", "Username:",value = 'User'),
-      passwordInput("password", "Password:",value = '3DRNAseq'),
-      footer = tagList(
-        # modalButton("Cancel"),
-        div(style="display:inline-block;vertical-align:middle;height:40px;float: left",
-            verbatimTextOutput('log.info')
-        ),
-        div(style="display:inline-block;vertical-align:middle;height:40px",
-            actionButton("ok", "OK",
-                         style="color: #fff; background-color: #428bca; border-color: #2e6da4")
-        )
-      ),size = 's'
-    )
-  }
-  
-  # Show modal when button is clicked.
-  # This `observe` is suspended only whith right user credential
-  
-  obs1 <- observe({
-    showModal(dataModal())
-  })
-  
-  # When OK button is pressed, attempt to authenticate. If successful,
-  # remove the modal.
-  
-  obs2 <- observe({
-    req(input$ok)
-    isolate({
-      Username <- input$username
-      Password <- input$password
-    })
-    Id.username <- which(my_username == Username)
-    Id.password <- which(my_password == Password)
-    if (length(Id.username) > 0 & length(Id.password) > 0) {
-      if (Id.username == Id.password) {
-        Logged <<- TRUE
-        values$authenticated <- TRUE
-        obs1$suspend()
-        removeModal()
-      } else {
-        values$authenticated <- FALSE
-      }
-    }
-  })
-  
-  observeEvent(input$ok,{
-    output$log.info <- renderText({
-      if (values$authenticated) "OK!!!!!"
-      else "Wrong password!!!"
-    })
-  })
+  # values <- reactiveValues(authenticated = FALSE)
+  # 
+  # # Return the UI for a modal dialog with data selection input. If 'failed'
+  # # is TRUE, then display a message that the previous value was invalid.
+  # dataModal <- function(failed = FALSE) {
+  #   modalDialog(
+  #     textInput("username", "Username:",value = 'User'),
+  #     passwordInput("password", "Password:",value = ''),
+  #     footer = tagList(
+  #       # modalButton("Cancel"),
+  #       div(style="display:inline-block;vertical-align:middle;height:40px;float: left",
+  #           verbatimTextOutput('log.info')
+  #       ),
+  #       div(style="display:inline-block;vertical-align:middle;height:40px",
+  #           actionButton("ok", "OK",
+  #                        style="color: #fff; background-color: #428bca; border-color: #2e6da4")
+  #       )
+  #     ),size = 's'
+  #   )
+  # }
+  # 
+  # # Show modal when button is clicked.
+  # # This `observe` is suspended only whith right user credential
+  # 
+  # obs1 <- observe({
+  #   showModal(dataModal())
+  # })
+  # 
+  # # When OK button is pressed, attempt to authenticate. If successful,
+  # # remove the modal.
+  # 
+  # obs2 <- observe({
+  #   req(input$ok)
+  #   isolate({
+  #     Username <- input$username
+  #     Password <- input$password
+  #   })
+  #   Id.username <- which(my_username == Username)
+  #   Id.password <- which(my_password == Password)
+  #   if (length(Id.username) > 0 & length(Id.password) > 0) {
+  #     if (Id.username == Id.password) {
+  #       Logged <<- TRUE
+  #       values$authenticated <- TRUE
+  #       obs1$suspend()
+  #       removeModal()
+  #     } else {
+  #       values$authenticated <- FALSE
+  #     }
+  #   }
+  # })
+  # 
+  # observeEvent(input$ok,{
+  #   output$log.info <- renderText({
+  #     if (values$authenticated) "OK!!!!!"
+  #     else "Wrong password!!!"
+  #   })
+  # })
   # ============================= password ============================ #
   
   DDD.data <- reactiveValues(
@@ -1138,6 +1159,7 @@ server <- function(input, output, session) {
     mapping=NULL,
     samples=NULL,
     samples_new=NULL,
+    sample_name=NULL,
     trans_counts=NULL,
     genes_counts=NULL,
     trans_TPM=NULL,
@@ -1501,37 +1523,74 @@ server <- function(input, output, session) {
   output$mapping.output <- DT::renderDataTable({
     DDD.data$mapping[1:25,]
   },options = list(scrollX = TRUE,
-                   columnDefs = list(list(className = 'dt-center', targets="_all"))
-  ),rownames= FALSE)
+                   columnDefs = list(list(className = 'dt-center', targets="_all"))),rownames= FALSE)
   
   ##sample table####
-  samples <- observe({
+  
+  
+  observe({
     inFile <- input$sample.input
     if (is.null(inFile))
       return(NULL)
-    # withProgress(message = 'Loading sample information', value = 0, {
     samples <- read.csv(inFile$datapath, header = T)
-    # })
-    if('srep' %in% colnames(samples)){
-      if(length(unique(samples$srep))==1){
-        samples$sample.name <- paste0(samples$condition,'_',samples$brep)
-      } else {
-        samples$sample.name <- paste0(samples$condition,'_',samples$brep,'_',samples$srep)
-      }
-    } else {
-      
-    }
-    save(samples,file=paste0(DDD.data$data.folder,'/samples.RData'))
+    
+    if(!('srep' %in% colnames(samples)))
+      samples$srep <- 'srep1'
     
     DDD.data$samples <- samples
-    
+    save(samples,file=paste0(DDD.data$data.folder,'/samples.RData'))
   })
   
+  ##select condition####
+  observe({
+    if(!is.null(DDD.data$samples)){
+      updateSelectInput(session,inputId = "select.condition",
+                        choices = colnames(DDD.data$samples)[-which(colnames(DDD.data$samples) %in% c('brep','srep','path'))])
+      updateSelectInput(session,inputId = "select.block",
+                        choices = colnames(DDD.data$samples)[-which(colnames(DDD.data$samples) %in% c('brep','srep','path'))])
+    }
+  })
+  
+  samples <- reactive({
+    if(is.null(input$select.condition) & is.null(input$select.block))
+      return(NULL)
+    samples <- DDD.data$samples
+    
+    if(!is.null(input$select.condition)){
+      condition <- interaction(DDD.data$samples[,input$select.condition])
+      samples$condition <- condition
+    }
+    
+    if(!is.null(input$select.block)){
+      block <- interaction(DDD.data$samples[,input$select.block])
+      samples$block <- block
+    }
+    DDD.data$sample_name <- samples$sample.name <- paste0(samples$condition,'_',samples$brep,'_',samples$srep)
+    samples
+  })
+  
+  options(DT.options = list(scrollX = TRUE,scrollCollapse=TRUE,columnDefs = list(list(className = 'dt-left', targets="_all"))))
   output$sample.output <- DT::renderDataTable({
-    if(!is.null(DDD.data$samples_new))
-      DDD.data$samples_new else DDD.data$samples
-  },options = list(scrollX = TRUE,
-                   columnDefs = list(list(className = 'dt-left', targets="_all"))))
+    if(is.null(samples()) & is.null(DDD.data$samples))
+      return(NULL)
+    if(is.null(samples()))
+      samples.table <- DDD.data$samples else samples.table <- samples()
+      condition.idx <- c('condition','block','brep','srep','path')
+      color.idx <- c('yellow','yellow','lightgreen','lightgreen','red')
+      idx <- which(condition.idx %in% colnames(samples.table))
+      condition.idx <- condition.idx[idx]
+      color.idx <- color.idx[idx]
+      if(length(condition.idx)>1){
+        x <-  datatable(samples.table)
+        for(i in seq_along(condition.idx)){
+          x <- formatStyle(x,condition.idx[i],backgroundColor = color.idx[i])
+        }
+        x
+      } else {
+        samples.table
+      }
+  })
+  
   
   ##------------------->> generate  expression  <<--------------------
   ##--------------------generate genes expression---------------------
@@ -1549,6 +1608,19 @@ server <- function(input, output, session) {
   })
   
   observeEvent(input$run.txi.genes,{
+    if(!file.exists(DDD.data$data.folder))
+      dir.create(DDD.data$data.folder,recursive = T)
+    
+    if(!file.exists(DDD.data$result.folder))
+      dir.create(DDD.data$result.folder,recursive = T)
+    
+    if(!file.exists(DDD.data$figure.folder))
+      dir.create(DDD.data$figure.folder,recursive = T)
+    
+    if(!file.exists(DDD.data$report.folder))
+      dir.create(DDD.data$report.folder,recursive = T)
+    
+    ####
     if (is.null(DDD.data$samples))
       return(NULL)
     if(input$generate.new.genes.data=='Load txi_genes.RData'){
@@ -1573,13 +1645,13 @@ server <- function(input, output, session) {
                               type = input$tximport.quant.method, tx2gene = DDD.data$mapping,
                               countsFromAbundance = input$tximport.method)
         incProgress(0.7)
-        colnames(txi_genes$counts)<-DDD.data$samples$sample.name
+        colnames(txi_genes$counts)<-DDD.data$sample_name
         write.csv(txi_genes$counts,file=paste0(DDD.data$result.folder,'/counts_genes.csv'))
         incProgress(0.8)
-        colnames(txi_genes$abundance)<-DDD.data$samples$sample.name
+        colnames(txi_genes$abundance)<-DDD.data$sample_name
         write.csv(txi_genes$abundance,file=paste0(DDD.data$result.folder,'/TPM_genes.csv'))
         incProgress(0.9)
-        colnames(txi_genes$length)<-DDD.data$samples$sample.name
+        colnames(txi_genes$length)<-DDD.data$sample_name
         save(txi_genes,file=paste0(DDD.data$data.folder,'/txi_genes.RData'))
         genes_TPM <- txi_genes$abundance
         save(genes_TPM,file=paste0(DDD.data$data.folder,'/genes_TPM.RData'))
@@ -1650,13 +1722,13 @@ server <- function(input, output, session) {
                              countsFromAbundance = input$tximport.method,
                              txOut = T,dropInfReps = T)
         incProgress(0.7)
-        colnames(txi_trans$counts)<-DDD.data$samples$sample.name
+        colnames(txi_trans$counts)<-DDD.data$sample_name
         write.csv(txi_trans$counts,file=paste0(DDD.data$result.folder,'/counts_trans.csv'))
         incProgress(0.8)
-        colnames(txi_trans$abundance)<-DDD.data$samples$sample.name
+        colnames(txi_trans$abundance)<-DDD.data$sample_name
         write.csv(txi_trans$abundance,file=paste0(DDD.data$result.folder,'/TPM_trans.csv'))
         incProgress(0.9)
-        colnames(txi_trans$length)<-DDD.data$samples$sample.name
+        colnames(txi_trans$length)<-DDD.data$sample_name
         save(txi_trans,file=paste0(DDD.data$data.folder,'/txi_trans.RData'))
         trans_TPM <- txi_trans$abundance
         save(trans_TPM,file=paste0(DDD.data$data.folder,'/trans_TPM.RData'))
@@ -2348,10 +2420,10 @@ server <- function(input, output, session) {
     condition <- DDD.data$samples_new$condition
     data.before <- DDD.data$trans_counts[DDD.data$target_high$trans_high,]
     data.after <- counts2CPM(obj = DDD.data$trans_dge,Log = T)
-    g <- boxplot.normalised(data.before = data.before,
-                            data.after = data.after,
-                            condition = condition,
-                            sample.name = sample.name)
+    g <- boxplotNormalised(data.before = data.before,
+                           data.after = data.after,
+                           condition = condition,
+                           sample.name = sample.name)
     g
   })
   
@@ -2373,10 +2445,10 @@ server <- function(input, output, session) {
     condition <- DDD.data$samples_new$condition
     data.before <- DDD.data$genes_counts[DDD.data$target_high$genes_high,]
     data.after <- counts2CPM(obj = DDD.data$genes_dge,Log = T)
-    g <- boxplot.normalised(data.before = data.before,
-                            data.after = data.after,
-                            condition = condition,
-                            sample.name = sample.name)
+    g <- boxplotNormalised(data.before = data.before,
+                           data.after = data.after,
+                           condition = condition,
+                           sample.name = sample.name)
     g
   })
   
@@ -2506,7 +2578,8 @@ server <- function(input, output, session) {
                                                             deltaPS = DDD.data$deltaPS,
                                                             contrast = DDD.data$contrast,
                                                             diffAS = F,
-                                                            adjust.method = input$p.adjust.method)
+                                                            adjust.method = input$p.adjust.method,
+                                                            block = DDD.data$samples_new$block)
                           },
                           glmQL={
                             genes_3D_stat <- edgeR.pipeline(dge = DDD.data$genes_dge,
@@ -2691,7 +2764,8 @@ server <- function(input, output, session) {
                                                             deltaPS = DDD.data$deltaPS,
                                                             contrast = DDD.data$contrast,
                                                             diffAS = T,
-                                                            adjust.method = input$p.adjust.method)
+                                                            adjust.method = input$p.adjust.method,
+                                                            block = DDD.data$samples_new$block)
                           },
                           glmQL={
                             trans_3D_stat <- edgeR.pipeline(dge = DDD.data$trans_dge,
@@ -3300,7 +3374,7 @@ server <- function(input, output, session) {
       hc.dist <- dist(data2plot,method = input$dist.method)
       hc <- fastcluster::hclust(hc.dist,method = input$cluster.method)
       clusters <- cutree(hc, k = input$cluster.number)
-      clusters <- reorder.clusters(clusters = clusters,dat = data2plot)
+      clusters <- reorderClusters(clusters = clusters,dat = data2plot)
       incProgress(0.3)
       g <- Heatmap(as.matrix(data2plot), name = 'Z-scores',
                    cluster_rows = TRUE,
@@ -3541,6 +3615,7 @@ server <- function(input, output, session) {
     
     withProgress(message = paste0('Plotting ',length(genes),' genes'),
                  detail = 'This may take a while...', value = 0, {
+                   graphics.off()
                    for(gene in genes){
                      incProgress(1/length(genes))
                      if(input$multiple.plot.type %in% c('Abundance','Both')){
@@ -3844,6 +3919,12 @@ server <- function(input, output, session) {
     x$df <- df
   })
   
+  observeEvent(input$add.row,{
+    newRow <- data.frame(t(c('','','')))
+    colnames(newRow) <- c('Step','Description','Parameter (Double click to edit if not correct)')
+    x$df <- rbind(x$df,newRow)
+  })
+  
   
   output$para.summary <- DT::renderDT({
     x$df
@@ -3906,3 +3987,4 @@ server <- function(input, output, session) {
   })
 }
 shinyApp(ui, server,options=list(launch.browser=T))
+

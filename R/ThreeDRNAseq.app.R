@@ -31,7 +31,6 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
   library(grid)
   library(ComplexHeatmap)
   library(fastcluster)
-  library(Gmisc)
   options(stringsAsFactors=F)
 
   ##dashboardHeader######################################################
@@ -1501,7 +1500,7 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
         return(NULL)
       samples <- read.csv(inFile$datapath, header = T)
       
-      if('srep' %in% colnames(samples))
+      if(!('srep' %in% colnames(samples)))
         samples$srep <- 'srep1'
       
       DDD.data$samples <- samples
@@ -1575,6 +1574,19 @@ ThreeDRNAseq.app <- function(data.size.max=300) {
     })
 
     observeEvent(input$run.txi.genes,{
+      if(!file.exists(DDD.data$data.folder))
+        dir.create(DDD.data$data.folder,recursive = T)
+      
+      if(!file.exists(DDD.data$result.folder))
+        dir.create(DDD.data$result.folder,recursive = T)
+      
+      if(!file.exists(DDD.data$figure.folder))
+        dir.create(DDD.data$figure.folder,recursive = T)
+      
+      if(!file.exists(DDD.data$report.folder))
+        dir.create(DDD.data$report.folder,recursive = T)
+      
+      ####
       if (is.null(DDD.data$samples))
         return(NULL)
       if(input$generate.new.genes.data=='Load txi_genes.RData'){

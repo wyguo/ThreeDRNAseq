@@ -11,6 +11,7 @@
 #' \deqn{\log_2 \frac{counts + 0.5}{lib.size+1}\times 10^6}
 #' 
 #' @return a numeric matrix of CPM or \eqn{\log_2}-CPM.
+#' @export
 #' @seealso \code{\link[edgeR]{cpm}}.
 #' @examples 
 #' y <- matrix(rnbinom(20,size=1,mu=10),5,4)
