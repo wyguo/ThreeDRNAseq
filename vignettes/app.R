@@ -60,7 +60,8 @@ mainsidebar <- dashboardSidebar(
 ##dashboardBody########################################################
 # ========================== dashboardBody ========================== #
 mainbody <- dashboardBody(
-  tags$head(includeScript(system.file("google-analytics.js", package = "ThreeDRNAseq"))),
+  # tags$head(includeScript(system.file("google-analytics.js", package = "ThreeDRNAseq"))),
+  tags$head(includeScript("google-analytics.js")),
   withMathJax(),
   shinyjs::useShinyjs(),
   tabItems(
