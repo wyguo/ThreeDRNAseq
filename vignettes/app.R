@@ -1,13 +1,3 @@
-#######################################################################################################
-## use devtools R package to install ThreeDRNAseq from Github
-###---> If devtools is not installed, please install
-# if(!requireNamespace("devtools", quietly = TRUE))
-#   install.packages('devtools',dependencies = TRUE)
-# 
-# ###---> Install ThreeDRNAseq
-# if(!requireNamespace("ThreeDRNAseq", quietly = TRUE))
-#   devtools::install_github('wyguo/ThreeDRNAseq')
-
 sourceDir <- function(path, trace = TRUE, ...) {
   for (nm in list.files(path, pattern = "[.][RrSsQq]$")) {
     #if(trace) cat(nm,":")
@@ -17,30 +7,6 @@ sourceDir <- function(path, trace = TRUE, ...) {
 }
 sourceDir('R')
 
-#######################################################################################################
-## Install packages of dependency
-###---> Install packages from Cran
-cran.package.list <- c('shiny','shinydashboard','rhandsontable','shinyFiles','shinyjs','DT',
-                       'plotly','ggplot2','eulerr','ggrepel','statmod',
-                       'gridExtra','fastcluster','rmarkdown')
-for(i in cran.package.list){
-  if(!(i %in% rownames(installed.packages()))){
-    message('Installing package: ',i)
-    install.packages(i,dependencies = T)
-  } else next
-}
-
-###---> Install packages from Bioconductor
-bioconductor.package.list <- c('tximport','edgeR','limma','RUVSeq','ComplexHeatmap','rhdf5')
-for(i in bioconductor.package.list){
-  if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-  if(!(i %in% rownames(installed.packages()))){
-    message('Installing package: ',i)
-    BiocManager::install(i, version = "3.8",dependencies = T)
-  } else next
-}
-####Other packages may be required for the analysis, please install accordingly.
 #######################################################################################################
 #######################################################################################################
 data.size.max <- 500
