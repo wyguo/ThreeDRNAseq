@@ -1,0 +1,36 @@
+Category,Term,Count,FDR,-log10(FDR)
+BP,GO:0080167~response to karrikin,54,0,15.56343
+BP,GO:0055114~oxidation-reduction process,232,0,10.63904
+BP,GO:0009414~response to water deprivation,76,0,10.46071
+BP,GO:0009611~response to wounding,57,0,8.02548
+BP,GO:0009409~response to cold,74,0,7.88245
+BP,GO:0010200~response to chitin,44,0,7.7229
+BP,GO:0009737~response to abscisic acid,88,0,7.34525
+BP,GO:0006979~response to oxidative stress,64,0.00005,4.26948
+BP,GO:0009753~response to jasmonic acid,42,0.00005,4.26673
+BP,GO:0019761~glucosinolate biosynthetic process,18,0.00006,4.25493
+BP,GO:0009651~response to salt stress,92,0.00008,4.081
+BP,GO:0009813~flavonoid biosynthetic process,38,0.00056,3.2531
+BP,GO:0052696~flavonoid glucuronidation,32,0.00073,3.13928
+BP,GO:0009416~response to light stimulus,44,0.0017,2.76924
+BP,GO:0007623~circadian rhythm,28,0.0035,2.45635
+BP,GO:0005978~glycogen biosynthetic process,9,0.00918,2.03734
+BP,GO:0019252~starch biosynthetic process,14,0.01833,1.73688
+BP,GO:0009631~cold acclimation,18,0.01991,1.70089
+BP,GO:0042742~defense response to bacterium,54,0.02714,1.56639
+BP,GO:0010114~response to red light,19,0.03393,1.46937
+CC,GO:0005886~plasma membrane,493,0,9.21013
+CC,GO:0016021~integral component of membrane,681,0,8.77586
+CC,GO:0016020~membrane,263,0,7.16533
+CC,GO:0005887~integral component of plasma membrane,55,0.00104,2.98487
+CC,GO:0005773~vacuole,100,0.00322,2.49196
+CC,GO:0009507~chloroplast,461,0.00653,2.18539
+CC,GO:0043231~intracellular membrane-bounded organelle,40,0.00668,2.17553
+CC,GO:0009506~plasmodesma,143,0.01358,1.86722
+CC,GO:0009505~plant-type cell wall,59,0.042,1.37675
+MF,GO:0004497~monooxygenase activity,43,0.00029,3.53687
+MF,GO:0080044~quercetin 7-O-glucosyltransferase activity,31,0.00039,3.40527
+MF,GO:0080043~quercetin 3-O-glucosyltransferase activity,31,0.00062,3.2095
+MF,GO:0008194~UDP-glycosyltransferase activity,29,0.00191,2.71861
+MF,GO:0005215~transporter activity,63,0.02914,1.53545
+MF,GO:0016491~oxidoreductase activity,69,0.0397,1.40119
