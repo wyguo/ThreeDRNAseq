@@ -1,4 +1,4 @@
-Category,Term,Count,FDR,-log10(FDR)
+Category,Term,Count,FDR,`-LOG10(FDR)
 BP,GO:0080167~response to karrikin,54,0,15.56343
 BP,GO:0055114~oxidation-reduction process,232,0,10.63904
 BP,GO:0009414~response to water deprivation,76,0,10.46071
