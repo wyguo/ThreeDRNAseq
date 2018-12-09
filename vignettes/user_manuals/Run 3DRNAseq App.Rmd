@@ -51,3 +51,6 @@ The example.zip file can be download from: https://github.com/wyguo/ThreeDRNAseq
 library(shiny)
 runGitHub(repo = 'ThreeDRNAseq',username = 'wyguo',subdir = 'app')
 ```
+
+## Tutorial
+Tutorial can be downloaded from: https://github.com/wyguo/ThreeDRNAseq/raw/master/vignettes/tutorial/ThreeDRNAseq.pptx

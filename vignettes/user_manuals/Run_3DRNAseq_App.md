@@ -14,6 +14,7 @@ vignette: >
 -   [Install dependency packages](#install-dependency-packages)
 -   [Download example data](#download-example-data)
 -   [Run ThreeDRNAseq App](#run-threedrnaseq-app)
+-   [Tutorial](#tutorial)
 
 Install dependency packages
 ---------------------------
@@ -58,3 +59,8 @@ Run ThreeDRNAseq App
 library(shiny)
 runGitHub(repo = 'ThreeDRNAseq',username = 'wyguo',subdir = 'app')
 ```
+
+Tutorial
+--------
+
+Tutorial can be downloaded from: <https://github.com/wyguo/ThreeDRNAseq/raw/master/vignettes/tutorial/ThreeDRNAseq.pptx>
