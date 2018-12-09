@@ -1,0 +1,13 @@
+{
+    "salmon_version": "0.8.2",
+    "threads": "2",
+    "index": "/home/rz41242/Projects/2014AS/RTD_April12_2017/salmon_padding17_index",
+    "libType": "IU",
+    "mates1": "/dev/fd/63",
+    "mates2": "/dev/fd/62",
+    "output": "salmon_RTD2_padding_21April2017/salmon_RTD2_padding_801_LIB5167_LDI4895_ACAGTG_L001_R",
+    "": "–useVBOpt",
+    "seqBias": [],
+    "numBootstraps": "30",
+    "auxDir": "aux_info"
+}
