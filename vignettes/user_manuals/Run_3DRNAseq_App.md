@@ -18,7 +18,7 @@ vignette: >
 Install dependency packages
 ---------------------------
 
-It is recommended to run the 3D RNA-seq App using RStudio with R version 3.5.0. It tabes about 10 min to install if all packages are missing from your PC.
+It is recommended to run the 3D RNA-seq App using RStudio with R version &gt; 3.5.0. It takes about 10 min to install if all packages are missing from your PC.
 
 ``` r
 #######################################################################################################
@@ -57,5 +57,4 @@ Run ThreeDRNAseq App
 ``` r
 library(shiny)
 runGitHub(repo = 'ThreeDRNAseq',username = 'wyguo',subdir = 'app')
-``
 ```
