@@ -11,13 +11,16 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,eval = F)
-```
+-   [Install dependency packages](#install-dependency-packages)
+-   [Download example data](#download-example-data)
+-   [Run ThreeDRNAseq App](#run-threedrnaseq-app)
 
-## Install dependency packages
+Install dependency packages
+---------------------------
+
 It is recommended to run the 3D RNA-seq App using RStudio with R version 3.5.0. It tabes about 10 min to install if all packages are missing from your PC.
-``` {r}
+
+``` r
 #######################################################################################################
 ## Install packages of dependency
 ###---> Install packages from Cran
@@ -43,11 +46,16 @@ for(i in bioconductor.package.list){
 }
 ```
 
-## Download example data
-The example.zip file can be download from: https://github.com/wyguo/ThreeDRNAseq/raw/master/vignettes/example.zip. Save the data to local folder and unzip it.
+Download example data
+---------------------
 
-## Run ThreeDRNAseq App
-```{r}
+The example.zip file can be download from: <https://github.com/wyguo/ThreeDRNAseq/raw/master/vignettes/example.zip>. Save the data to local folder and unzip it.
+
+Run ThreeDRNAseq App
+--------------------
+
+``` r
 library(shiny)
 runGitHub(repo = 'ThreeDRNAseq',username = 'wyguo',subdir = 'app')
 ``
+```
