@@ -11,7 +11,7 @@ gg.color.hue <- function(n) {
 #' @param n number of colours to generate.
 #' @return a vector of \code{n} colours.
 distinct.color <- function(n){
-  col.lib <- c("#C0D57E","#BF6CF4","#D435BB","#C2BBCB","#CAE678","#BEC3AD","#EC75F6","#F8DAD6","#D9FBD7","#46C3CF","#5FECDE","#AEE1F5","#AA67CC",
+  col.lib <- c("red","blue","green","yellow","orange","black","#C0D57E","#BF6CF4","#D435BB","#C2BBCB","#CAE678","#BEC3AD","#EC75F6","#F8DAD6","#D9FBD7","#46C3CF","#5FECDE","#AEE1F5","#AA67CC",
                "#81C1F1","#D6A381","#81DADB","#99AD6D","#B8ECF3","#828D6F","#F832A9","#8DD092","#7FC0D0","#6EDDD0","#D4BE95","#B8F7F2","#9752C4",
                "#AF9D7C","#468CE2","#9AA843","#4F9F7A","#8C7DB6","#CA44D8","#93D0B9","#4A718E","#F259C8","#E1C358","#BB924E","#5682F1","#B3E18E",
                "#59C1A6","#3BA7EB","#4ED06A","#A28FF0","#F4F2E7","#F7C2DA","#6921ED","#E8AAE6","#C2F2DF","#A3F7A1","#F0A85C","#BFF399","#E93B87",
