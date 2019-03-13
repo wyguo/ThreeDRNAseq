@@ -5,7 +5,7 @@
 \title{Bar plot of up- and down-regulation}
 \usage{
 plotUpdown(data2plot, contrast, plot.title = NULL, angle = 0,
-  hjust = 0.5)
+  hjust = 0.5, vjust = 0.5, col.up = NULL, col.down = NULL)
 }
 \arguments{
 \item{data2plot}{a matrix/data.frame with three columns: "contrast", "regulation" and "number". See examples for details.}

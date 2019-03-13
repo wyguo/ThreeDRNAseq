@@ -35,7 +35,7 @@ PS is defined as the ratio of transcript abundance divided by the gene abundance
 }
 \examples{
 set.seed(36)
-transAbundance <- matrix(rnorm(36),ncol = 9,nrow = 3)
+transAbundance <- matrix(rnorm(36,mean=10,sd=1),ncol = 9,nrow = 3)
 PS <- NULL
 contrast <- c('B-A','C-A')
 condition <- c('A','A','A','B','B','B','C','C','C')

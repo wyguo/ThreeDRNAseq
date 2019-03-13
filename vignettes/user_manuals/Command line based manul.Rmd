@@ -189,11 +189,7 @@ pval.cutoff <- 0.01
 lfc.cutoff <- 1
 DE.pipeline <- 'limma'
 
-################################################################################
-### parameters for clusters in heatmap
-dist.method <- 'euclidean'
-cluster.method <- 'ward.D'
-cluster.number <- 10
+
 
 ```
 
@@ -1160,16 +1156,31 @@ if(length(x)==0){
 ## Advanced plots
 ### Heatmap of 3D targets
 The targets are firstly clustered into groups by using the <a href="https://cran.r-project.org/web/packages/fastcluster/index.html" target="_blank">fastcluster</a> R package, and then made into heatmap by using the <a href="https://bioconductor.org/packages/release/bioc/html/ComplexHeatmap.html" target="_blank">ComplexHeatmap</a> R package
+
+```{r}
+################################################################################
+### parameters for clusters in heatmap
+dist.method <- 'euclidean'
+cluster.method <- 'ward.D'
+cluster.number <- 10
+
+```
+
 ```{r}
 ################################################################################
 ##----->> DE genes
-targets <- unique(DE_genes$target)
+DE_genes <- intermediate_data$DE_genes
+targets <- unique(DE_genes$target)[1:500]
+
 data2heatmap <- txi_genes$abundance[targets,]
 column_title <- paste0(length(targets),' DE genes')
 data2plot <- rowmean(x = t(data2heatmap),
-                     group = samples$condition,
+                     group = samples$time,
                      reorder = F)
 data2plot <- t(scale(data2plot))
+
+
+data2plot <- t(data2plot)
 
 hc.dist <- dist(data2plot,method = dist.method)
 hc <- fastcluster::hclust(hc.dist,method = cluster.method)
@@ -1183,8 +1194,8 @@ x <- lapply(names(x),function(i){
 })
 x <- do.call(rbind,x)
 colnames(x) <- c('Clusters','Targets')
-write.csv(x,file=paste0(result.folder,'/Target in each cluster heatmap ', column_title,'.csv'),
-          row.names = F)
+# write.csv(x,file=paste0(result.folder,'/Target in each cluster heatmap ', column_title,'.csv'),
+#           row.names = F)
 ###############################
 
 g <- Heatmap(as.matrix(data2plot), name = 'Z-scores', 

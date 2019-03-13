@@ -1,0 +1,86 @@
+[2017-04-20 10:09:19.312] [jointLog] [info] parsing read library format
+[2017-04-20 10:09:19.312] [jointLog] [info] There is 1 library.
+[2017-04-20 10:09:19.711] [jointLog] [info] Loading Quasi index
+[2017-04-20 10:09:19.731] [jointLog] [info] Loading 32-bit quasi index
+[2017-04-20 10:09:36.259] [jointLog] [info] done
+[2017-04-20 10:09:36.259] [jointLog] [info] Index contained 82198 targets
+[2017-04-20 10:21:10.956] [fileLog] [info] 
+At end of round 0
+==================
+Observed 18706622 total fragments (18706622 in most recent round)
+
+[2017-04-20 10:21:10.955] [jointLog] [info] Computed 106569 rich equivalence classes for further processing
+[2017-04-20 10:21:10.955] [jointLog] [info] Counted 18483888 total reads in the equivalence classes 
+[2017-04-20 10:21:10.963] [jointLog] [warning] 0.00972918% of fragments were shorter than the k used to build the index (31).
+If this fraction is too large, consider re-building the index with a smaller k.
+The minimum read size found was 20.
+
+
+[2017-04-20 10:21:10.963] [jointLog] [info] Mapping rate = 98.8093%
+
+[2017-04-20 10:21:10.963] [jointLog] [info] finished quantifyLibrary()
+[2017-04-20 10:21:10.992] [jointLog] [info] Starting optimizer
+[2017-04-20 10:21:11.049] [jointLog] [info] Marked 0 weighted equivalence classes as degenerate
+[2017-04-20 10:21:11.056] [jointLog] [info] iteration = 0 | max rel diff. = 84.9451
+[2017-04-20 10:21:11.119] [jointLog] [info] iteration 11, adjusting effective lengths to account for biases
+[2017-04-20 10:21:20.882] [jointLog] [info] Computed expected counts (for bias correction)
+[2017-04-20 10:21:20.883] [jointLog] [info] processed bias for 0.0% of the transcripts
+[2017-04-20 10:21:33.266] [jointLog] [info] processed bias for 10.0% of the transcripts
+[2017-04-20 10:21:45.100] [jointLog] [info] processed bias for 20.0% of the transcripts
+[2017-04-20 10:21:56.757] [jointLog] [info] processed bias for 30.0% of the transcripts
+[2017-04-20 10:22:08.105] [jointLog] [info] processed bias for 40.0% of the transcripts
+[2017-04-20 10:22:19.760] [jointLog] [info] processed bias for 50.0% of the transcripts
+[2017-04-20 10:22:33.721] [jointLog] [info] processed bias for 60.0% of the transcripts
+[2017-04-20 10:22:47.372] [jointLog] [info] processed bias for 70.0% of the transcripts
+[2017-04-20 10:22:59.173] [jointLog] [info] processed bias for 80.0% of the transcripts
+[2017-04-20 10:23:05.650] [jointLog] [info] processed bias for 100.0% of the transcripts
+[2017-04-20 10:23:06.101] [jointLog] [info] iteration = 100 | max rel diff. = 0.282851
+[2017-04-20 10:23:06.624] [jointLog] [info] iteration = 200 | max rel diff. = 0.058323
+[2017-04-20 10:23:07.196] [jointLog] [info] iteration = 300 | max rel diff. = 0.0364072
+[2017-04-20 10:23:07.781] [jointLog] [info] iteration = 400 | max rel diff. = 0.0281506
+[2017-04-20 10:23:08.354] [jointLog] [info] iteration = 500 | max rel diff. = 0.0244395
+[2017-04-20 10:23:08.933] [jointLog] [info] iteration = 600 | max rel diff. = 0.0188207
+[2017-04-20 10:23:09.513] [jointLog] [info] iteration = 700 | max rel diff. = 0.0180801
+[2017-04-20 10:23:10.092] [jointLog] [info] iteration = 800 | max rel diff. = 0.0151378
+[2017-04-20 10:23:10.673] [jointLog] [info] iteration = 900 | max rel diff. = 0.0124959
+[2017-04-20 10:23:11.253] [jointLog] [info] iteration = 1000 | max rel diff. = 0.0118294
+[2017-04-20 10:23:11.835] [jointLog] [info] iteration = 1100 | max rel diff. = 0.0123434
+[2017-04-20 10:23:12.362] [jointLog] [info] iteration = 1192 | max rel diff. = 0.00929574
+[2017-04-20 10:23:12.366] [jointLog] [info] Finished optimizer
+[2017-04-20 10:23:12.366] [jointLog] [info] writing output 
+
+[2017-04-20 10:23:12.639] [jointLog] [info] Starting Bootstrapping
+[2017-04-20 10:23:12.671] [jointLog] [info] Will draw 30 bootstrap samples
+[2017-04-20 10:23:12.671] [jointLog] [info] Optimizing over 106569 equivalence classes
+[2017-04-20 10:23:12.679] [jointLog] [info] Marked 0 weighted equivalence classes as degenerate
+[2017-04-20 10:23:19.209] [jointLog] [info] wrote 1 bootstraps
+[2017-04-20 10:23:27.283] [jointLog] [info] wrote 2 bootstraps
+[2017-04-20 10:23:35.221] [jointLog] [info] wrote 3 bootstraps
+[2017-04-20 10:23:44.355] [jointLog] [info] wrote 4 bootstraps
+[2017-04-20 10:23:53.049] [jointLog] [info] wrote 5 bootstraps
+[2017-04-20 10:24:01.546] [jointLog] [info] wrote 6 bootstraps
+[2017-04-20 10:24:10.248] [jointLog] [info] wrote 7 bootstraps
+[2017-04-20 10:24:19.878] [jointLog] [info] wrote 8 bootstraps
+[2017-04-20 10:24:30.307] [jointLog] [info] wrote 9 bootstraps
+[2017-04-20 10:24:39.355] [jointLog] [info] wrote 10 bootstraps
+[2017-04-20 10:24:47.330] [jointLog] [info] wrote 11 bootstraps
+[2017-04-20 10:24:56.115] [jointLog] [info] wrote 12 bootstraps
+[2017-04-20 10:25:06.037] [jointLog] [info] wrote 13 bootstraps
+[2017-04-20 10:25:15.893] [jointLog] [info] wrote 14 bootstraps
+[2017-04-20 10:25:25.288] [jointLog] [info] wrote 15 bootstraps
+[2017-04-20 10:25:33.882] [jointLog] [info] wrote 16 bootstraps
+[2017-04-20 10:25:43.593] [jointLog] [info] wrote 17 bootstraps
+[2017-04-20 10:25:52.557] [jointLog] [info] wrote 18 bootstraps
+[2017-04-20 10:26:02.931] [jointLog] [info] wrote 19 bootstraps
+[2017-04-20 10:26:11.866] [jointLog] [info] wrote 20 bootstraps
+[2017-04-20 10:26:21.042] [jointLog] [info] wrote 21 bootstraps
+[2017-04-20 10:26:30.131] [jointLog] [info] wrote 22 bootstraps
+[2017-04-20 10:26:39.884] [jointLog] [info] wrote 23 bootstraps
+[2017-04-20 10:26:50.189] [jointLog] [info] wrote 24 bootstraps
+[2017-04-20 10:26:59.501] [jointLog] [info] wrote 25 bootstraps
+[2017-04-20 10:27:08.428] [jointLog] [info] wrote 26 bootstraps
+[2017-04-20 10:27:16.680] [jointLog] [info] wrote 27 bootstraps
+[2017-04-20 10:27:25.950] [jointLog] [info] wrote 28 bootstraps
+[2017-04-20 10:27:35.025] [jointLog] [info] wrote 29 bootstraps
+[2017-04-20 10:27:44.378] [jointLog] [info] wrote 30 bootstraps
+[2017-04-20 10:27:44.389] [jointLog] [info] Finished Bootstrapping
