@@ -63,7 +63,7 @@ tabItem('report',
                        HTML('Click to download:'),
                        br(),
                        # tags$a(href='3D output.zip', '3D output.zip', target='_blank',download = '3D output.zip'),
-                       HTML("<a href='3D output.zip'><font size='4'><u>3D output.zip</u></font></a>"),
+                       HTML("<a href='3D output.zip' target='_blank'><font size='4'><u>3D output.zip</u></font></a>"),
                        hr(),
                        HTML('If the 3D RNA-seq App is run on a local PC, all results will be directly saved to the App working directory. Please skip this step.
                             If the App is run on our server, all results can be zipped and downloaded from above link.')
