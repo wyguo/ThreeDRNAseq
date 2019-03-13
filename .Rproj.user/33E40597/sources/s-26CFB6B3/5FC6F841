@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1544812535850.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "5FC6F841",
+    "lastKnownWriteTime" : 1537349350,
+    "last_content_update" : 1537349350,
+    "path" : "D:/PhD project/R projects/test round 2018/TSIS/R/iso.switch.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "122,32",
+        "scrollLine" : "106"
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

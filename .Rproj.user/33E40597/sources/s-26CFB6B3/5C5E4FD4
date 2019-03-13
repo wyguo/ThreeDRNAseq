@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1544376962559.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "5C5E4FD4",
+    "lastKnownWriteTime" : 1544377665,
+    "last_content_update" : 1544377764968,
+    "path" : "D:/PhD project/R projects/test round 2018/ThreeDRNAseq/vignettes/user_manuals/Run 3DRNAseq App.Rmd",
+    "project_path" : "vignettes/user_manuals/Run 3DRNAseq App.Rmd",
+    "properties" : {
+        "cursorPosition" : "46,42",
+        "scrollLine" : "25",
+        "tempName" : "Untitled2"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

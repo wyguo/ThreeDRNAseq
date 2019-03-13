@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1544797364999.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "7491B259",
+    "lastKnownWriteTime" : 1542476631,
+    "last_content_update" : 1542476631,
+    "path" : "D:/PhD project/R projects/test round 2018/TSIS/R/TSIS.app.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "412,23",
+        "scrollLine" : "389"
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
