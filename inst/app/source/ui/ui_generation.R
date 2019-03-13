@@ -8,6 +8,12 @@ tabItem("generation",
                    src="data_generation.png"/>')
               )
           ),
+        fluidRow(
+          box(title = 'App working directory',
+                    width=12,status = 'primary', solidHeader = T,
+          textOutput('data_folder_path_text')
+          )
+        ),
         ####upload intermediate data is disabled
         # fluidRow(
         #   actionButton(inputId = 'load_intermediate_data_btn',label = 'Load intermediate data')
