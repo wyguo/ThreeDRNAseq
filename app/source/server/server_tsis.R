@@ -310,8 +310,6 @@ observeEvent(input$save_tsis_plot,{
   if(!file.exists(folder2save))
     dir.create(path = folder2save,recursive = T)
   
-  
-  
   if(input$TSISorisokTSP == 'isokTSP'){
     folder2save <- paste0(DDD.data$folder,'/figure/IS plots/',input$select.contrast)
     if(!file.exists(folder2save))

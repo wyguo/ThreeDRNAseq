@@ -149,9 +149,9 @@ tabItem('function',
                                         value = 7,width = "100%",step = 0.2)
                            
                        ),
-                       textInput(inputId = 'multiplot.folder.namae',
-                                 label = 'Figure save folder',value = 'figure',width = "100%",
-                                 placeholder = 'New folder with this name will be created in the figure folder'),
+                       # textInput(inputId = 'multiplot_folder_namae',
+                       #           label = 'Figures are saved to',value = 'figure',width = "100%",
+                       #           placeholder = 'New folder with this name will be created in the figure folder'),
                        actionButton(inputId = 'make.multiple.plot',label = 'Run',
                                     icon = icon('send outline icon',lib = 'font-awesome'),
                                     style="color: #fff; background-color: #428bca; border-color: #2e6da4"),
