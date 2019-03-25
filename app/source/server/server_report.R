@@ -123,6 +123,11 @@ observeEvent(input$save_ddd_data_button,{
                      next
                    write.csv(x = DDD.data[[idx[i]]],file = paste0(DDD.data$result.folder,'/',idx.names[i],'.csv'),row.names = F)
                  }
+                 ### save transcript-gene mapping
+                 write.csv(x = DDD.data$mapping,
+                           file = paste0(DDD.data$result.folder,'/mapping.csv'),
+                           row.names = F,na = '')
+                 
                  ### save 3d list
                  threeD.list <-lapply(idx[1:4],function(i){
                    unique(DDD.data[[i]]$target)
