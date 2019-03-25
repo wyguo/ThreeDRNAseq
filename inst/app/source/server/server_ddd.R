@@ -494,12 +494,10 @@ output$top.stat.table <- DT::renderDataTable({
 # output$up.down.bar.plot <- renderPlotly({
 g.updown <- reactive({
   if(is.null((DDD.data$DE_genes)) | 
-     is.null((DDD.data$DAS_genes)) | 
      is.null((DDD.data$DE_trans)) | 
-     is.null((DDD.data$DTU_trans)) |
      is.null((DDD.data$contrast)))
     return(NULL)
-  idx <- c('DE_genes','DAS_genes','DE_trans','DTU_trans')
+  idx <- c('DE_genes','DE_trans')
   title.idx <- gsub('_',' ',idx)
   title.idx <- gsub('trans','transcripts',title.idx)
   names(title.idx) <- idx
@@ -508,7 +506,7 @@ g.updown <- reactive({
     targets <-  split(DDD.data[[i]],subidx)
     data2plot <- lapply(DDD.data$contrast,function(i){
       if(nrow(targets[[i]])==0){
-        x <- data.frame(contrast=i,regulation=c('down_regulate','up_regulate'),number=0)
+        x <- data.frame(contrast=i,regulation=c('down-regulated','up-regulated'),number=0,check.names = F)
       } else {
         x <- data.frame(contrast=i,table(targets[[i]]$up.down))
         colnames(x) <- c('contrast','regulation','number')
@@ -534,40 +532,45 @@ output$up.down.bar.plot.DE.genes <- renderPlot({
   print(g.updown()[[1]])
 })
 
-output$up.down.bar.plot.DAS.genes <- renderPlot({
+# output$up.down.bar.plot.DAS.genes <- renderPlot({
+#   if(is.null((g.updown())))
+#     return(NULL)
+#   print(g.updown()[[2]])
+# })
+
+output$up.down.bar.plot.DE.trans <- renderPlot({
   if(is.null((g.updown())))
     return(NULL)
   print(g.updown()[[2]])
 })
 
-output$up.down.bar.plot.DE.trans <- renderPlot({
-  if(is.null((g.updown())))
-    return(NULL)
-  print(g.updown()[[3]])
-})
-
-output$up.down.bar.plot.DTU.trans <- renderPlot({
-  if(is.null((g.updown())))
-    return(NULL)
-  print(g.updown()[[4]])
-})
+# output$up.down.bar.plot.DTU.trans <- renderPlot({
+#   if(is.null((g.updown())))
+#     return(NULL)
+#   print(g.updown()[[4]])
+# })
 
 observeEvent(input$save.up.down.bar.plot,{
-  lapply(names(g.updown()),function(i){
-    png(paste0(DDD.data$figure.folder,'/',i,' updown regulation numbers.png'),
-        width = input$updown.plot.width,height = input$updown.plot.height,units = 'in',
-        res = input$updown.plot.res)
-    print(g.updown()[[i]])
-    dev.off()
-    
-    pdf(paste0(DDD.data$figure.folder,'/',i,' updown regulation numbers.pdf'),
-        width = input$updown.plot.width,height = input$updown.plot.height)
-    print(g.updown()[[i]])
-    dev.off()
-  })
-  
-  message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
-  showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+  withProgress(message = 'Saving plots ...', detail = 'This may take a while...',
+               value = 0, {
+                 incProgress(0)
+                 lapply(names(g.updown()),function(i){
+                   png(paste0(DDD.data$figure.folder,'/',i,' updown regulation numbers.png'),
+                       width = input$updown.plot.width,height = input$updown.plot.height,units = 'in',
+                       res = input$updown.plot.res)
+                   print(g.updown()[[i]])
+                   dev.off()
+                   
+                   pdf(paste0(DDD.data$figure.folder,'/',i,' updown regulation numbers.pdf'),
+                       width = input$updown.plot.width,height = input$updown.plot.height)
+                   print(g.updown()[[i]])
+                   dev.off()
+                 })
+                 incProgress(0.8)
+                 message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+                 showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+                 incProgress(1)
+               })
 })
 
 ##---------------Comparisons between contrast groups-----------------
@@ -627,32 +630,38 @@ output$trans.flow.chart <- renderPlot({
 
 observeEvent(input$save.union.flow.chart,{
   ##transcript level
-  png(filename = paste0(DDD.data$figure.folder,'/Union set DE genes vs DAS genes.png'),
-      width = input$flow.plot.width,height = input$flow.plot.height,
-      res=input$flow.plot.res, units = 'in')
-  genes.flow.chart()()
-  dev.off()
-  
-  pdf(file = paste0(DDD.data$figure.folder,'/Union set DE genes vs DAS genes.pdf'),
-      width = input$flow.plot.width,height = input$flow.plot.height)
-  genes.flow.chart()()
-  dev.off()
-  
-  ###gene level
-  # graphics.off()
-  png(filename = paste0(DDD.data$figure.folder,'/Union set DE transcripts vs DTU transcripts.png'),
-      width = input$flow.plot.width,height = input$flow.plot.height,
-      res=input$flow.plot.res, units = 'in')
-  trans.flow.chart()()
-  dev.off()
-  
-  pdf(file = paste0(DDD.data$figure.folder,'/Union set DE transcripts vs DTU transcripts.pdf'),
-      width = input$flow.plot.width,height = input$flow.plot.height)
-  trans.flow.chart()()
-  dev.off()
-  
-  message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
-  showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+  withProgress(message = 'Saving plots ...', detail = 'This may take a while...',
+               value = 0, {
+                 incProgress(0)
+                 png(filename = paste0(DDD.data$figure.folder,'/Union set DE genes vs DAS genes.png'),
+                     width = input$flow.plot.width,height = input$flow.plot.height,
+                     res=input$flow.plot.res, units = 'in')
+                 genes.flow.chart()()
+                 dev.off()
+                 
+                 pdf(file = paste0(DDD.data$figure.folder,'/Union set DE genes vs DAS genes.pdf'),
+                     width = input$flow.plot.width,height = input$flow.plot.height)
+                 genes.flow.chart()()
+                 dev.off()
+                 
+                 ###gene level
+                 incProgress(0.5)
+                 # graphics.off()
+                 png(filename = paste0(DDD.data$figure.folder,'/Union set DE transcripts vs DTU transcripts.png'),
+                     width = input$flow.plot.width,height = input$flow.plot.height,
+                     res=input$flow.plot.res, units = 'in')
+                 trans.flow.chart()()
+                 dev.off()
+                 
+                 pdf(file = paste0(DDD.data$figure.folder,'/Union set DE transcripts vs DTU transcripts.pdf'),
+                     width = input$flow.plot.width,height = input$flow.plot.height)
+                 trans.flow.chart()()
+                 dev.off()
+                 incProgress(0.9)
+                 message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+                 showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+                 incProgress(1)
+               })
 })
 
 
@@ -827,7 +836,7 @@ observeEvent(input$save.across.target.euler.plot,{
   if(is.null(DDD.data$contrast) | is.null(DDD.data$DEvsDAS_results)| is.null(input$across.target))
     return(NULL)
   
-  withProgress(message = paste0('Plotting venn diagrams...'),
+  withProgress(message = paste0('Saving plots ...'),
                detail = 'This may take a while...', value = 0, {
                  for(i in DDD.data$contrast){
                    ##DE vs DAS genes

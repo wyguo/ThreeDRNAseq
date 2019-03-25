@@ -4,7 +4,7 @@ tabItem('preprocessing',
         fluidRow(
           box(title = 'Workflow',
               width=12,status = 'primary', solidHeader = T,
-              HTML('<img style="width: 45%; display: block; margin-left: auto; margin-right: auto;" 
+              HTML('<img style="width: 100%; display: block; margin-left: auto; margin-right: auto;" 
                    src="data_processing.png"/>')
               )
           ),
@@ -36,7 +36,7 @@ tabItem('preprocessing',
                               title = 'Filter low expression based mean-variance trend plot',
                               size = 'l',
                               content = 'filter_low',
-                              style="font-size: 3.0rem;margin-right:50px;"),
+                              style="font-size: 2.0rem;margin-right:50px;"),
                      HTML('&nbsp'),
                      br(),
                      hr(),
@@ -115,7 +115,7 @@ tabItem('preprocessing',
                               title = 'PCA plot and batch effect estimation',
                               size = 'l',
                               content = 'PCA_and_batch_effects',
-                              style="font-size: 3.0rem;margin-right:50px;"),
+                              style="font-size: 2.0rem;margin-right:50px;"),
                      br(),
                      HTML('<ol>
                           <li style="margin-left: -20px;">Select PCs (X- and Y-axis) to visualise</li>
@@ -185,7 +185,7 @@ tabItem('preprocessing',
                                      title = 'PCA plot and batch effect estimation',
                                      size = 'l',
                                      content = 'PCA_and_batch_effects',
-                                     style="font-size: 3.0rem;margin-right:50px;"),
+                                     style="font-size: 2.0rem;margin-right:50px;"),
                             radioButtons(inputId = 'RUVseq_method',label = 'RUVSeq method',
                                          choices = c('RUVr','RUVs','RUVg'),selected = 'RUVr',
                                          inline = T),

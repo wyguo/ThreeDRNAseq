@@ -3,7 +3,7 @@
 
 heatmap.targets <- eventReactive(input$plot.heatmap,{
 
-  if(input$heatmap.select.or.upload=='Select targets'){
+  # if(input$heatmap.select.or.upload=='Select targets'){
     if(input$heatmap.target.type=='DE genes'){
       targets <- unique(DDD.data$DE_genes$target)
       data2heatmap <- DDD.data$genes_TPM[targets,]
@@ -13,7 +13,7 @@ heatmap.targets <- eventReactive(input$plot.heatmap,{
     if(input$heatmap.target.type=='DAS genes'){
       targets <- intersect(unique(DDD.data$DAS_genes$target),unique(DDD.data$DE_genes$target))
       data2heatmap <- DDD.data$genes_TPM[targets,]
-      column_title <- paste0(length(targets),' DE&DAS genes (DAS only are filtered)')
+      column_title <- paste0(length(targets),' DE+DAS genes (DAS only are filtered)')
     }
     
     if(input$heatmap.target.type=='DE transcripts'){
@@ -25,9 +25,9 @@ heatmap.targets <- eventReactive(input$plot.heatmap,{
     if(input$heatmap.target.type=='DTU transcripts'){
       targets <- intersect(unique(DDD.data$DTU_trans$target),unique(DDD.data$DE_trans$target))
       data2heatmap <- DDD.data$trans_TPM[targets,]
-      column_title <- paste0(length(targets),' DE&DTU transcripts (DTU only are filtered)')
+      column_title <- paste0(length(targets),' DE+DTU transcripts (DTU only are filtered)')
     }
-  }
+  # }
   # if(input$heatmap.select.or.upload=='Upload target list'){
   #   inFile <- input$heatmap.target.list.input
   #   if (is.null(inFile))

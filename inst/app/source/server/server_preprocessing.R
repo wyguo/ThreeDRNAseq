@@ -21,7 +21,7 @@ observe({
     Description=c('Raw transcripts',
                   'Raw genes',
                   'Samples',
-                  'Samples after merge srep',
+                  'Samples after merging seq-reps',
                   'Condition of interest',
                   'CPM cut-off',
                   'Min samples to CPM cut-off',

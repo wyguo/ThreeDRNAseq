@@ -7,8 +7,8 @@
 #' 
 summaryDEtarget <- function(stat,cutoff=c(adj.pval=0.01,log2FC=1)){
   names(cutoff) <- c('adj.pval','log2FC')
-  stat$up.down <- 'up_regulate'
-  stat$up.down[stat[,'log2FC']<0] <- 'down_regulate'
+  stat$up.down <- 'up-regulated'
+  stat$up.down[stat[,'log2FC']<0] <- 'down-regulated'
   idx <- (abs(stat[,'adj.pval'])<=cutoff['adj.pval']) & (abs(stat[,'log2FC'])>=cutoff['log2FC'])
   stat <- stat[idx,]
   # split(stat , f = stat$contrast)
@@ -25,8 +25,8 @@ summaryDAStarget <- function(stat,lfc,cutoff=c(adj.pval=0.01,deltaPS=0.1)){
   names(cutoff) <- c('adj.pval','deltaPS')
   lfc <- lfc[which(lfc$target %in% stat$target),]
   stat <- merge(stat,lfc)
-  stat$up.down <- 'up_regulate'
-  stat$up.down[stat[,'log2FC']<0] <- 'down_regulate'
+  stat$up.down <- 'up-regulated'
+  stat$up.down[stat[,'log2FC']<0] <- 'down-regulated'
   idx <- (abs(stat[,'adj.pval'])<=cutoff['adj.pval']) & (abs(stat[,grep('deltaPS',colnames(stat))])>=cutoff['deltaPS'])
   stat <- stat[idx,]
   # split(stat , f = stat$contrast)

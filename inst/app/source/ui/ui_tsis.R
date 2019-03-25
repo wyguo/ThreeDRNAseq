@@ -3,7 +3,7 @@ tabItem('TSIS',
         fluidRow(
           box(title = 'Workflow',
               width=12,status = 'primary', solidHeader = T,
-              HTML('<img style="width: 45%; display: block; margin-left: auto; margin-right: auto;" 
+              HTML('<img style="width: 65%; display: block; margin-left: auto; margin-right: auto;" 
                    src="ISs.png"/>')
               )
           ),
@@ -41,7 +41,7 @@ tabItem('TSIS',
                           (4) the time-points at both intervals before and after switch (set to 1 in isokTSP); and (5) Pearson correlation of two isoforms. Users can apply filters based
                           on these metrics to generate significant ISs (Guo et al., 2017).</div>'),
                      HTML('<p><img style="width: 50%; display: block; margin-left: auto; margin-right: auto;" 
-                          src="https://github.com/wyguo/ThreeDRNAseq/raw/master/vignettes/fig/TSIS.png"/></p>'),
+                          src="TSIS.png"/></p>'),
                      HTML('<b>Figure 1:</b> Isoform switch analysis methods. Expression data with 3 replicates for each condition/time-point 
                           is simulated for isoforms \\(iso_{i}\\) and \\(iso_j\\) (blue and red circles). The points in the plots represent 
                           samples and the black lines connect the average of samples. (A) is the isokTSP method for comparisons 
@@ -59,28 +59,21 @@ tabItem('TSIS',
                      HTML('Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C., Panter,P.E., Knight,H., Nimmo,H., Zhang,R., and Brown,J.W.S. (2018) Rapid and dynamic alternative splicing impacts the Arabidopsis cold response transcriptome. Plant Cell.')
                      )
                      )
-          ),
+                     ),
         fluidRow(
           column(width = 12,
-                 box(title='Step 1: Select TSIS or isokTSP',
+                 box(title='Step 1: Set parameters of IS analysis',
                      width = NULL,status = 'primary', solidHeader = T,
-                     radioButtons(inputId = 'TSISorisokTSP',label = 'Select a type',
-                                  choices = c('TSIS','isokTSP'),selected = 'isokTSP',inline = T),
-                     HTML('<b>TSIS</b>: Time-Series Isoform Switch across sequencial time-points; 
-                          <b>isokTSP</b>: Pair-Wise Isoform Switch between conditions of contrast groups.')
-                     )
-                 )
-          # column(width = 12,
-          #        box(title='Conditions of interest and numeric coordinates',
-          #            width = NULL,status = 'primary', solidHeader = F,
-          #            DT::DTOutput('tsis.sample.table')
-          #            )
-          #        )
-          ),
-        fluidRow(
-          column(width = 12,
-                 box(title='Step 2: Set parameters of IS analysis',
-                     width = NULL,status = 'primary', solidHeader = T,
+                     h4('Select TSIS or isokTSP'),
+                     fluidRow(
+                       column(12,
+                              radioButtons(inputId = 'TSISorisokTSP',label = 'Select a type',
+                                           choices = c('TSIS','isokTSP'),selected = 'isokTSP',inline = T),
+                              HTML('<b>TSIS</b>: Time-Series Isoform Switch across sequencial time-points; 
+                            <b>isokTSP</b>: Pair-Wise Isoform Switch between conditions of contrast groups.')
+                              )
+                     ),
+                     hr(),
                      h4('Scoring parameters'),
                      fluidRow(
                        column(3,
@@ -157,11 +150,11 @@ tabItem('TSIS',
                           </ul>')
                      )
                      )
-          ),
+                     ),
         fluidRow(
           ##---------- plot switch number ------------
           column(width = 3,
-                 box(title='Step 3: Number of swithces',
+                 box(title='Step 2: Number of significant switches',
                      width = NULL,status = 'primary', solidHeader = T,
                      # radioButtons("densityplot.type", label = HTML("<b>Select plot type:</b>"),
                      #              choices = list("Frequency" = 'frequency',"Density" = 'density'),
@@ -223,97 +216,93 @@ tabItem('TSIS',
                      )
                  )
           ),
-          ##---------- plot isoform switch ------------
-          fluidRow(
-            column(width = 12,
-                   box(title= 'Isoform switch plot',
-                       width = 3,status = 'primary', solidHeader = T,
-                       h4('Input isoform names:'),
-                       textInput('iso1', label = 'Isoform 1: ', value = ''),
-                       textInput('iso2', label = 'Isoform 2: ', value = ''),
-                       uiOutput('show.contrst.button'),
-                       selectInput('ribbon.plot','Plot types',c('Error bar','Ribbon')),
-                       radioButtons("show.scores", label = h4("Show statistics:"),
-                                    choices = list("TRUE" = 'TRUE', "FALSE" = "FALSE"),
-                                    selected = 'TRUE',inline = T),
-                       div(style="display: inline-block; margin-right: 5px;",
-                           spectrumInput(
-                             inputId = "color.iso1",
-                             label = "Color for iso1:",
-                             choices = distinct.color(50),
-                             options = list(`toggle-palette-more-text` = "Show more"),
-                             width = "100%"
-                           )
-                       ),
-                       div(style="display: inline-block; margin-right: 5px;",
-                           spectrumInput(
-                             inputId = "color.iso2",
-                             label = "Color for iso2:",
-                             choices = distinct.color(51)[-1],
-                             options = list(`toggle-palette-more-text` = "Show more"),
-                             width = "100%"
-                           )
-                       ),
-                       br(),
-                       actionButton('plot.IS','Plot',icon("send outline icon"),class="btn btn-primary",
-                                    style="color: #fff; background-color: #428bca; border-color: #2e6da4")
-                   ),
-                   box(title= NULL,
-                       width = 9,status = 'primary', solidHeader = F,
-                       plotOutput('IS.plot',width = 'auto',height = '550px'),
-                       br(),
-                       div(style="float:left;margin-right: 25px;",
-                           numericInput(inputId = "tsis.plot.width",label = 'Plot width (inch)',
-                                        value = 8,width = "100%",step = 0.2)
-                       ),
-                       div(style="float:left;margin-right: 25px;",
-                           numericInput(inputId = "tsis.plot.height",label = 'Plot height (inch)',
-                                        value = 5,width = "100%",step = 0.2)
-                       ),
-                       div(style="float:left;margin-right: 25px;",
-                           numericInput(inputId = "tsis.plot.res",label = 'PNG plot resolution',value = '150',
-                                        min = 0,max = 600,step = 60,width = "100%")
-                       ),
-                       actionButton(inputId = 'save_tsis_plot',label = 'Save',
-                                    icon = icon('download',lib = 'font-awesome'),
-                                    style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: left; margin-top: 25px")
-                       # bsTooltip(id = "save_tsis_plot", 
-                       #           title = "The plot will be saved to working directory. Users can download it at final step.",
-                       #           placement = "bottom", options = list(container = "body")),
-                       
-                       
-                   )
-            )
+        ##---------- plot isoform switch ------------
+        fluidRow(
+          box(title= 'Step 3: Plot significant switches',
+              width = 3,status = 'primary', solidHeader = T,
+              h4('Input isoform names:'),
+              textInput('iso1', label = 'Isoform 1: ', value = ''),
+              textInput('iso2', label = 'Isoform 2: ', value = ''),
+              uiOutput('show.contrst.button'),
+              selectInput('ribbon.plot','Plot types',c('Error bar','Ribbon')),
+              radioButtons("show.scores", label = h4("Show statistics:"),
+                           choices = list("TRUE" = 'TRUE', "FALSE" = "FALSE"),
+                           selected = 'TRUE',inline = T),
+              div(style="display: inline-block; margin-right: 5px;",
+                  spectrumInput(
+                    inputId = "color.iso1",
+                    label = "Color for iso1:",
+                    choices = distinct.color(50),
+                    options = list(`toggle-palette-more-text` = "Show more"),
+                    width = "100%"
+                  )
+              ),
+              div(style="display: inline-block; margin-right: 5px;",
+                  spectrumInput(
+                    inputId = "color.iso2",
+                    label = "Color for iso2:",
+                    choices = distinct.color(51)[-1],
+                    options = list(`toggle-palette-more-text` = "Show more"),
+                    width = "100%"
+                  )
+              ),
+              br(),
+              actionButton('plot.IS','Plot',icon("send outline icon"),class="btn btn-primary",
+                           style="color: #fff; background-color: #428bca; border-color: #2e6da4")
           ),
-          fluidRow(
-            box(title= 'Plot all significant isoform switches',
-                width = 12,status = 'primary', solidHeader = F,
-                column(width = 12,
-                       verbatimTextOutput('number_of_IS'),
-                       radioButtons(inputId = 'tsis.multiple.plot.format',label = 'Format',
-                                    choices = c('all','png','pdf'),selected = 'all',inline = T),
-                       div(style="float:left;margin-right: 25px;",
-                           numericInput(inputId = "tsis.all.plot.width",label = 'Plot width (inch)',
-                                        value = 8,width = "100%",step = 0.2)
-                       ),
-                       div(style="float:left;margin-right: 25px;",
-                           numericInput(inputId = "tsis.all.plot.height",label = 'Plot height (inch)',
-                                        value = 5,width = "100%",step = 0.2)
-                       ),
-                       div(style="float:left;margin-right: 25px;",
-                           numericInput(inputId = "tsis.all.plot.res",label = 'PNG plot resolution',value = '150',
-                                        min = 0,max = 600,step = 60,width = "100%")
-                       )
-                ),
-                column(width = 12,
-                       actionButton(inputId = 'plot_all_IS_btn',label = 'Plot all',
-                                    style="color: #fff; background-color: #428bca; border-color: #2e6da4;"),
-                       br(),
-                       br(),
-                       HTML('Note: it may take quite a while to save all the plots. Please wait.')
-                )
-            )
-          ),
+          box(title= NULL,
+              width = 9,status = 'primary', solidHeader = F,
+              plotOutput('IS.plot',width = 'auto',height = '550px'),
+              br(),
+              div(style="float:left;margin-right: 25px;",
+                  numericInput(inputId = "tsis.plot.width",label = 'Plot width (inch)',
+                               value = 8,width = "100%",step = 0.2)
+              ),
+              div(style="float:left;margin-right: 25px;",
+                  numericInput(inputId = "tsis.plot.height",label = 'Plot height (inch)',
+                               value = 5,width = "100%",step = 0.2)
+              ),
+              div(style="float:left;margin-right: 25px;",
+                  numericInput(inputId = "tsis.plot.res",label = 'PNG plot resolution',value = '150',
+                               min = 0,max = 600,step = 60,width = "100%")
+              ),
+              actionButton(inputId = 'save_tsis_plot',label = 'Save',
+                           icon = icon('download',lib = 'font-awesome'),
+                           style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: left; margin-top: 25px")
+              # bsTooltip(id = "save_tsis_plot", 
+              #           title = "The plot will be saved to working directory. Users can download it at final step.",
+              #           placement = "bottom", options = list(container = "body")),
+          )
+        ),
+        fluidRow(
+          box(title= 'Plot all significant isoform switches',
+              width = 6,status = 'primary', solidHeader = F,
+              column(width = 12,
+                     verbatimTextOutput('number_of_IS'),
+                     radioButtons(inputId = 'tsis.multiple.plot.format',label = 'Format',
+                                  choices = c('all','png','pdf'),selected = 'all',inline = T),
+                     div(style="float:left;margin-right: 25px;",
+                         numericInput(inputId = "tsis.all.plot.width",label = 'Plot width (inch)',
+                                      value = 8,width = "100%",step = 0.2)
+                     ),
+                     div(style="float:left;margin-right: 25px;",
+                         numericInput(inputId = "tsis.all.plot.height",label = 'Plot height (inch)',
+                                      value = 5,width = "100%",step = 0.2)
+                     ),
+                     div(style="float:left;margin-right: 25px;",
+                         numericInput(inputId = "tsis.all.plot.res",label = 'PNG plot resolution',value = '150',
+                                      min = 0,max = 600,step = 60,width = "100%")
+                     )
+              ),
+              column(width = 12,
+                     actionButton(inputId = 'plot_all_IS_btn',label = 'Plot all',
+                                  style="color: #fff; background-color: #428bca; border-color: #2e6da4;"),
+                     br(),
+                     br(),
+                     HTML('Note: it may take quite a while to save all the plots. Please wait.')
+              )
+          )
+        ),
         fluidRow(
           div(style="display:inline-block;vertical-align:middle;margin-left:15px; float: left;",
               actionButton(inputId = 'page_before_tsis',label = '',icon = icon('arrow-left'),

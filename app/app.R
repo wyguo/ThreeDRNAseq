@@ -23,17 +23,20 @@ library(shinyhelper)
 library(shinyWidgets)
 library(magrittr)
 library(DT)
-library(tximport)
-library(edgeR)
-library(limma)
 library(plotly)
 library(ggplot2)
-library(RUVSeq)
 library(eulerr)
 library(gridExtra)
 library(grid)
-library(ComplexHeatmap)
 library(fastcluster)
+library(rmarkdown)
+
+library(tximport)
+library(edgeR)
+library(limma)
+library(RUVSeq)
+library(ComplexHeatmap)
+
 # library(TSIS)
 
 options(stringsAsFactors=F)
@@ -162,7 +165,7 @@ mainsidebar <- dashboardSidebar(
     menuItem(text = 'Data pre-processing',tabName = 'preprocessing',icon = icon("filter"),startExpanded = F,selected = F),
     menuItem(text = '3D analysis',tabName = 'ddd',icon = icon("bar-chart-o",lib='font-awesome'),selected = F),
     menuItem(text = 'Functional plot',tabName = 'function',icon = icon("chart-area",lib='font-awesome'),selected = F),
-    menuItem(text = 'TSIS',tabName = 'TSIS',icon = icon("random"),selected = F),
+    menuItem(text = 'Isoform switch',tabName = 'TSIS',icon = icon("random"),selected = F),
     menuItem(text = 'Generate report',tabName = 'report',icon = icon("file",lib='font-awesome'),selected = F)
     # menuItem(text = 'Contact us',tabName = 'contact',icon = icon("comment",lib='font-awesome'),selected = F)
   )

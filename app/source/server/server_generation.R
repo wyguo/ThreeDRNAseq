@@ -22,39 +22,38 @@
 #     DDD.data[[i]] <- intermediate_data[[i]]
 #   }
 # })
-# 
-# ##----------Step 1: Select folders to save results------------
-# output$data_folder_button_ui <- renderUI({
-#   if(input$use_diff_folder=='No')
-#     return(NULL)
-#   shinyDirButton(id = 'data_folder_button',label = 'Select a folder',
-#                  title = 'Select a folder to save intermidate data',
-#                  buttonType = 'primary',
-#                  icon = icon('folder'))
-# })
-# 
-# ##----------Step 2: How to generate data?------------
-# output$upload_data_ui <- renderUI({
-#   if(input$generate_new_data=='Generate new data')
-#     return(NULL)
-#   fileInput("upload_data", "Select intermediate_data.RData",
-#             accept = c(
-#               ".RData")
-#   )
-# })
-# 
-# observe({
-#   file_path <- input$upload_data$datapath
-#   if (is.null(file_path) | length(file_path)==0)
-#     return(NULL)
-#   withProgress(message = 'Loading intermediate_data.RData...', value = 0, {
-#     suppressWarnings(load(file_path))
-#     for(i in names(intermediate_data)){
-#       DDD.data[[i]] <- intermediate_data[[i]]
-#     }
-#     incProgress(0.7)
-#   })
-# })
+##----------Step 1: Select folders to save results------------
+output$data_folder_button_ui <- renderUI({
+  if(input$use_diff_folder=='No')
+    return(NULL)
+  shinyDirButton(id = 'data_folder_button',label = 'Select a folder',
+                 title = 'Select a folder to save intermidate data',
+                 buttonType = 'primary',
+                 icon = icon('folder'))
+})
+
+##----------Step 2: How to generate data?------------
+output$upload_data_ui <- renderUI({
+  if(input$generate_new_data=='Generate new data')
+    return(NULL)
+  fileInput("upload_data", "Select intermediate_data.RData",
+            accept = c(
+              ".RData")
+  )
+})
+
+observe({
+  file_path <- input$upload_data$datapath
+  if (is.null(file_path) | length(file_path)==0)
+    return(NULL)
+  withProgress(message = 'Loading intermediate_data.RData...', value = 0, {
+    suppressWarnings(load(file_path))
+    for(i in names(intermediate_data)){
+      DDD.data[[i]] <- intermediate_data[[i]]
+    }
+    incProgress(0.7)
+  })
+})
 
 # volumes <- c(Home = fs::path_home(), "R Installation" = R.home(), getVolumes()())
 # volumes <- c(wd='D:/PhD project/R projects/test round 2018/ThreeDRNAseq_improve/')
@@ -90,12 +89,23 @@ observe({
   file_path <- input$mapping_file_button$datapath
   if (is.null(file_path) | length(file_path)==0)
     return(NULL)
-  withProgress(message = 'Loading transcript-gene mapping...', value = 0, {
-  mapping <- read.csv(file_path,header = T)
-  rownames(mapping) <- mapping$TXNAME
-  DDD.data$mapping <- mapping
-  incProgress(1)
-  })
+  withProgress(message = 'Loading transcript-gene mapping...', detail = 'This may take a while...',
+               value = 0, {
+                 incProgress(0)
+                 if(input$mapping_file_type=='gtf'){
+                   incProgress(0.2)
+                   mapping <- gtf2mapping(gtfile = file_path)
+                   incProgress(0.7)
+                 } else {
+                   incProgress(0.2)
+                   mapping <- read.csv(file = file_path,header = T)
+                   incProgress(0.7)
+                 }
+                 colnames(mapping) <- c('TXNAME','GENEID')
+                 rownames(mapping) <- mapping$TXNAME
+                 DDD.data$mapping <- mapping
+                 incProgress(1)
+               })
 })
 
 ####sample 

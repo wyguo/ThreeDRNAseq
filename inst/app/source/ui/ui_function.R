@@ -1,16 +1,22 @@
 
 #========================>> Functional interpretation <<=======================
 tabItem('function',
+        fluidRow(
+          box(title = 'Workflow',
+              width=12,status = 'primary', solidHeader = T,
+              HTML('<img style="width: 70%; display: block; margin-left: auto; margin-right: auto;" 
+                   src="function.png"/>')
+          )
+        ),
         ##----------Heatmap------------
         fluidRow(
           # column(width = 12,
           box(title='Heatmap',
               width = 3,status = 'primary', solidHeader = T,
-              
-              HTML('<h4><strong>Choose targets</strong></h4>'),
-              radioButtons(inputId = 'heatmap.select.or.upload',label = '',
-                           choices = c('Select targets','Upload target list'),inline = T),
-              selectInput(inputId = 'heatmap.target.type',label = 'Select targets',
+              HTML('<h4><strong>Select targets</strong></h4>'),
+              # radioButtons(inputId = 'heatmap.select.or.upload',label = '',
+              #              choices = c('Select targets','Upload target list'),inline = T),
+              selectInput(inputId = 'heatmap.target.type',label = 'Select a 3D list',
                           choices = c('DE genes','DAS genes','DE transcripts','DTU transcripts')
               ),
               hr(),
@@ -103,7 +109,7 @@ tabItem('function',
               width = 12,status = 'primary', solidHeader = T,
               column(width = 6,
                      wellPanel(
-                       HTML('<h4><strong>Visualise single gene plot</strong></h4>'),
+                       HTML('<h4><strong>Visualise plot of a single gene</strong></h4>'),
                        textInput(inputId = 'gene.id',label = 'Input a gene',value = ''),
                        HTML('E.g. AT1G01060 in Arabidopsis (gene name must match to provided transcript-gene mapping).'),
                        br(),
@@ -119,7 +125,7 @@ tabItem('function',
               ),
               column(width = 6,
                      wellPanel(
-                       HTML('<h4><strong>Make multiple gene plots</strong></h4>'),
+                       HTML('<h4><strong>Make plots of multiple genes</strong></h4>'),
                        fileInput("multiple.gene.input", "Choose gene list csv file",
                                  accept = c(
                                    "text/csv",
@@ -154,7 +160,7 @@ tabItem('function',
               )
           ),
           # column(width = 12,
-          tabBox(title = 'Profile plot',width = 12,side = 'right',
+          tabBox(title = 'Profile plot',width = 12,side = 'left',
                  tabPanel(title = 'Abundance',
                           plotlyOutput('profile.plot.panel')
                  ),
@@ -194,7 +200,7 @@ tabItem('function',
                               title = 'GO annotation plot',
                               size = 'l',
                               content = 'go',
-                              style="font-size: 3.0rem;margin-right:50px;"),
+                              style="font-size: 2.0rem;margin-right:50px;"),
                      HTML('&nbsp'),
                      downloadButton('download_target_list', 'Download gene list',class="btn btn-primary",
                                     style="color: #fff; background-color: #428bca; border-color: #2e6da4;float:left"),
@@ -202,8 +208,7 @@ tabItem('function',
                      br(),
                      br(),
                      HTML('<div align="justify">Gene lists of DE genes, DAS genes, DE transcripts and DTU transcripts will be downloaded and saved in scv file. Users can
-                          use these lists and GO analysis tools/websites to create GO annotation table for plot (currently, most GO analysis tools/website only support for 
-                          gene level annotation).</div>'),
+                          use these lists and GO analysis tools/websites to create GO annotation table for plot.</div>'),
                      hr(),
                      fileInput("go.annotation.input", "Choose GO annotation csv file",
                                accept = c(

@@ -87,7 +87,6 @@ observeEvent(input$scoring,{
                                   rank=F,
                                   min.difference = 1,
                                   spline = F,
-                                  spline.df = input$spline.df,
                                   verbose = T,shiny = T)
       
       scores <- data.frame(contrast=contrast.idx,scores,row.names = NULL,check.names = F)
@@ -101,7 +100,7 @@ observeEvent(input$scoring,{
     TSIS.mapping <- TSIS.mapping.full[TSIS.mapping.full$GENEID %in% DAS.genes,]
     TSIS.mapping <- TSIS.mapping[,c('GENEID','TXNAME')]
     TSIS.tpm <- trans_TPM[TSIS.mapping$TXNAME,]
-    times <- condition
+    times <- samples$condition
     scores.results <- iso.switch.shiny(data.exp = TSIS.tpm,
                                        mapping = TSIS.mapping,
                                        times=times,
@@ -251,6 +250,8 @@ IS.g <- eventReactive(input$plot.IS,{
   
   iso1 <- input$iso1
   iso2 <- input$iso2
+  # iso1 <- 'AT5G65060_ID6'
+  # iso2 <- 'AT5G65060_s1'
   times0 <- DDD.data$samples$condition
   data2plot <- DDD.data$trans_TPM[c(iso1,iso2),]
   
@@ -267,10 +268,14 @@ IS.g <- eventReactive(input$plot.IS,{
     scores2plot <- scores2plot[scores2plot$contrast==input$select.contrast,]
   }
   
-  times <- times0
-  xlabs <- unique(times0)
-  
-  
+  if(!is.numeric(times0)){
+    times <- as.numeric(factor(times0,levels = unique(times0)))
+    xlabs <- paste0(unique(times0),' (x=',unique(times),')')
+  } else {
+    times <- times0
+    xlabs <- unique(times0)
+  }
+
   g <- suppressMessages(plotTSIS(data2plot = data2plot,
                                  scores = scores2plot,
                                  iso1 = iso1,
@@ -377,11 +382,11 @@ observeEvent(input$plot_all_IS_btn,{
       g <- suppressMessages(plotTSIS(data2plot = data2plot,
                                      scores = scores2plot[i,,drop=F],
                                      iso1 = iso1,
-                                     iso2 = iso2,
                                      ribbon.plot = (input$ribbon.plot=='Ribbon'),
+                                     iso2 = iso2,
                                      y.lab = 'TPM',
-                                     spline = F,
-                                     spline.df = 1,
+                                     spline = (input$method.intersection == 'Spline'),
+                                     spline.df = input$spline.df,
                                      times = times,
                                      errorbar.width = 0.03,
                                      x.lower.boundary = ifelse(is.numeric(times),min(times),1),
@@ -391,7 +396,7 @@ observeEvent(input$plot_all_IS_btn,{
                               scale_x_continuous(breaks = unique(times),labels = xlabs)+
                               scale_color_manual(values = c(input$color.iso1,input$color.iso2,'black'))+
                               scale_fill_manual(values = c(input$color.iso1,input$color.iso2,'black'))
-      )
+                            )
       
       file2save <- paste0(folder2save,'/',paste0(iso1,'_vs_',iso2))
       

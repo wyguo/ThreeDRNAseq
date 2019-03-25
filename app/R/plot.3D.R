@@ -19,7 +19,7 @@ plotUpdown <- function(data2plot,contrast,plot.title=NULL,angle=0,
                        col.up=NULL,
                        col.down=NULL){
   data2plot$contrast <- factor(data2plot$contrast,levels = unique(data2plot$contrast))
-  data2plot$regulation <- factor(data2plot$regulation,levels = c('up_regulate','down_regulate'))
+  data2plot$regulation <- factor(data2plot$regulation,levels = c('up-regulated','down-regulated'))
   g <- ggplot(data2plot,aes(x=contrast,y=number,group=regulation,
                             fill=regulation,label=number))+
     geom_bar(stat='identity')+

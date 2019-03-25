@@ -4,7 +4,7 @@ tabItem("generation",
         fluidRow(
           box(title = 'Workflow',
               width=12,status = 'primary', solidHeader = T,
-              HTML('<img style="width: 45%; display: block; margin-left: auto; margin-right: auto;" 
+              HTML('<img style="width: 100%; display: block; margin-left: auto; margin-right: auto;" 
                    src="data_generation.png"/>')
               )
           ),
@@ -14,42 +14,42 @@ tabItem("generation",
           textOutput('data_folder_path_text')
           )
         ),
-        ####upload intermediate data is disabled
+        ###upload intermediate data is disabled
         # fluidRow(
         #   actionButton(inputId = 'load_intermediate_data_btn',label = 'Load intermediate data')
         # ),
-        # fluidRow(
-        #   ##----------Step 1: Use a different folder to save results?------------
-        #   box(title = 'Step 1: Use a different folder to save results?',
-        #       width=6,status = 'primary', solidHeader = T,
-        #       column(12,
-        #              # wellPanel(
-        #              # style = "background-color: #ffffff;",
-        #              HTML('<strong>Folder to save results:</strong>'),
-        #              textOutput('data_folder_path_text'),
-        #              tags$p(),
-        #              radioButtons(inputId = 'use_diff_folder',label = 'Use a different folder',
-        #                           choices = c('No','Yes'),selected = 'No',inline = T),
-        #              uiOutput('data_folder_button_ui')
-        #              # )
-        #       )
-        #   ),
-        #   ##----------Step 2: How to generate data of analysis?------------
-        #   box(title = 'Step 2: How to generate data of analysis?',
-        #       width=6,status = 'primary', solidHeader = T,
-        #       column(12,
-        #              # wellPanel(
-        #              # style = "background-color: #ffffff;",
-        #              radioButtons(inputId = 'generate_new_data',label = 'How to generate data?',
-        #                           choices = c('Generate new data','Upload intermediate data'),selected = 'Generate new data',inline = T),
-        #              uiOutput('upload_data_ui'),
-        #              HTML('<h5 align="justify">If you have already run the 3D RNA-seq analysis once and the intermediate data has been saved as
-        #                   "intermediate_data.RData" object, which can be uploaded here. <font color="red"><strong>By doing this, you can skip the following
-        #                   data genertion steps and visualise/redo the analysis directly from "Data pre-processing" until to "Generate report" step.</strong></font></h4>')
-        #              # )
-        #              )
-        #       )
-        #   ),
+        fluidRow(
+          ##----------Step 1: Use a different folder to save results?------------
+          box(title = 'Step 1: Use a different folder to save results?',
+              width=6,status = 'primary', solidHeader = T,
+              column(12,
+                     # wellPanel(
+                     # style = "background-color: #ffffff;",
+                     HTML('<strong>Folder to save results:</strong>'),
+                     # textOutput('data_folder_path_text'),
+                     tags$p(),
+                     radioButtons(inputId = 'use_diff_folder',label = 'Use a different folder',
+                                  choices = c('No','Yes'),selected = 'No',inline = T),
+                     uiOutput('data_folder_button_ui')
+                     # )
+              )
+          ),
+          ##----------Step 2: How to generate data of analysis?------------
+          box(title = 'Step 2: How to generate data of analysis?',
+              width=6,status = 'primary', solidHeader = T,
+              column(12,
+                     # wellPanel(
+                     # style = "background-color: #ffffff;",
+                     radioButtons(inputId = 'generate_new_data',label = 'How to generate data?',
+                                  choices = c('Generate new data','Upload intermediate data'),selected = 'Generate new data',inline = T),
+                     uiOutput('upload_data_ui'),
+                     HTML('<h5 align="justify">If you have already run the 3D RNA-seq analysis once and the intermediate data has been saved as
+                          "intermediate_data.RData" object, which can be uploaded here. <font color="red"><strong>By doing this, you can skip the following
+                          data genertion steps and visualise/redo the analysis directly from "Data pre-processing" until to "Generate report" step.</strong></font></h4>')
+                     # )
+                     )
+              )
+          ),
         fluidRow(
           ##----------Step 3: Inputs of 3D analysis------------
           box(title = 'Step 1: Input data of 3D analysis',
@@ -64,7 +64,7 @@ tabItem("generation",
                               title = 'Input data of 3D RNA-seq App',
                               size = 'l',
                               content = 'input_data',
-                              style="font-size: 3.0rem;margin-right:50px;"),
+                              style="font-size: 2.0rem;margin-right:50px;"),
                      br(),
                      fileInput("sample_file_button", ">Select sample information csv file (comma delimited)",
                                accept = c(
@@ -78,9 +78,11 @@ tabItem("generation",
               column(width = 12,
                      # wellPanel(
                      # style = "background-color: #ffffff;",
-                     fileInput("mapping_file_button", ">Select transcript-mapping csv file (comma delimited)",
+                     radioButtons(inputId = 'mapping_file_type',label = 'Transcript-gene mapping in',
+                                  choices = c('csv (comma delimited)','gtf'),selected = 'csv (comma delimited)',inline = T),
+                     fileInput("mapping_file_button", ">Select transcript-mapping file",
                                accept = c(
-                                 ".csv")
+                                 ".csv",".gtf")
                      ),
                      div(style="display:inline-block;vertical-align:middle;margin-left:15px",
                          textOutput('mapping_file_path_text')
@@ -111,7 +113,7 @@ tabItem("generation",
               )
           ),
           ##----------Step 4: Select factors of interest------------
-          box(title = 'Step 2: Select factors of interest',
+          box(title = 'Step 2: Select factors of experimental design',
               width=6,status = 'primary', solidHeader = T,
               column(width = 12,
                      radioButtons(inputId = 'has_srep',label = '>Does the data have sequencing replicates?',
@@ -122,7 +124,7 @@ tabItem("generation",
                               title = 'Filter low expression based mean-variance trend plot',
                               size = 'l',
                               content = 'select_factor',
-                              style="font-size: 3.0rem;margin-right:50px;"),
+                              style="font-size: 2.0rem;margin-right:50px;"),
                      selectInput(inputId = 'factor_column',label = '>Select factor column/columns of interest (multi-select allowed)',
                                  choices = NULL,
                                  selected = NULL,

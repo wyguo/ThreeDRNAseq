@@ -7,7 +7,7 @@ tabItem('ddd',
         fluidRow(
           box(title = 'Workflow',
               width=12,status = 'primary', solidHeader = T,
-              HTML('<img style="width: 60%; display: block; margin-left: auto; margin-right: auto;"
+              HTML('<img style="width: 100%; display: block; margin-left: auto; margin-right: auto;"
                    src="DDD.png"/>')
               )
           ),
@@ -20,7 +20,7 @@ tabItem('ddd',
               
           ),
           ##---------------Step 2: Set contrast groups------------
-          box(title = 'Step 2: Set contrast groups',
+          box(title = 'Step 2: Set contrast groups (multi-select allowed)',
               width=6,status = 'primary', solidHeader = T,
               selectorUI(1),
               tags$div(id = 'placeholder'),
@@ -70,8 +70,12 @@ tabItem('ddd',
               width = 6,status = 'primary', solidHeader = T,
               HTML('<h4><strong>Choose a pipeline</strong></h4>'),
               div(style="display:inline-block;vertical-align:middle;height:30px",
+                  # selectInput(inputId = "DE.pipeline", label = NULL,
+                  #             choices = c("limma","glmQL"),
+                  #             selected = 'limma',width = 160
+                  # )
                   selectInput(inputId = "DE.pipeline", label = NULL,
-                              choices = c("limma","glmQL"),
+                              choices = list(`limma-voom:`=list('limma'),`edgeR:` = c("glmQL", "glm")),
                               selected = 'limma',width = 160
                   )
               ),
@@ -81,8 +85,9 @@ tabItem('ddd',
               ),
               br(),
               br(),
-              HTML('<p align="justify">In practics, limma and edgeR-glmQL have comparable performance, and both have
-                   good control of false positives.</p>'),
+              HTML('<p align="justify">Limma pipeline is recommended for 3D analysis. At differential expression level, limma and edgeR-glmQL
+                   have comparable performance and both have better false positive controls than edgeR-glm. At differential alternative splicing
+                   level, limma pipeline has more robust predictions without losing stringency. Using edgeR pipelines will give greatly reduced predictions of DAS genes/DTU transcripts. </p>'),
               hr(),
               HTML('<h4><strong>Set thresholds</strong></h4>'),
               selectInput(inputId = 'pval_adj_method',label = 'P-value adjust method',
@@ -145,11 +150,11 @@ tabItem('ddd',
               tableOutput('DDD.numbers')
           ),
           column(width = 3,
-                 box(title='Venn diagrams of 3D targets',
+                 box(title='Venn diagrams of 3D lists',
                      width = 13,status = 'primary', solidHeader = F,
                      selectInput(
                        inputId = 'across.contrast.group',
-                       label = 'Contrast groups (multiple selection allowed)',
+                       label = 'Contrast groups (multi-select allowed)',
                        selected = NULL,multiple = T,
                        choices = NULL
                      ),
@@ -170,7 +175,7 @@ tabItem('ddd',
                  )
           ),
           column(width = 9,
-                 tabBox(title = '3D',width = 13,
+                 tabBox(title = 'Venn diagrams',width = 13,
                         tabPanel(title = 'DE genes',
                                  plotOutput("DE.genes.euler")
                         ),
@@ -210,19 +215,19 @@ tabItem('ddd',
                  tabBox(width = 13,
                         # Title can include an icon
                         # title = tagList(shiny::icon("gear"), "Loaded tables"),
-                        title = "Number of up-down regulated targets",side = 'right',
+                        title = "Number of up-down regulated targets",side = 'left',
                         tabPanel("DE genes",
                                  plotOutput("up.down.bar.plot.DE.genes")
                         ),
-                        tabPanel("DAS genes",
-                                 plotOutput("up.down.bar.plot.DAS.genes")
-                        ),
+                        # tabPanel("DAS genes",
+                        #          plotOutput("up.down.bar.plot.DAS.genes")
+                        # ),
                         tabPanel("DE transcripts",
                                  plotOutput("up.down.bar.plot.DE.trans")
-                        ),
-                        tabPanel("DTU transcripts",
-                                 plotOutput("up.down.bar.plot.DTU.trans")
                         )
+                        # tabPanel("DTU transcripts",
+                        #          plotOutput("up.down.bar.plot.DTU.trans")
+                        # )
                  )
           ),
           column(width = 12,
@@ -272,10 +277,28 @@ tabItem('ddd',
                  ),
                  actionButton(inputId = 'save.up.down.bar.plot',label = 'Save',icon = icon('download',lib = 'font-awesome'),
                               style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: left; margin-top: 25px; margin-left: 25px")
+          )
+        ),
+        HTML('<p>&nbsp;</p>'),
+        ##---------------Step 6: Transcriptional vs alternative splicing regulation------------
+        fluidRow(
+          box(title='Step 6: Transcriptional vs alternative splicing regulation',
+              width = 12,status = 'primary', solidHeader = T,
+              column(width = 6,
+                     h4('DE vs DAS genes'),
+                     wellPanel(style = "background-color: #ffffff;",
+                               tableOutput('DE.vs.DAS')
+                     )
+              ),
+              column(width = 6,
+                     h4('DE vs DTU transcripts'),
+                     wellPanel(style = "background-color: #ffffff;",
+                               tableOutput('DE.vs.DTU') 
+                     )
+              )
           ),
-          HTML("<p>&nbsp;</p>"),
           column(width = 12,
-                 tabBox(width = 13,title = 'Number of union set of all contrast groups',side = 'right',
+                 tabBox(width = 13,title = 'Number of union set of all contrast groups',side = 'left',
                         tabPanel(title = 'DE and DAS genes',
                                  plotOutput("genes.flow.chart")
                         ),
@@ -298,27 +321,8 @@ tabItem('ddd',
                  actionButton(inputId = 'save.union.flow.chart',label = 'Save',
                               icon = icon('download',lib = 'font-awesome'),
                               style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: left; margin-top: 25px; margin-left: 25px")
-          )
-        ),
-        HTML('<p>&nbsp;</p>'),
-        ##---------------Step 6: Transcriptional vs alternative splicing regulation------------
-        fluidRow(
-          box(title='Step 6: Transcriptional vs alternative splicing regulation',
-              width = 12,status = 'primary', solidHeader = T,
-              column(width = 6,
-                     h4('DE vs DAS genes'),
-                     wellPanel(style = "background-color: #ffffff;",
-                               tableOutput('DE.vs.DAS')
-                     )
-              ),
-              column(width = 6,
-                     h4('DE vs DTU transcripts'),
-                     wellPanel(style = "background-color: #ffffff;",
-                               tableOutput('DE.vs.DTU') 
-                     )
-              )
-              
           ),
+          HTML("<p>&nbsp;</p>"),
           column(width = 3,
                  box(title='Transcriptional vs AS regulation',
                      width = 13,status = 'primary', solidHeader = F,
@@ -345,7 +349,7 @@ tabItem('ddd',
           ),
           column(width = 9,
                  tabBox(width = 13,
-                        title = "",side = 'right',
+                        title = "",side = 'left',
                         tabPanel("DE vs DAS genes",
                                  plotOutput("DEvsDAS.euler")
                         ),
