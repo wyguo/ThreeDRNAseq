@@ -221,29 +221,11 @@ if(!file.exists('figure/DE genes up and down regulation numbers.png')){
 ```
 
 
-```{r updown_DASgenes,eval=T,echo=F,fig.width=12}
-if(!file.exists('figure/DAS genes up and down regulation numbers.png')){
-  cat('Plot is not found in the figure folder')
-} else {
-  knitr::include_graphics("figure/DAS genes up and down regulation numbers.png")
-}
-```
-
-
 ```{r updown_DEtrans,eval=T,echo=F,fig.width=12}
-if(!file.exists('figure/DE transcripts updown regulation numbers.png')){
+if(!file.exists('figure/DE transcripts up and down regulation numbers.png')){
   cat('Plot is not found in the figure folder')
 } else {
-  knitr::include_graphics("figure/DE transcripts updown regulation numbers.png")
-}
-```
-
-
-```{r updown_DTUtrans,eval=T,echo=F,fig.width=12}
-if(!file.exists('figure/DTU transcripts updown regulation numbers.png')){
-  cat('Plot is not found in the figure folder')
-} else {
-  knitr::include_graphics("figure/DTU transcripts updown regulation numbers.png")
+  knitr::include_graphics("figure/DE transcripts up and down regulation numbers.png")
 }
 ```
 
