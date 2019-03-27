@@ -354,10 +354,10 @@ The normalised $log_2$-CPM of all samples were used to make PCA plots. The PCA p
 Figure: Transcript level read counts and normalised $log_2$-CPM distribution across samples.
 
 ```{r,eval=T,echo=F,fig.width=12,message=F,warning=F}
-if(!file.exists('figure/Transcript data distribution.png')){
+if(!file.exists('figure/Transcript expression distribution.png')){
   cat('Plot is not found in the figure folder')
 } else {
-  knitr::include_graphics("figure/Transcript data distribution.png")
+  knitr::include_graphics("figure/Transcript expression distribution.png")
 }
 
 ```
@@ -365,10 +365,10 @@ if(!file.exists('figure/Transcript data distribution.png')){
 Figure: Gene level read counts and normalised $log_2$-CPM distribution across samples.
 
 ```{r,eval=T,echo=F,fig.width=12,message=F,warning=F}
-if(!file.exists('figure/Gene data distribution.png')){
+if(!file.exists('figure/Gene expression distribution.png')){
   cat('Plot is not found in the figure folder')
 } else {
-  knitr::include_graphics("figure/Gene data distribution.png")
+  knitr::include_graphics("figure/Gene expression distribution.png")
 }
 ```
 
