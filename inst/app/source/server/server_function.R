@@ -49,7 +49,7 @@ heatmap.targets <- eventReactive(input$plot.heatmap,{
 heatmap.g <- eventReactive(input$plot.heatmap,{
   if(is.null(heatmap.targets()))
     return(NULL)
-  withProgress(message = 'Generate gene expression...', value = 0, {
+  withProgress(message = 'Making heat-map...', value = 0, {
     incProgress(0.1)
     data2plot <- rowmean(x = t(heatmap.targets()$data2heatmap),
                          group = DDD.data$samples$condition,
