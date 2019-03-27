@@ -149,6 +149,55 @@ tabItem('ddd',
               h4('Number of 3D genes/transcripts in each contrast group'),
               tableOutput('DDD.numbers')
           ),
+          ##---------- plot transcript per genes ------------
+          column(width = 3,
+                 box(title='Number of transcripts per gene',
+                     width = NULL,status = 'primary', solidHeader = F,
+                     spectrumInput(
+                       inputId = "tpg_color",
+                       label = "Pick a color for the bars:",
+                       choices = distinct.color(50),
+                       options = list(`toggle-palette-more-text` = "Show more"),
+                       width = "50%"
+                     ),
+                     numericInput(inputId = "tpg_number_x_hjust",label = 'Horizontal-just x-labs',value = '0.5',
+                                  min = 0,max = 1,step = 0.1,width = "100%"),
+                     numericInput(inputId = "tpg_number_x_vjust",label = 'Vertical-just x-labs',value = '0.5',
+                                  min = 0,max = 1,step = 0.1,width = "100%"),
+                     numericInput(inputId = "tpg_number_x_rotate",label = 'Rotate x-labs',value = '0',
+                                  min = 0,max = 360,step = 15,width = "100%"),
+                     bsTooltip(id = 'tpg_number_x_rotate',
+                               title = "Adjust the labels on x-axis.",
+                               placement = "bottom",
+                               options = list(container = "body")),
+                     actionButton('tpg_plot_button','Plot',icon("send outline icon"),class="btn btn-primary",
+                                  style="color: #fff; background-color: #428bca; border-color: #2e6da4")
+                 )
+          ),
+            column(width = 9,
+                   box(title= NULL,
+                       width = NULL,status = 'primary', solidHeader = T,
+                       plotOutput('tpg_plot'),
+                       hr(),
+                       column(12,
+                              div(style="float:left;margin-left: 0px;",
+                                  numericInput(inputId = "tpg_number_width",label = 'Plot width (inch)',
+                                               value = 8,width = "100%",step = 0.2)
+                              ),
+                              div(style="float:left;margin-left: 25px;",
+                                  numericInput(inputId = "tpg_number_height",label = 'Plot height (inch)',
+                                               value = 5,width = "100%",step = 0.2)
+                              ),
+                              div(style="float:left;margin-left: 25px;",
+                                  numericInput(inputId = "tpg_number_res",label = 'PNG plot resolution',value = '150',
+                                               min = 0,max = 600,step = 60,width = "100%")
+                              ),
+                              actionButton(inputId = 'tpg_save_button',label = 'Save',icon = icon('download',lib = 'font-awesome'),
+                                           style="color: #fff; background-color: #428bca; border-color: #2e6da4; 
+                                           float: left; margin-top: 25px; margin-left: 25px")
+                              )
+                       )
+                   ),
           column(width = 3,
                  box(title='Venn diagrams of 3D lists',
                      width = 13,status = 'primary', solidHeader = F,

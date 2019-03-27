@@ -12,7 +12,7 @@ gg.color.hue <- function(n) {
 #' @return a vector of \code{n} colours.
 #' @export
 distinct.color <- function(n){
-  col.lib <- c("#F8766D","#00BFC4","#1874CD","red","yellow","green","darkgreen",
+  col.lib <- c("#1874CD","#F8766D","#00BFC4","red","yellow","green","darkgreen",
                gg.color.hue(10),
                "#C0D57E","#BF6CF4","#D435BB","#C2BBCB","#CAE678","#BEC3AD","#EC75F6","#F8DAD6","#D9FBD7","#46C3CF","#5FECDE","#AEE1F5","#AA67CC",
                "#81C1F1","#D6A381","#81DADB","#99AD6D","#B8ECF3","#828D6F","#F832A9","#8DD092","#7FC0D0","#6EDDD0","#D4BE95","#B8F7F2","#9752C4",

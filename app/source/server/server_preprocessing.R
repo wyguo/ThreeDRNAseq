@@ -32,8 +32,8 @@ observe({
              ifelse(is.null(DDD.data$samples),'--',nrow(DDD.data$samples)),
              ifelse(is.null(DDD.data$samples_new),'--',nrow(DDD.data$samples_new)),
              ifelse(is.null(DDD.data$samples_new),'--',length(unique(DDD.data$samples[,'condition']))),
-             input$cpm_cut,
-             input$cpm_samples_n,
+             ifelse(is.null(DDD.data$params_list$cpm_cut),input$cpm_cut,DDD.data$params_list$cpm_cut),
+             ifelse(is.null(DDD.data$params_list$cpm_samples_n),input$cpm_samples_n,DDD.data$params_list$cpm_samples_n),
              ifelse(is.null(DDD.data$target_high),'--',length(DDD.data$target_high$trans_high)),
              ifelse(is.null(DDD.data$target_high),'--',length(DDD.data$target_high$genes_high))
              )
@@ -547,24 +547,24 @@ output$genes.dist.plot <- renderPlotly({
 observeEvent(input$save.dist.plot,{
   ##transcript level
   # graphics.off()
-  png(filename = paste0(DDD.data$figure.folder,'/Transcript data distribution.png'),
+  png(filename = paste0(DDD.data$figure.folder,'/Transcript expression distribution.png'),
       width = input$dist.plot.width,height = input$dist.plot.height,res=input$dist.plot.res, units = 'in')
   gridExtra::grid.arrange(trans.dist.g()$g1,trans.dist.g()$g2,ncol=1)
   dev.off()
   
-  pdf(file = paste0(DDD.data$figure.folder,'/Transcript data distribution.pdf'),
+  pdf(file = paste0(DDD.data$figure.folder,'/Transcript expression distribution.pdf'),
       width = input$dist.plot.width,height = input$dist.plot.height)
   gridExtra::grid.arrange(trans.dist.g()$g1,trans.dist.g()$g2,ncol=1)
   dev.off()
   
   ##gene level
   # graphics.off()
-  png(filename = paste0(DDD.data$figure.folder,'/Gene data distribution.png'),
+  png(filename = paste0(DDD.data$figure.folder,'/Gene expression distribution.png'),
       width = input$dist.plot.width,height = input$dist.plot.height,res=input$dist.plot.res, units = 'in')
   gridExtra::grid.arrange(genes.dist.g()$g1,genes.dist.g()$g2,ncol=1)
   dev.off()
   
-  pdf(file = paste0(DDD.data$figure.folder,'/Gene data distribution.pdf'),
+  pdf(file = paste0(DDD.data$figure.folder,'/Gene expression distribution.pdf'),
       width = input$dist.plot.width,height = input$dist.plot.height)
   gridExtra::grid.arrange(genes.dist.g()$g1,genes.dist.g()$g2,ncol=1)
   dev.off()

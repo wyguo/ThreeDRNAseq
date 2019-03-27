@@ -44,7 +44,7 @@ summaryDAStarget <- function(stat,lfc,cutoff=c(adj.pval=0.01,deltaPS=0.1)){
 #' DE&DAS genes or DE&DTU transcripts and fourth column of DAS only genes or DTU only transcripts.
 #' @export
 #' @rdname DEvsDAS
-DEvsDAS <- function(DE_genes,DAS_genes,contrast){
+DEvsDAS <- function(DE_genes,DAS_genes,contrast,consensus=F){
   idx <- c('DEonly','DE&DAS','DASonly')
   x <-  split(DE_genes$target,DE_genes$contrast)
   y <-  split(DAS_genes$target,DAS_genes$contrast)
@@ -61,23 +61,26 @@ DEvsDAS <- function(DE_genes,DAS_genes,contrast){
   })
   n1 <- do.call(rbind,n1)
   colnames(n1) <- c('Contrast',idx)
-  
-  if(length(contrast)==1){
-    n1
+  if(consensus){
+    if(length(contrast)==1){
+      n1
+    } else {
+      num <- unlist(num,recursive=FALSE)
+      n2 <- sapply(idx,function(i){
+        length(Reduce(intersect,num[grep(paste0('\\.',i,'$'),names(num))]))
+      })
+      n2 <- data.frame(Contrast='Intersection',t(n2))
+      names(n2) <- c('Contrast',idx)
+      rbind(n1,n2)
+    }
   } else {
-    num <- unlist(num,recursive=FALSE)
-    n2 <- sapply(idx,function(i){
-      length(Reduce(intersect,num[grep(paste0('\\.',i,'$'),names(num))]))
-    })
-    n2 <- data.frame(Contrast='Intersection',t(n2))
-    names(n2) <- c('Contrast',idx)
-    rbind(n1,n2)
+    n1
   }
 }
 
 #' @export
 #' @rdname DEvsDAS
-DEvsDTU <- function(DE_trans,DTU_trans,contrast){
+DEvsDTU <- function(DE_trans,DTU_trans,contrast,consensus=F){
   idx <-  c('DEonly','DE&DTU','DTUonly')
   x <-  split(DE_trans$target,DE_trans$contrast)
   y <-  split(DTU_trans$target,DTU_trans$contrast)
@@ -95,22 +98,26 @@ DEvsDTU <- function(DE_trans,DTU_trans,contrast){
   n1 <- do.call(rbind,n1)
   colnames(n1) <- c('Contrast',idx)
   
-  if(length(contrast)==1){
-    n1
+  if(consensus){
+    if(length(contrast)==1){
+      n1
+    } else {
+      num <- unlist(num,recursive=FALSE)
+      n2 <- sapply(idx,function(i){
+        length(Reduce(intersect,num[grep(paste0('\\.',i,'$'),names(num))]))
+      })
+      n2 <- data.frame(Contrast='Intersection',t(n2))
+      names(n2) <- c('Contrast',idx)
+      rbind(n1,n2)
+    }
   } else {
-    num <- unlist(num,recursive=FALSE)
-    n2 <- sapply(idx,function(i){
-      length(Reduce(intersect,num[grep(paste0('\\.',i,'$'),names(num))]))
-    })
-    n2 <- data.frame(Contrast='Intersection',t(n2))
-    names(n2) <- c('Contrast',idx)
-    rbind(n1,n2)
+    n1
   }
 }
 
 #' @export
 #' @rdname DEvsDAS
-summary3Dnumber <- function(DE_genes,DAS_genes,DE_trans,DTU_trans,contrast){
+summary3Dnumber <- function(DE_genes,DAS_genes,DE_trans,DTU_trans,contrast,consensus=F){
   # n1 <- lapply(DE_genes,function(x) x$target)
   idx <- factor(DE_genes$contrast,levels = contrast)
   n1 <- split(DE_genes$target,idx)
@@ -138,7 +145,7 @@ summary3Dnumber <- function(DE_genes,DAS_genes,DE_trans,DTU_trans,contrast){
   
   x <- data.frame(contrast=rownames(x),x,row.names = NULL)
   colnames(x) <- c('contrast','DE genes','DAS genes','DE transcripts','DTU transcripts')
-  if(length(contrast)==1)
+  if(length(contrast)==1 | consensus==F)
     x <- x[-nrow(x),,drop=F]
   x
 }

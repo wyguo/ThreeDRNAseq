@@ -490,6 +490,53 @@ output$top.stat.table <- DT::renderDataTable({
   columnDefs = list(list(className = 'dt-center',
                          targets = "_all"))))
 
+##--------------- transcripts per gene number
+tpg_g <- eventReactive(input$tpg_plot_button,{
+  if(is.null(DDD.data$mapping) | is.null(DDD.data$target_high))
+    return(NULL)
+  x <- DDD.data$mapping[DDD.data$target_high$trans_high,]$GENEID
+  y <- table(table(x))
+  z <- c(y[1:10],sum(y[11:20]),sum(y[21:length(y)]))
+  data2plot <- data.frame(trans=c(1:10,'11-20',paste0('21-',length(y))),genes=z)
+  data2plot$trans <- factor(data2plot$trans,levels = data2plot$trans)
+  g <- ggplot(data = data2plot,aes(x=trans,y=genes,label=genes))+
+    geom_bar(stat='identity',fill=input$tpg_color)+
+    labs(x='Number of transcript per gene',y='Number of genes',
+         title='Distribution of the number of transcripts per gene')+
+    geom_text(size = 3, position=position_dodge(width=0.9), vjust=-0.25)+
+    theme_bw()+
+    theme(legend.position = 'none',
+          axis.text.x = element_text(angle = input$tpg_number_x_rotate,
+                                     hjust = input$tpg_number_x_hjust, 
+                                     vjust = input$tpg_number_x_vjust))
+  return(g)
+})
+
+output$tpg_plot <- renderPlot({
+  if(is.null(tpg_g()))
+    return(NULL)
+  print(tpg_g())
+})
+
+##save plot
+observeEvent(input$tpg_save_button,{
+  if(is.null(tpg_g()))
+    return(NULL)
+  create.folders(wd = DDD.data$folder)
+  folder2save <- paste0(DDD.data$folder,'/figure')
+  png(paste0(folder2save,'/Distribution of the number of transcripts per gene.png'),
+      width = input$tpg_number_width,height = input$tpg_number_height,res = input$tpg_number_res,units = 'in')
+  print(tpg_g())
+  dev.off()
+  
+  pdf(paste0(folder2save,'/Distribution of the number of transcripts per gene.pdf'),
+      width = input$tpg_number_width,height = input$tpg_number_height)
+  print(tpg_g())
+  dev.off()
+  showmessage()
+})
+
+
 ##--------------->DDD up- and down-regulation-----------------
 # output$up.down.bar.plot <- renderPlotly({
 g.updown <- reactive({
@@ -555,13 +602,13 @@ observeEvent(input$save.up.down.bar.plot,{
                value = 0, {
                  incProgress(0)
                  lapply(names(g.updown()),function(i){
-                   png(paste0(DDD.data$figure.folder,'/',i,' updown regulation numbers.png'),
+                   png(paste0(DDD.data$figure.folder,'/',i,' up and down regulation numbers.png'),
                        width = input$updown.plot.width,height = input$updown.plot.height,units = 'in',
                        res = input$updown.plot.res)
                    print(g.updown()[[i]])
                    dev.off()
                    
-                   pdf(paste0(DDD.data$figure.folder,'/',i,' updown regulation numbers.pdf'),
+                   pdf(paste0(DDD.data$figure.folder,'/',i,' up and down regulation numbers.pdf'),
                        width = input$updown.plot.width,height = input$updown.plot.height)
                    print(g.updown()[[i]])
                    dev.off()
@@ -740,12 +787,16 @@ observeEvent(input$save.across.contrast.euler.plot,{
 
 ###target numbers
 observe({
-  if(is.null(DDD.data$DE_genes) | is.null(DDD.data$DAS_genes) | is.null(DDD.data$DE_trans)| is.null(DDD.data$DTU_trans))
+  if(is.null(DDD.data$DE_genes) | 
+     is.null(DDD.data$DAS_genes) | 
+     is.null(DDD.data$DE_trans)| 
+     is.null(DDD.data$DTU_trans))
     return(NULL)
   DDD.data$DDD_numbers <- summary3Dnumber(DE_genes = DDD.data$DE_genes,
-                                            DAS_genes = DDD.data$DAS_genes,
-                                            DE_trans = DDD.data$DE_trans,
-                                            DTU_trans = DDD.data$DTU_trans,contrast = DDD.data$contrast)
+                                          DAS_genes = DDD.data$DAS_genes,
+                                          DE_trans = DDD.data$DE_trans,
+                                          DTU_trans = DDD.data$DTU_trans,
+                                          contrast = DDD.data$contrast)
   
 })
 

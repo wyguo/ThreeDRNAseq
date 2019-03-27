@@ -123,6 +123,17 @@ if(!file.exists('figure/Gene PCA average expression.png')){
 }
 ``` 
 
+### Number of transcripts per gene
+
+```{r number_tpg,eval=T,echo=F,fig.width=12}
+if(!file.exists('figure/Distribution of the number of transcripts per gene.png')){
+  cat('Plot is not found in the figure folder')
+} else {
+  knitr::include_graphics("figure/Distribution of the number of transcripts per gene.png")
+}
+```
+
+Figure: Distribution of the number of transcripts per gene. Low expressed transcripts and genes are filtered.
 
 ### Number of DE/DAS genes and DE/DTU transcripts
 
@@ -138,7 +149,7 @@ if(is.null(params$DDD.data$RNAseq_info)){
 
 <br>
 
-Table: Number of DE/DAS/DTU in different contrast groups. The intersection row is the number of consensus part of each column.
+Table: Number of DE/DAS genes and DE/DTU transcripts in different contrast groups. 
 
 ```{r 3D_number,eval=T,echo=F}
 if(is.null(params$DDD.data$DDD_numbers)){
@@ -150,7 +161,7 @@ if(is.null(params$DDD.data$DDD_numbers)){
 
 <br>
 
-Table: Number of DE vs DAS genes. The intersection row is the number of consensus part of each column.
+Table: Number of DE vs DAS genes.
 
 ```{r DEvsDAS,eval=T,echo=F}
 if(is.null(params$DDD.data$DDD_numbers)){
@@ -162,7 +173,7 @@ if(is.null(params$DDD.data$DDD_numbers)){
 
 <br>
 
-Table: Number of DE vs DTU transcripts. The intersection row is the number of consensus part of each column.
+Table: Number of DE vs DTU transcripts. 
 
 ```{r DEvsDTU,eval=T,echo=F}
 if(is.null(params$DDD.data$DDD_numbers)){
@@ -180,7 +191,6 @@ if(!file.exists('figure/Union set DE genes vs DAS genes.png')){
 } else {
   knitr::include_graphics("figure/Union set DE genes vs DAS genes.png")
 }
-
 ```
 
 Figure: Number of genes regulated only by transcription (DE), only by alternative splicing (DAS) and by both transcription and alternative splicing (DE+DAS).
@@ -203,19 +213,19 @@ Figure: Number of transcripts regulated only by transcription (DE), only by alte
 Figure: Number of up and down regulated genes, DAS genes, DE transcripts and DTU transcripts. The numbers are calculated based on positive or negative signs on the $L_2FCs$ of DE/DAS genes and DE/DTU transcripts. 
 
 ```{r updown_DEgenes,eval=T,echo=F,fig.width=12}
-if(!file.exists('figure/DE genes updown regulation numbers.png')){
+if(!file.exists('figure/DE genes up and down regulation numbers.png')){
   cat('Plot is not found in the figure folder')
 } else {
-  knitr::include_graphics("figure/DE genes updown regulation numbers.png")
+  knitr::include_graphics("figure/DE genes up and down regulation numbers.png")
 }
 ```
 
 
 ```{r updown_DASgenes,eval=T,echo=F,fig.width=12}
-if(!file.exists('figure/DAS genes updown regulation numbers.png')){
+if(!file.exists('figure/DAS genes up and down regulation numbers.png')){
   cat('Plot is not found in the figure folder')
 } else {
-  knitr::include_graphics("figure/DAS genes updown regulation numbers.png")
+  knitr::include_graphics("figure/DAS genes up and down regulation numbers.png")
 }
 ```
 
@@ -385,6 +395,14 @@ Venn diagrams to compare significant DE genes, DAS genes, DE transcript and DTU 
 
 ## Supplementary materials
 
+### Files in report folder
+Reports are saved in report folder.
+
+| File name              | Description                                       |
+|------------------------|---------------------------------------------------|
+| 3D_report.pdf/html/doc | Report of 3D analysis in pdf, html and doc format |
+
+
 ### Files in figure folder
 
 |File.names                                            |Description                                  |
@@ -437,15 +455,6 @@ Important results are saved in csv (comma delimited) files.
 | Target in each cluster heatmap*DE&DTU   trans.csv               | DE transcript list in clusters of DE transcript heatmap.                                                                                                                 |   |
 | Transcript read counts.csv                                      | Raw read counts of transcripts before data pre-processing                                                                                                                |   |
 | Transcript TPM.csv                                              | Raw TPM of transcripts before data pre-processing                                                                                                                        |   |
-
-### Files in report folder
-Reports are saved in report folder.
-
-| File name              | Description                                       |
-|------------------------|---------------------------------------------------|
-| 3D_report.pdf/html/doc | Report of 3D analysis in pdf, html and doc format |
-
-
 
 ### Files in data folder
 Intermediate data in .RData for 3D RAN-seq analysis are saved in the data folder. There are three .RData objects: 1) txi_trans.RData and 2) txi_genes.RData are transcript and gene level read count and TPM outputs from the tximport R package (Soneson et al., 2016). All the intermediate data generated in the process of 3D analysis is saved in the list object intermediate_data.RData. R users can access to the data using command line. 

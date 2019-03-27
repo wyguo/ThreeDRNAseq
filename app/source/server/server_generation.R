@@ -58,10 +58,11 @@ observe({
 # volumes <- c(Home = fs::path_home(), "R Installation" = R.home(), getVolumes()())
 # volumes <- c(wd='D:/PhD project/R projects/test round 2018/ThreeDRNAseq_improve/')
 volumes <- c(wd=getwd())
+volumes_quant <- getVolumes()
 shinyFileChoose(input, "mapping_file_button", roots = volumes, session = session,filetypes='csv')
 shinyFileChoose(input, "sample_file_button", roots = volumes, session = session,filetypes='csv')
 shinyDirChoose(input = input,id = 'data_folder_button',roots=volumes,session = session,restrictions = system.file(package = "base"))
-shinyDirChoose(input = input,id = 'quant_folder_button',roots=volumes,session = session,restrictions = system.file(package = "base"))
+shinyDirChoose(input = input,id = 'quant_folder_button',roots=volumes_quant,session = session,restrictions = system.file(package = "base"))
 
 # observe({
 #   path.idx <- parseDirPath(roots = volumes,selection = input$data_folder_button)
@@ -155,7 +156,7 @@ observe({
 })
 
 output$qaunt_folder_path_text <- renderText({
-  path.idx <- parseDirPath(roots = volumes,selection = input$quant_folder_button)
+  path.idx <- parseDirPath(roots = volumes_quant,selection = input$quant_folder_button)
   if(identical(x = path.idx,y = character(0)))
     return(NULL)
   paste0('Transcript quantification in directory:\n', path.idx)
@@ -163,7 +164,7 @@ output$qaunt_folder_path_text <- renderText({
 })
 
 observeEvent(input$samples_update,{
-  path.idx <- parseDirPath(roots = volumes,selection = input$quant_folder_button)
+  path.idx <- parseDirPath(roots = volumes_quant,selection = input$quant_folder_button)
   if(any(is.null(input$factor_column)) | 
      any(is.null(input$brep_column)) | 
      any(is.null(input$quant_column)) | 

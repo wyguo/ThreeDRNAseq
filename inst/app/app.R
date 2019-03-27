@@ -266,7 +266,7 @@ server <- function(input, output, session) {
     DDD_numbers=NULL,
     DEvsDAS_results=NULL,
     DEvsDTU_results=NULL,
-    params_list=list(),
+    params_list=NULL,
     params_table=NULL
   )
   # 

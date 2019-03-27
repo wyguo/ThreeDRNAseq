@@ -299,11 +299,11 @@ observeEvent(input$make.multiple.plot,{
   }
   
   ###plot abundance
-  folder2Abundance <- paste0(DDD.data$figure.folder,'/',input$multiplot.folder.namae,'/Abundance plot')
+  folder2Abundance <- paste0(DDD.data$figure.folder,'/Profile plots/Abundance')
   if(!file.exists(folder2Abundance))
     dir.create(folder2Abundance,recursive = T)
   
-  folder2PS <- paste0(DDD.data$figure.folder,'/',input$multiplot.folder.namae,'/PS plot')
+  folder2PS <- paste0(DDD.data$figure.folder,'/Profile plots/PS')
   if(!file.exists(folder2PS))
     dir.create(folder2PS,recursive = T)
   

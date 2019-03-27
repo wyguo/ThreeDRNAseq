@@ -175,7 +175,7 @@ tabItem('preprocessing',
                                  bath effects in the data:
                                  <ul style="padding-left: 20px">
                                  <li>The biological replicates of the same conditions stay in separate clusters in the PCA plot.</li/>
-                                 <li> There is experimental explaination of this separation (e.g. bio-reps in different time/labs).</li>
+                                 <li> There is experimental explanation of this separation (e.g. bio-reps in different time/labs).</li>
                                  </ul>
                                  Otherwise skip to Step 4 to avoid data over-modification.</font></strong></h4>'),
                             p() %>%

@@ -1,52 +1,54 @@
 ###parameters
 observe({
-  DDD.data$params_list$condition_n = length(unique((DDD.data$samples_new$condition)))
-  DDD.data$params_list$brep_n = length(unique(DDD.data$samples0[,DDD.data$brep_column]))
-  DDD.data$params_list$srep_n = length(unique(DDD.data$samples0[,DDD.data$srep_column]))
-  DDD.data$params_list$samples_n = nrow(DDD.data$samples_new)
-  DDD.data$params_list$has_srep = input$has_srep
-  DDD.data$params_list$quant_method = input$quant_method
-  DDD.data$params_list$tximport_method = input$tximport_method
-  DDD.data$params_list$cpm_cut = input$cpm_cut
-  DDD.data$params_list$cpm_samples_n = input$cpm_samples_n
-  DDD.data$params_list$norm_method = input$norm_method
-  DDD.data$params_list$has_batcheffect = input$has_batcheffect
-  DDD.data$params_list$RUVseq_method = input$RUVseq_method
-  DDD.data$params_list$contrast = DDD.data$contrast
-  DDD.data$params_list$pval_adj_method = input$pval_adj_method
-  DDD.data$params_list$pval_cut = input$pval_cut
-  DDD.data$params_list$l2fc_cut = input$l2fc_cut
-  DDD.data$params_list$deltaPS_cut = input$deltaPS_cut
-  DDD.data$params_list$DAS_pval_method = input$DAS_pval_method
+  if(is.null(DDD.data$params_list)){
+    DDD.data$params_list <- list()
+    DDD.data$params_list$condition_n = length(unique((DDD.data$samples_new$condition)))
+    DDD.data$params_list$brep_n = length(unique(DDD.data$samples0[,DDD.data$brep_column]))
+    DDD.data$params_list$srep_n = length(unique(DDD.data$samples0[,DDD.data$srep_column]))
+    DDD.data$params_list$samples_n = nrow(DDD.data$samples_new)
+    DDD.data$params_list$has_srep = input$has_srep
+    DDD.data$params_list$quant_method = input$quant_method
+    DDD.data$params_list$tximport_method = input$tximport_method
+    DDD.data$params_list$cpm_cut = input$cpm_cut
+    DDD.data$params_list$cpm_samples_n = input$cpm_samples_n
+    DDD.data$params_list$norm_method = input$norm_method
+    DDD.data$params_list$has_batcheffect = input$has_batcheffect
+    DDD.data$params_list$RUVseq_method = input$RUVseq_method
+    DDD.data$params_list$contrast = DDD.data$contrast
+    DDD.data$params_list$pval_adj_method = input$pval_adj_method
+    DDD.data$params_list$pval_cut = input$pval_cut
+    DDD.data$params_list$l2fc_cut = input$l2fc_cut
+    DDD.data$params_list$deltaPS_cut = input$deltaPS_cut
+    DDD.data$params_list$DAS_pval_method = input$DAS_pval_method
+    
+    ##heatmap
+    DDD.data$params_list$dist_method <- input$dist.method
+    DDD.data$params_list$cluster_method <- input$cluster.method
+    DDD.data$params_list$cluster_number <- input$cluster.number
+    
+    ##TSIS
+    DDD.data$params_list$TSISorisokTSP <- input$TSISorisokTSP
+    DDD.data$params_list$TSIS_method_intersection <- input$method.intersection
+    DDD.data$params_list$TSIS_spline_df <- input$spline.df
+    DDD.data$params_list$TSIS_prob_cut <- input$TSIS_prob_cut
+    DDD.data$params_list$TSIS_diff_cut <- input$TSIS_diff_cut
+    DDD.data$params_list$TSIS_adj_pval_cut <- input$TSIS_adj_pval_cut
+    DDD.data$params_list$TSIS_time_point_cut <- ifelse(input$TSISorisokTSP == 'isokTSP',1,input$TSIS_time_point_cut)
+    DDD.data$params_list$TSIS_cor_cut <- input$TSIS_cor_cut
+    
+    x <- DDD.data$params_list
+    x <- lapply(x,function(i){paste0(i,collapse = '; ')})
+    x <- data.frame(Description=names(x),Parameter=unlist(x),row.names = NULL)
+    x$Description <- gsub('_',' ',x$Description)
+    x$Description <- gsub('TSIS','IS',x$Description)
+    
+    x$Description[x$Description=='IS method intersection'] <- 'Values to identify ISs'
+    DDD.data$params_table <- x
+  }
   
-  ##heatmap
-  DDD.data$params_list$dist_method <- input$dist.method
-  DDD.data$params_list$cluster_method <- input$cluster.method
-  DDD.data$params_list$cluster_number <- input$cluster.number
-  
-  ##TSIS
-  DDD.data$params_list$TSISorisokTSP <- input$TSISorisokTSP
-  DDD.data$params_list$TSIS_method_intersection <- input$method.intersection
-  DDD.data$params_list$TSIS_spline_df <- input$spline.df
-  DDD.data$params_list$TSIS_prob_cut <- input$TSIS_prob_cut
-  DDD.data$params_list$TSIS_diff_cut <- input$TSIS_diff_cut
-  DDD.data$params_list$TSIS_adj_pval_cut <- input$TSIS_adj_pval_cut
-  DDD.data$params_list$TSIS_time_point_cut <- ifelse(input$TSISorisokTSP == 'isokTSP',1,input$TSIS_time_point_cut)
-  DDD.data$params_list$TSIS_cor_cut <- input$TSIS_cor_cut
-  
-  x <- DDD.data$params_list
-  x <- lapply(x,function(i){paste0(i,collapse = '; ')})
-  x <- data.frame(Description=names(x),Parameter=unlist(x),row.names = NULL)
-  x$Description <- gsub('_',' ',x$Description)
-  x$Description <- gsub('TSIS','IS',x$Description)
-  
-  x$Description[x$Description=='IS method intersection'] <- 'Values to identify ISs'
-  DDD.data$params_table <- x
 })
 
 ########parameter tables
-
-
 # output$params_table_panel <- DT::renderDataTable({
 #   x <- DDD.data$params_table
 #   rownames(x) <- NULL
@@ -125,7 +127,7 @@ observeEvent(input$save_ddd_data_button,{
                  }
                  ### save transcript-gene mapping
                  write.csv(x = DDD.data$mapping,
-                           file = paste0(DDD.data$result.folder,'/mapping.csv'),
+                           file = paste0(DDD.data$result.folder,'/Transcript and gene mapping.csv'),
                            row.names = F,na = '')
                  
                  ### save 3d list

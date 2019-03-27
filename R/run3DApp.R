@@ -9,7 +9,7 @@ run3DApp <- function(wd=getwd(),...){
   app.to <- paste0(wd,'/app')
   if(!all(list.files(app.from) %in% list.files(app.to)))
   message(paste0('Downloading 3D RNA-seq App:\n ',wd))
-    file.copy(from=app.path, to=wd, 
+    file.copy(from=app.from, to=wd, 
               overwrite = T, recursive = T, 
               copy.mode = T)
     message('Done!!!')

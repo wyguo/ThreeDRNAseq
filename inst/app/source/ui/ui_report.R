@@ -4,7 +4,7 @@ tabItem('report',
         fluidRow(
           # box(title = '3D RNA-seq analysis parameter summary',
           #     width=6,status = 'primary', solidHeader = T,
-          #     HTML('The 3D analysis parameters in this table will be used to generate a report. If any parameters are incorrect, please double click corresponding 
+          #     HTML('The 3D analysis parameters in this table will be used to generate a report. If any parameters are incorrect, please double click corresponding
           #          cells in the table and type in the correct values. Then click "Update parameters" button to refresh the parameters for report.'),
           #     br(),
           #     br(),
@@ -23,7 +23,7 @@ tabItem('report',
                                     style="color: #fff; background-color: #428bca; border-color: #2e6da4;",
                                     icon = icon('download')),
                        hr(),
-                       HTML('Reports in word, pdf and html formats are saved to "report" folder in 3D App working directory: ')
+                       HTML('Reports in word, pdf and html formats are saved in "report" folder in 3D App working directory: ')
                        # br(),
                        # br(),
                        # HTML('Reports in html, word and pdf format are saved in "report" folder. Reports are also availabe to download by following links:'),
@@ -43,13 +43,13 @@ tabItem('report',
                        hr(),
                        HTML('Results are saved to 3D App working directory: 
                             <ul><li>
-                            Intermediate data are in "data" folder.
+                            Intermediate data are saved in "data" folder.
                             </li>
                             <li>
-                            Significant 3D list and statistics in .csv (comma delimited) are in "result" folder.
+                            Significant 3D lists and statistics in .csv (comma delimited) are saved in "result" folder.
                             </li>
                             <li>
-                            Figures are in "figure" folder.
+                            Figures are saved in "figure" folder.
                             </li>
                             </ul>')
                      )
