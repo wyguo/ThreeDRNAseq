@@ -8,34 +8,34 @@ tabItem("generation",
                    src="data_generation.png"/>')
               )
           ),
-        fluidRow(
-          box(title = 'App working directory',
-                    width=12,status = 'primary', solidHeader = T,
-          textOutput('data_folder_path_text')
-          )
-        ),
+        # fluidRow(
+        #   box(title = 'App working directory',
+        #             width=12,status = 'primary', solidHeader = T,
+        #   textOutput('data_folder_path_text')
+        #   )
+        # ),
         ###upload intermediate data is disabled
         # fluidRow(
         #   actionButton(inputId = 'load_intermediate_data_btn',label = 'Load intermediate data')
         # ),
         fluidRow(
           ##----------Step 1: Use a different folder to save results?------------
-          box(title = 'Step 1: Use a different folder to save results?',
-              width=6,status = 'primary', solidHeader = T,
-              column(12,
-                     # wellPanel(
-                     # style = "background-color: #ffffff;",
-                     HTML('<strong>Folder to save results:</strong>'),
-                     # textOutput('data_folder_path_text'),
-                     tags$p(),
-                     radioButtons(inputId = 'use_diff_folder',label = 'Use a different folder',
-                                  choices = c('No','Yes'),selected = 'No',inline = T),
-                     uiOutput('data_folder_button_ui')
-                     # )
-              )
-          ),
+          # box(title = 'Step 1: Use a different folder to save results?',
+          #     width=6,status = 'primary', solidHeader = T,
+          #     column(12,
+          #            # wellPanel(
+          #            # style = "background-color: #ffffff;",
+          #            HTML('<strong>Folder to save results:</strong>'),
+          #            # textOutput('data_folder_path_text'),
+          #            tags$p(),
+          #            radioButtons(inputId = 'use_diff_folder',label = 'Use a different folder',
+          #                         choices = c('No','Yes'),selected = 'No',inline = T),
+          #            uiOutput('data_folder_button_ui')
+          #            # )
+          #     )
+          # ),
           ##----------Step 2: How to generate data of analysis?------------
-          box(title = 'Step 2: How to generate data of analysis?',
+          box(title = 'How to generate data of analysis?',
               width=6,status = 'primary', solidHeader = T,
               column(12,
                      # wellPanel(
@@ -57,51 +57,54 @@ tabItem("generation",
               column(width = 12,
                      # wellPanel(
                      # style = "background-color: #ffffff;",
-                     p() %>%
-                       helper(icon = "question-circle",
+                      br() %>% helper(icon = "question-circle",
                               colour = NULL,
                               type = 'markdown',
                               title = 'Input data of 3D RNA-seq App',
                               size = 'l',
                               content = 'input_data',
                               style="font-size: 2.0rem;margin-right:50px;"),
-                     br(),
-                     fileInput("sample_file_button", ">Select sample information csv file (comma delimited)",
+                     fileInput("sample_file_button", "(1) Select sample meta-data csv file (comma delimited)",
                                accept = c(
                                  ".csv")
-                     ),
-                     div(style="display:inline-block;vertical-align:middle;margin-left:15px",
-                         textOutput('sample_file_path_text')
                      )
-                     # )
               ),
               column(width = 12,
                      # wellPanel(
                      # style = "background-color: #ffffff;",
-                     radioButtons(inputId = 'mapping_file_type',label = 'Transcript-gene mapping in',
-                                  choices = c('csv (comma delimited)','gtf'),selected = 'csv (comma delimited)',inline = T),
-                     fileInput("mapping_file_button", ">Select transcript-mapping file",
+                     radioButtons(inputId = 'mapping_file_type',label = '(2) Select transcript-mapping file',
+                                  choices = c('csv (comma delimited)','gtf','fa'),selected = 'csv (comma delimited)',inline = T) %>%
+                       helper(icon = "question-circle",
+                              colour = NULL,
+                              type = 'inline',
+                              title = 'Generate transcript-gene association',
+                              size = 'l',
+                              content = c('If a gtf file is provided, transcript names and gene IDs will be extracted from the 
+                                          "transcript_id" and "gene_id" tags in the last column of the gtf, respectively.',
+                                          'If a fa (fasta) file is provided, transcript names be extracted from the sequence names after
+                                          tags ">" or "transcript" and genes names are the sequence names after tags "gene".'),
+                              style="font-size: 2.0rem;margin-right:50px;"),
+                     fileInput("mapping_file_button", "",
                                accept = c(
-                                 ".csv",".gtf")
+                                 ".csv",".gtf",".fa")
                      ),
-                     div(style="display:inline-block;vertical-align:middle;margin-left:15px",
-                         textOutput('mapping_file_path_text')
-                     )
-                     # )
+                     HTML('<h5 align="justify"><strong>Note:</strong> Transcript-gene association mapping in "csv" format is recommended. Otherwise it 
+                          may take a while to generate the information from a "gtf" or "fa" file.')                     
               ),
               column(width = 12,
-                     HTML('><strong> Upload transcript quantification</strong> '),
-                     br(),  
                      br(),
-                     fileInput("quant_zip_button", " >>(1): Select quantification zip file to upload",
-                               accept = c(
-                                 ".zip")
-                     ),
-                     HTML('<strong>Note:</strong> if the App is run in a local PC and the transcript quantifcation folder is already in the App working
-                          directory, please skip step (1) and select the quantification folder in step (2) directly.'),
+                     HTML('<strong> (3) Select transcript quantification folder</strong> '),
                      br(),
                      br(),
-                     HTML('<strong> >> (2) Select directory of transcript quantification folder</strong>'),
+                     HTML('> Upload quantification zip file to server?'),
+                     radioButtons(inputId = 'upload_quant_to_server',label = NULL,
+                                  choices = c('No','Yes'),inline = T,selected = 'No'),
+                     HTML('<h5 align="justify"><strong>Note:</strong> If the App is running on a local PC, users can select the
+                          quantification folder (unzipped) from the PC directory. Otherwise, please zip the quantification folder and upload it to the server.'),
+                     uiOutput('show_quant_zip_button'),
+                     p(),
+                     HTML('> Select the folder of transcript quantification'),
+                     br(),
                      br(),
                      shinyDirButton(id = 'quant_folder_button',label = 'Select a folder',title = 'Select the folder of quantification',
                                     buttonType = 'primary',
@@ -111,7 +114,9 @@ tabItem("generation",
                      br(),
                      verbatimTextOutput('qaunt_folder_path_text')
               )
+          )
           ),
+        fluidRow(
           ##----------Step 4: Select factors of interest------------
           box(title = 'Step 2: Select factors of experimental design',
               width=6,status = 'primary', solidHeader = T,
@@ -145,10 +150,10 @@ tabItem("generation",
                      radioButtons(inputId = 'quant_method',label = '>Transcripts are quantified by:',
                                   choices = c('salmon','kallisto'),
                                   selected = 'salmon',inline = T),
-                     actionButton(inputId = 'samples_update',label = 'Add sample information',icon = icon('update'),
+                     actionButton(inputId = 'samples_update',label = 'Add selected information to analysis',icon = icon('update'),
                                   style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: left"),
                      bsTooltip(id = "samples_update", 
-                               title = "Click to add selected information to sample table",
+                               title = "Click to add selected information to analysis",
                                placement = "bottom", options = list(container = "body"))
               )
           )
@@ -166,13 +171,13 @@ tabItem("generation",
                                      width = 200
                          )
                      ),
-                     # bsTooltip(id = "tximport_method", 
-                     #           title = "Set a count per million reads (CPM) cut-off",
-                     #           placement = "bottom", options = list(container = "body")),
                      div(style="display:inline-block;vertical-align:middle;height:30px",
                          actionButton('tximport_run','Run',icon("send outline icon"),
                                       style="color: #fff; background-color: #428bca; border-color: #2e6da4")
                      ),
+                     bsTooltip(id = "tximport_run",
+                               title = "Please make sure the selected inoformation in previous steps is correct.",
+                               placement = "bottom", options = list(container = "body")),
                      HTML('<ul style="padding-left: 20px">
                           <li>lengthScaledTPM: scaled using the average transcript length over samples and then the library size (<font color="red">recommended</font>). </li>
                           <li>scaledTPM: scaled up to library size.</li>

@@ -1,32 +1,4 @@
 ##--------------- >>Step 1: Select factors <<-----------------
-# output$correct_condition_select_btn <- renderUI({
-#   if(input$correct_condition=='Yes')
-#     return(NULL)
-#   selectInput(inputId = 'factor_column_new',
-#               label = 'Select the correct factors of interest',
-#               selected = NULL,multiple = T,width = '500px',
-#               choices = colnames(DDD.data$samples0))
-# })
-# 
-# output$refresh_condition_select_ui <- renderUI({
-#   if(input$correct_condition=='Yes')
-#     return(NULL)
-#   actionButton('refresh_condition_select','Refresh',icon("refresh"),
-#                style="color: #fff; background-color: #428bca; border-color: #2e6da4")
-# })
-# 
-# observeEvent(input$refresh_condition_select,{
-#   if(is.null(DDD.data$samples0))
-#     return(NULL)
-#   if(input$correct_condition=='No'){
-#     DDD.data$factor_column <- input$factor_column_new
-#     DDD.data$samples$condition <- as.vector(interaction(DDD.data$samples[,input$factor_column_new]))
-#     DDD.data$samples_new$condition <- as.vector(interaction(DDD.data$samples_new[,input$factor_column_new]))
-#   } else {
-#     return(NULL)
-#   }
-# })
-
 selected.samples <- reactive({
   if(is.null(DDD.data$samples_new) | all(is.null(DDD.data$factor_column)))
     return(NULL)
@@ -70,6 +42,7 @@ output$factor_table <- DT::renderDataTable({
 })
 
 ##--------------- >>Step 2: Set contrast groups <<-----------------
+##--------- + Difference of pair-wise----
 observe({
   callModule(module = selectorServer, id = 1, 
              thisList = DDD.data$conditions)
@@ -81,8 +54,37 @@ observe({
 
 params <- reactiveValues(btn = 1)
 contrastIdx <- reactiveValues(n=1)
+
+##insert a line
+observeEvent(input$insertParamBtn, {
+  n <- contrastIdx$n
+  n <- c(n,length(n)+1)
+  contrastIdx$n <- n
+  
+  params$btn <- params$btn + 1
+  callModule(selectorServer, params$btn,
+             thisList = DDD.data$conditions)
+  insertUI(
+    selector = '#placeholder',
+    ui = selectorUI(params$btn)
+  )
+})
+
+##remove a line
+observeEvent(input$removeParamBtn, {
+  removeUI(
+    ## pass in appropriate div id
+    selector = paste0('#param', params$btn)
+  )
+  params$btn <- params$btn - 1
+  n <- contrastIdx$n
+  n <- n[-length(n)]
+  contrastIdx$n <- n
+})
+
 # 
 observeEvent(input$generate_contrast,{
+  DDD.data$contrast_pw <- NULL
   x <- lapply(contrastIdx$n,function(i){
     x1 <- input[[NS(i, "Treatment")]]
     if(length(x1)>1)
@@ -102,35 +104,183 @@ observeEvent(input$generate_contrast,{
     x <- x[-idx,,drop=F]
   if(nrow(x)==0)
     return(NULL)
-  contrast <- paste0(x$Treatment,'-',x$Control)
-  DDD.data$contrast0 <- contrast
+  DDD.data$contrast_pw <- unique(paste0(x$Treatment,'-',x$Control))
 })
 
-observeEvent(input$insertParamBtn, {
-  n <- contrastIdx$n
+##--------- + Difference of multiple group mean----
+observe({
+  if('Difference of group mean' %in% input$contrast_type)
+    thisList = DDD.data$conditions else thisList = NULL
+  callModule(module = selectorServer_mean, id = 1, 
+             thisList = thisList)
+  updateSelectInput(session = session,inputId = NS(1)('Treatment_mean'),
+                    choices = thisList,selected = NULL)
+  updateSelectInput(session = session,inputId = NS(1)('Control_mean'),
+                    choices = thisList,selected = NULL)
+})
+
+params_mean <- reactiveValues(btn = 1)
+contrastIdx_mean <- reactiveValues(n=1)
+
+##insert a line
+observe({
+  if('Difference of group mean' %in% input$contrast_type){
+    updateButton(session, "insertParamBtn_mean", disabled = F,icon = icon('plus'),
+                 style="primary")
+    updateButton(session, "removeParamBtn_mean", disabled = F,icon = icon('minus'),
+                 style="primary")
+  } else {
+    updateButton(session, "insertParamBtn_mean", disabled = T,icon = icon('ban'))
+    updateButton(session, "removeParamBtn_mean", disabled = T,icon = icon('ban'))
+  }
+})
+
+observeEvent(input$insertParamBtn_mean, {
+  n <- contrastIdx_mean$n
   n <- c(n,length(n)+1)
-  contrastIdx$n <- n
-  
-  params$btn <- params$btn + 1
-  callModule(selectorServer, params$btn,
+  contrastIdx_mean$n <- n
+  params_mean$btn <- params_mean$btn + 1
+  callModule(selectorServer_mean, params_mean$btn,
              thisList = DDD.data$conditions)
   insertUI(
-    selector = '#placeholder',
-    ui = selectorUI(params$btn)
+    selector = '#placeholder_mean',
+    ui = selectorUI_mean(params_mean$btn)
   )
 })
 
-observeEvent(input$removeParamBtn, {
+##remove a line
+observeEvent(input$removeParamBtn_mean, {
   removeUI(
     ## pass in appropriate div id
-    selector = paste0('#param', params$btn)
+    selector = paste0('#param_mean', params_mean$btn)
   )
-  params$btn <- params$btn - 1
-  n <- contrastIdx$n
+  params_mean$btn <- params_mean$btn - 1
+  n <- contrastIdx_mean$n
   n <- n[-length(n)]
-  contrastIdx$n <- n
+  contrastIdx_mean$n <- n
 })
 
+# 
+observeEvent(input$generate_contrast,{
+  DDD.data$contrast_mean <- NULL
+  if(!('Difference of group mean' %in% input$contrast_type))
+    return(NULL)
+  
+  x <- lapply(contrastIdx_mean$n,function(i){
+    x1 <- input[[NS(i, "Treatment_mean")]]
+    x2 <- input[[NS(i, "Control_mean")]]
+    if(length(x1)==0 | length(x2)==0){
+      NA
+    } else {
+      if(length(x1)>1)
+        x1 <- paste0('(',paste0(x1,collapse = '+'),')/',length(x1))
+      if(length(x2)>1)
+        x2 <- paste0('(',paste0(x2,collapse = '+'),')/',length(x2))
+      data.frame(Treatment=x1, Control=x2)
+    }
+  })
+  x <- x[!is.na(x)]
+  if(length(x)==0)
+    return(NULL)
+  x <- data.frame(do.call(rbind,x))
+  colnames(x) <- c('Treatment','Control')
+  x <- x[!duplicated(x),]
+  x <- na.omit(x)
+  idx <- which(as.vector(t(x[,1]))==as.vector(t(x[,2])))
+  if(length(idx)>0)
+    x <- x[-idx,,drop=F]
+  if(nrow(x)==0)
+    return(NULL)
+  DDD.data$contrast_mean <- unique(paste0(x$Treatment,'-',x$Control))
+})
+
+##--------- + Difference of pair-wise group diffence----
+observe({
+  if('Difference of group difference' %in% input$contrast_type)
+    thisList = DDD.data$conditions else thisList = NULL
+    
+  callModule(module = selectorServer_pgdiff, id = 1, 
+             thisList = thisList)
+  updateSelectInput(session = session,inputId = NS(1)('Treatment_pgdiff'),
+                    choices = thisList,selected = NULL)
+  updateSelectInput(session = session,inputId = NS(1)('Control_pgdiff'),
+                    choices =thisList,selected = NULL)
+})
+
+params_pgdiff <- reactiveValues(btn = 1)
+contrastIdx_pgdiff <- reactiveValues(n=1)
+
+##insert a line
+observe({
+  if('Difference of group difference' %in% input$contrast_type){
+    updateButton(session, "insertParamBtn_pgdiff", disabled = F,icon = icon('plus'),
+                 style="primary")
+    updateButton(session, "removeParamBtn_pgdiff", disabled = F,icon = icon('minus'),
+                 style="primary")
+  } else {
+    updateButton(session, "insertParamBtn_pgdiff", disabled = T,icon = icon('ban'))
+    updateButton(session, "removeParamBtn_pgdiff", disabled = T,icon = icon('ban'))
+  }
+})
+
+observeEvent(input$insertParamBtn_pgdiff, {
+  n <- contrastIdx_pgdiff$n
+  n <- c(n,length(n)+1)
+  contrastIdx_pgdiff$n <- n
+  params_pgdiff$btn <- params_pgdiff$btn + 1
+  callModule(module = selectorServer_pgdiff, id = params_pgdiff$btn,
+             thisList = DDD.data$conditions)
+  insertUI(
+    selector = '#placeholder_pgdiff',
+    ui = selectorUI_pgdiff(params_pgdiff$btn)
+  )
+})
+
+##remove a line
+observeEvent(input$removeParamBtn_pgdiff, {
+  removeUI(
+    ## pass in appropriate div id
+    selector = paste0('#param_pgdiff', params_pgdiff$btn)
+  )
+  params_pgdiff$btn <- params_pgdiff$btn - 1
+  n <- contrastIdx_pgdiff$n
+  n <- n[-length(n)]
+  contrastIdx_pgdiff$n <- n
+})
+
+# 
+observeEvent(input$generate_contrast,{
+  DDD.data$contrast_pgdiff <- NULL
+  if(!('Difference of group difference' %in% input$contrast_type))
+    return(NULL)
+  
+  x <- lapply(contrastIdx_pgdiff$n,function(i){
+    x1 <- input[[NS(i, "Treatment_pgdiff")]]
+    x2 <- input[[NS(i, "Control_pgdiff")]]
+    if(length(x1)!=2 | length(x2)!=2) {
+      NA
+    } else {
+      x1 <- paste0('(',paste0(x1,collapse = '-'),')')
+      x2 <- paste0('(',paste0(x2,collapse = '-'),')')
+      data.frame(Treatment=x1, Control=x2)
+    }
+  })
+  x <- x[!is.na(x)]
+  if(length(x)==0)
+    return(NULL)
+  x <- data.frame(do.call(rbind,x))
+  colnames(x) <- c('Treatment','Control')
+  x <- x[!duplicated(x),]
+  x <- na.omit(x)
+  idx <- which(as.vector(t(x[,1]))==as.vector(t(x[,2])))
+  if(length(idx)>0)
+    x <- x[-idx,,drop=F]
+  if(nrow(x)==0)
+    return(NULL)
+  DDD.data$contrast_pgdiff <- unique(paste0(x$Treatment,'-',x$Control))
+})
+
+##--------- + Refresh contrast group----
 observeEvent(input$refresh_contrast,{
   if(params$btn==1)
     return(NULL)
@@ -144,128 +294,129 @@ observeEvent(input$refresh_contrast,{
     n <- n[-length(n)]
     contrastIdx$n <- n
   }
-
 })
 
-## contrast of contrast groups is disabled
-# ##--------------->contrast between contrast groups-----------------
-# observe({
-#   if(input$contrast_of_contrast=='Yes'){
-#     updateButton(session, "insertParamBtn_cofc", disabled = F,icon = icon('plus'),
-#                  style="primary")
-#     updateButton(session, "removeParamBtn_cofc", disabled = F,icon = icon('minus'),
-#                  style="primary")
-#     updateButton(session, "refresh_contrast_cofc", disabled = F,icon = icon('refresh'),
-#                  style="primary")
-#   } else {
-#     updateButton(session, "insertParamBtn_cofc", disabled = T,icon = icon('ban'))
-#     updateButton(session, "removeParamBtn_cofc", disabled = T,icon = icon('ban'))
-#     updateButton(session, "refresh_contrast_cofc", disabled = T,icon = icon('ban'))
-#   }
-# })
-# 
-# observe({
-#   if(input$contrast_of_contrast=='No')
-#     return(NULL)
-#   callModule(module = selectorServer2, id = 1,
-#              thisList = DDD.data$contrast0)
-#   updateSelectInput(session = session,inputId = NS(1)('Contrast2'),
-#                     choices = DDD.data$contrast0,selected = NULL)
-#   updateSelectInput(session = session,inputId = NS(1)('Contrast1'),
-#                     choices = DDD.data$contrast0,selected = NULL)
-# })
-# 
-# params_cofc <- reactiveValues(btn = 1)
-# contrastIdx_cofc <- reactiveValues(n=1)
-# #
-# observeEvent(input$generate_contrast_cofc,{
-#   x <- lapply(contrastIdx_cofc$n,function(i){
-#     x1 <- input[[NS(i, "Contrast2")]]
-#     x2 <- input[[NS(i, "Contrast1")]]
-#     data.frame(Contrast1=x1,
-#                Contrast2=x2)
-#   })
-#   x <- data.frame(do.call(rbind,x))
-#   colnames(x) <- c('Treatment','Control')
-#   x <- x[!duplicated(x),]
-#   x <- na.omit(x)
-#   idx <- which(as.vector(t(x[,1]))==as.vector(t(x[,2])))
-#   if(length(idx)>0)
-#     x <- x[-idx,,drop=F]
-#   if(nrow(x)==0)
-#     return(NULL)
-#   contrast <- paste0('(',x$Treatment,')-(',x$Control,')')
-#   DDD.data$contrast_cofc <- contrast
-# })
-# 
-# 
-# observeEvent(input$insertParamBtn_cofc, {
-#   n <- contrastIdx_cofc$n
-#   n <- c(n,length(n)+1)
-#   contrastIdx_cofc$n <- n
-# 
-#   params_cofc$btn <- params_cofc$btn + 1
-#   callModule(selectorServer2, params_cofc$btn,
-#              thisList = DDD.data$contrast0)
-#   insertUI(
-#     selector = '#placeholder_cofc',
-#     ui = selectorUI2(params_cofc$btn)
-#   )
-# })
-# 
-# observeEvent(input$removeParamBtn_cofc, {
-#   removeUI(
-#     ## pass in appropriate div id
-#     selector = paste0('#param_cofc', params_cofc$btn)
-#   )
-#   params_cofc$btn <- params_cofc$btn - 1
-#   n <- contrastIdx_cofc$n
-#   n <- n[-length(n)]
-#   contrastIdx_cofc$n <- n
-# })
-# 
-# observeEvent(input$refresh_contrast,{
-#   if(params_cofc$btn==1)
-#     return(NULL)
-#   for(i in params_cofc$btn:2){
-#     removeUI(
-#       ## pass in appropriate div id
-#       selector = paste0('#param_cofc', i)
-#     )
-#     params_cofc$btn <- params_cofc$btn - 1
-#     n <- contrastIdx_cofc$n
-#     n <- n[-length(n)]
-#     contrastIdx_cofc$n <- n
-#   }
-# })
-# 
-# observeEvent(input$refresh_contrast,{
-#   DDD.data$contrast <- NULL
-#   DDD.data$contrast_cofc <- NULL
-#   DDD.data$contrast0 <- NULL
-# })
-# 
-# observe({
-#   DDD.data$contrast <- c(DDD.data$contrast0,DDD.data$contrast_cofc)
-# })
+observe({
+  if(('Difference of group mean' %in% input$contrast_type))
+    return(NULL)
+  if(params_mean$btn==1)
+    return(NULL)
+  for(i in params_mean$btn:2){
+    removeUI(
+      ## pass in appropriate div id
+      selector = paste0('#param_mean', i)
+    )
+    params_mean$btn <- params_mean$btn - 1
+    n <- contrastIdx_mean$n
+    n <- n[-length(n)]
+    contrastIdx_mean$n <- n
+  }
+})
+
+observeEvent(input$refresh_contrast,{
+  if(params_mean$btn==1)
+    return(NULL)
+  for(i in params_mean$btn:2){
+    removeUI(
+      ## pass in appropriate div id
+      selector = paste0('#param_mean', i)
+    )
+    params_mean$btn <- params_mean$btn - 1
+    n <- contrastIdx_mean$n
+    n <- n[-length(n)]
+    contrastIdx_mean$n <- n
+  }
+})
+
 
 observe({
-  DDD.data$contrast <- c(DDD.data$contrast0)
+  if(('Difference of group difference' %in% input$contrast_type))
+    return(NULL)
+  if(params_pgdiff$btn==1)
+    return(NULL)
+  for(i in params_pgdiff$btn:2){
+    removeUI(
+      ## pass in appropriate div id
+      selector = paste0('#param_pgdiff', i)
+    )
+    params_pgdiff$btn <- params_pgdiff$btn - 1
+    n <- contrastIdx_pgdiff$n
+    n <- n[-length(n)]
+    contrastIdx_pgdiff$n <- n
+  }
+})
+
+observeEvent(input$refresh_contrast,{
+  if(params_pgdiff$btn==1)
+    return(NULL)
+  for(i in params_pgdiff$btn:2){
+    removeUI(
+      ## pass in appropriate div id
+      selector = paste0('#param_pgdiff', i)
+    )
+    params_pgdiff$btn <- params_pgdiff$btn - 1
+    n <- contrastIdx_pgdiff$n
+    n <- n[-length(n)]
+    contrastIdx_pgdiff$n <- n
+  }
+})
+
+observeEvent(input$generate_contrast,{
+  DDD.data$contrast <- unique(c(DDD.data$contrast_pw,DDD.data$contrast_mean,DDD.data$contrast_pgdiff))
+  message(paste0('Contrast groups: ',paste0(DDD.data$contrast,collapse = '; ')))
 })
 
 ## show contrast table
 output$view_contrast_table <- DT::renderDataTable({
-  x <- DDD.data$contrast
-  if(is.null(x))
+  if(is.null(DDD.data$contrast))
     return(NULL)
+  x <- DDD.data$contrast
   x <- data.frame(Contrast=paste0('Contrast group',1:length(x)),
                   `Treatment-Control`= x,check.names = F)
   datatable(x,options=list(searching=F,info=F))
 })
 
-
-
 ##--------------->>Step 3: 3D analysis<<-----------------
+##update parameters
+observe({
+  if(is.null(DDD.data$params_list$DE_pipeline))
+    return(NULL)
+  updateSelectInput(session = session,inputId = 'DE_pipeline',selected = DDD.data$params_list$DE_pipeline)
+})
+
+observe({
+  if(is.null(DDD.data$params_list$pval_adj_method))
+    return(NULL)
+  updateSelectInput(session = session,inputId = 'pval_adj_method',selected = DDD.data$params_list$pval_adj_method)
+})
+
+observe({
+  if(is.null(DDD.data$params_list$DAS_pval_method))
+    return(NULL)
+  updateSelectInput(session = session,inputId = 'DAS_pval_method',selected = DDD.data$params_list$DAS_pval_method)
+})
+
+observe({
+  if(is.null(DDD.data$params_list$pval_cut))
+    return(NULL)
+  updateSliderInput(session = session,
+                    inputId = 'pval_cut',value = DDD.data$params_list$pval_cut)
+})
+
+observe({
+  if(is.null(DDD.data$params_list$l2fc_cut))
+    return(NULL)
+  updateSliderInput(session = session,
+                    inputId = 'l2fc_cut',value = DDD.data$params_list$l2fc_cut)
+})
+
+observe({
+  if(is.null(DDD.data$params_list$deltaPS_cut))
+    return(NULL)
+  updateSliderInput(session = session,
+                    inputId = 'deltaPS_cut',value = DDD.data$params_list$deltaPS_cut)
+})
+
 
 observeEvent(input$run.DE,{
   cat('\nDE gene analysis\n')
@@ -283,9 +434,9 @@ observeEvent(input$run.DE,{
                  design <- condition2design(condition = factor(DDD.data$conditions,
                                                                levels = unique(DDD.data$conditions)),
                                             batch.effect = batch.effect)
-                 DE.pipeline <- input$DE.pipeline
+                 DE_pipeline <- input$DE_pipeline
                  incProgress(0.2)
-                 switch(DE.pipeline,
+                 switch(DE_pipeline,
                         limma={
                           genes_3D_stat <- limma.pipeline(dge = DDD.data$genes_dge,
                                                           design = design,
@@ -354,9 +505,9 @@ observeEvent(input$run.DE,{
                  incProgress(0.1)
                  design <- condition2design(condition = factor(DDD.data$conditions,levels = unique(DDD.data$conditions)),
                                             batch.effect = batch.effect)
-                 DE.pipeline <- input$DE.pipeline
+                 DE_pipeline <- input$DE_pipeline
                  incProgress(0.2)
-                 switch(DE.pipeline,
+                 switch(DE_pipeline,
                         limma={
                           trans_3D_stat <- limma.pipeline(dge = DDD.data$trans_dge,
                                                           design = design,
@@ -767,7 +918,7 @@ output$DTU.trans.euler <- renderPlot({
 observeEvent(input$save.across.contrast.euler.plot,{
   ###save DE.genes
   lapply(names(g.across.contrast()),function(i){
-    figure.name <- paste0(DDD.data$figure.folder,'/',i,' euler plot across contrast ',paste0(input$across.contrast.group,collapse = ' vs '))
+    figure.name <- paste0(DDD.data$figure.folder,'/',i,' euler plot across contrast ',paste0(gsub('/','over',input$across.contrast.group),collapse = ' vs '))
     png(paste0(figure.name,'.png'),
         width = input$across.contrast.euler.plot.width,
         height = input$across.contrast.euler.plot.height,

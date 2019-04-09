@@ -22,15 +22,15 @@
 #     DDD.data[[i]] <- intermediate_data[[i]]
 #   }
 # })
-##----------Step 1: Select folders to save results------------
-output$data_folder_button_ui <- renderUI({
-  if(input$use_diff_folder=='No')
-    return(NULL)
-  shinyDirButton(id = 'data_folder_button',label = 'Select a folder',
-                 title = 'Select a folder to save intermidate data',
-                 buttonType = 'primary',
-                 icon = icon('folder'))
-})
+# ##----------Step 1: Select folders to save results------------
+# output$data_folder_button_ui <- renderUI({
+#   if(input$use_diff_folder=='No')
+#     return(NULL)
+#   shinyDirButton(id = 'data_folder_button',label = 'Select a folder',
+#                  title = 'Select a folder to save intermidate data',
+#                  buttonType = 'primary',
+#                  icon = icon('folder'))
+# })
 
 ##----------Step 2: How to generate data?------------
 output$upload_data_ui <- renderUI({
@@ -46,8 +46,13 @@ observe({
   file_path <- input$upload_data$datapath
   if (is.null(file_path) | length(file_path)==0)
     return(NULL)
+
   withProgress(message = 'Loading intermediate_data.RData...', value = 0, {
     suppressWarnings(load(file_path))
+    if(!exists('intermediate_data')){
+      showmessage('Please select the correct data object: intermediate_data.RData!')
+      return(NULL)
+    }
     for(i in names(intermediate_data)){
       DDD.data[[i]] <- intermediate_data[[i]]
     }
@@ -78,11 +83,11 @@ observe({
   DDD.data$report.folder <- 'report'
 })
 
-output$data_folder_path_text <- renderText({
-  if(is.null(DDD.data$data.folder))
-    return(NULL)
-  DDD.data$folder
-})
+# output$data_folder_path_text <- renderText({
+#   if(is.null(DDD.data$data.folder))
+#     return(NULL)
+#   DDD.data$folder
+# })
 
 ##----------Step 3: Inputs of 3D analysis------------
 ####mapping 
@@ -96,6 +101,10 @@ observe({
                  if(input$mapping_file_type=='gtf'){
                    incProgress(0.2)
                    mapping <- gtf2mapping(gtfile = file_path)
+                   incProgress(0.7)
+                 } else if(input$mapping_file_type=='fa'){
+                   incProgress(0.2)
+                   mapping <- fa2mapping(pafile = file_path)
                    incProgress(0.7)
                  } else {
                    incProgress(0.2)
@@ -122,6 +131,17 @@ observe({
 })
 
 ####quant zip file
+output$show_quant_zip_button <- renderUI({
+  if(input$upload_quant_to_server=='No')
+    return(NULL)
+  list(fileInput("quant_zip_button", label = '',
+            accept = c(
+              ".zip")),
+       HTML('<strong>Note:</strong> if the App is run in a local PC, please skip this step and select the folder of 
+            transcript quantification directly.<br><br>') 
+  )
+})
+
 observe({
   file_path <- input$quant_zip_button$datapath
   if (is.null(file_path) | length(file_path)==0)
@@ -140,20 +160,27 @@ output$show_srep_column <- renderUI({
   if(input$has_srep=='No')
     return(NULL)
   selectInput(inputId = 'srep_column',label = '>Select sequencing replicate column',
-              choices = colnames(DDD.data$samples0),selected = NULL,multiple = F,width = NULL)
-  
+              choices = colnames(DDD.data$samples0),
+              selected = DDD.data$srep_column,
+              multiple = F,width = NULL)
 })
+
+
 
 observe({
   if(is.null(DDD.data$samples0))
     return(NULL)
   updateSelectInput(session = session,inputId = 'factor_column',
-                    choices = colnames(DDD.data$samples0),selected = NULL)
+                    choices = colnames(DDD.data$samples0),
+                    selected = DDD.data$factor_column)
   updateSelectInput(session = session,inputId = 'brep_column',
-                    choices = colnames(DDD.data$samples0),selected = NULL)
+                    choices = colnames(DDD.data$samples0),
+                    selected = DDD.data$brep_column)
   updateSelectInput(session = session,inputId = 'quant_column',
-                    choices = colnames(DDD.data$samples0),selected = NULL)
+                    choices = colnames(DDD.data$samples0),
+                    selected = DDD.data$quant_column)
 })
+
 
 output$qaunt_folder_path_text <- renderText({
   path.idx <- parseDirPath(roots = volumes_quant,selection = input$quant_folder_button)
@@ -163,6 +190,7 @@ output$qaunt_folder_path_text <- renderText({
   
 })
 
+# observeEvent(input$samples_update,{
 observeEvent(input$samples_update,{
   path.idx <- parseDirPath(roots = volumes_quant,selection = input$quant_folder_button)
   if(any(is.null(input$factor_column)) | 
@@ -208,14 +236,61 @@ output$sample_table <- DT::renderDataTable({
 })
 
 ##----------Step 4: Generate gene and transcript read counts and TPMs------------
+##update tximport method
+observe({
+  if(is.null(DDD.data$params_list$tximport_method))
+    return(NULL)
+  updateSelectInput(inputId = "tximport_method",session = session,
+              selected = DDD.data$params_list$tximport_method
+  )
+})
+
+##update has srep
+observe({
+  if(is.null(DDD.data$params_list$has_srep))
+    return(NULL)
+  updateRadioButtons(inputId = 'has_srep',session = session,label = '>Does the data have sequencing replicates?',
+                     choices = c('No','Yes'),selected = DDD.data$params_list$has_srep,inline = T)
+})
+
+##update quant method
+observe({
+  if(is.null(DDD.data$params_list$quant_method))
+    return(NULL)
+  updateRadioButtons(inputId = 'quant_method',session = session,label = '>Transcripts are quantified by:',
+               choices = c('salmon','kallisto'),
+               selected = DDD.data$params_list$quant_method,
+               inline = T)
+})
+
+
+
 
 observeEvent(input$tximport_run,{
-  if(is.null(DDD.data$samples) | is.null(DDD.data$mapping) | is.null(DDD.data$folder))
+  # if(is.null(DDD.data$samples) | is.null(DDD.data$mapping) | is.null(DDD.data$folder))
+  #   return(NULL)
+  path.idx <- parseDirPath(roots = volumes_quant,selection = input$quant_folder_button)
+  if(identical(x = path.idx,y = character(0))){
+    showmessage(text = 'Please select the quatification folder in Step 2.',
+                duration = 20)
     return(NULL)
+  }
   
+  if(is.null(DDD.data$samples)){
+    showmessage(text = 'Please select factor labels in Step 2 and CLICK the button to add selected information for the analysis.',
+                duration = 20)
+    return(NULL)
+  }
+  
+  if(is.null(DDD.data$mapping)){
+    showmessage(text = 'Please select or generate transcript-gene mapping table in Step 1 for the analysis',
+                duration = 20)
+    return(NULL)
+  }
+
   data.files <-  as.character(DDD.data$samples$quant.path)
   if(!all(file.exists(data.files))){
-    showmessage('The provided quantification folder information is incorrect. 
+    showmessage('The quantification file names in the sample meta-table do not match to the quantification files. 
   Please double check the sample information csv spreadsheet or the selected directory of the quantification files.',duration = 20)
     return(NULL)
   }

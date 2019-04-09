@@ -25,24 +25,26 @@ tabItem('preprocessing',
                                title = "Set the minimum numbers of samples to apply the CPM cut-off",
                                placement = "bottom", options = list(container = "body")),
                      div(style="float:left; margin-right: 0%",
-                         actionButton('run_filter','Filter',icon("filter"),
-                                      style="color: #fff; background-color: #428bca; border-color: #2e6da4"),
-                         actionButton('mv_plot_button','Mean-variance plot',icon("pencil"),
+                         actionButton('run_filter','Filter & Mean-variance trend plot',icon("filter"),
                                       style="color: #fff; background-color: #428bca; border-color: #2e6da4")
+                         # actionButton('mv_plot_button','Mean-variance plot',icon("pencil"),
+                         #              style="color: #fff; background-color: #428bca; border-color: #2e6da4")
                      ) %>%
                        helper(icon = "question-circle",
                               colour = NULL,
                               type = 'markdown',
-                              title = 'Filter low expression based mean-variance trend plot',
+                              title = 'Mean-variance trend plot to determine low expression cut-offs',
                               size = 'l',
                               content = 'filter_low',
                               style="font-size: 2.0rem;margin-right:50px;"),
+                     bsTooltip(id = "run_filter", 
+                               title = 'Click "Filter & Mean-variance trend plot" button to apply low exprssion filter and make mean-variance trend plot',
+                               placement = "bottom", options = list(container = "body")),
                      HTML('&nbsp'),
                      br(),
                      hr(),
-                     HTML('Note: Click "Filter" and then click "Mean-variance plot" to evaluate the cut-offs.
-                          <ul style="padding-left: 20px"><li>An expressed transcript must have &#x2265 <i>n</i> samples &#x2265 <i>m</i> CPM (Count Per Million reads) expression.</li>
-                          <li>An expressed gene must have at least one expressed transcript.</li></ul>') 
+                     HTML('<strong>Note:</strong> (1) An expressed transcript must have &#x2265 <i>n</i> samples &#x2265 <i>m</i> CPM (Count Per Million reads) expression.
+                          (2) An expressed gene must have at least one expressed transcript.') 
                      
                      )
                  ),
@@ -104,7 +106,7 @@ tabItem('preprocessing',
                                  choices = NULL),
                      radioButtons(inputId = 'pca.add.circle',label = 'Add polygon to clusters',
                                   choices = c('none','ellipse','polygon'),
-                                  selected = 'none',inline = T),
+                                  selected = 'polygon',inline = T),
                      div(style="display:inline-block;vertical-align:middle;height:30px;",
                          actionButton('plot.pca.button','Plot',icon("pencil",lib = 'font-awesome'),
                                       style="color: #fff; background-color: #428bca; border-color: #2e6da4")

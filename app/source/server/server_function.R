@@ -1,5 +1,25 @@
 ##---------------->>    Advanced plot   <<-----------------
 ##----------------        heatmap        ------------------
+observe({
+  if(is.null(DDD.data$params_list$dist_method))
+    return(NULL)
+  updateSelectInput(session = session,
+                    inputId = 'dist_method',selected = DDD.data$params_list$dist_method)
+})
+
+observe({
+  if(is.null(DDD.data$params_list$cluster_method))
+    return(NULL)
+  updateSelectInput(session = session,
+                    inputId = 'cluster_method',selected = DDD.data$params_list$cluster_method)
+})
+
+observe({
+  if(is.null(DDD.data$params_list$cluster_number))
+    return(NULL)
+  updateNumericInput(session = session,
+                    inputId = 'cluster_number',value = DDD.data$params_list$cluster_number)
+})
 
 heatmap.targets <- eventReactive(input$plot.heatmap,{
 
@@ -60,16 +80,16 @@ heatmap.g <- eventReactive(input$plot.heatmap,{
     data2plot <- t(scale(data2plot))
     # }
     incProgress(0.2)
-    hc.dist <- dist(data2plot,method = input$dist.method)
-    hc <- fastcluster::hclust(hc.dist,method = input$cluster.method)
-    clusters <- cutree(hc, k = input$cluster.number)
+    hc.dist <- dist(data2plot,method = input$dist_method)
+    hc <- fastcluster::hclust(hc.dist,method = input$cluster_method)
+    clusters <- cutree(hc, k = input$cluster_number)
     clusters <- reorderClusters(clusters = clusters,dat = data2plot)
     incProgress(0.3)
     g <- Heatmap(as.matrix(data2plot), 
                  col =  colorRampPalette(c(input$color4_heatmap_neg,input$color4_heatmap_0,input$color4_heatmap_pos))(100),
                  name = 'Z-scores',
                  cluster_rows = TRUE,
-                 clustering_method_rows=input$cluster.method,
+                 clustering_method_rows=input$cluster_method,
                  row_dend_reorder = T,
                  show_row_names = ifelse(input$show_row_labels=='Yes',T,F),
                  show_column_names = ifelse(input$show_column_labels=='Yes',T,F),
@@ -313,7 +333,7 @@ observeEvent(input$make.multiple.plot,{
                  for(gene in genes){
                    incProgress(1/length(genes))
                    if(input$multiple.plot.type %in% c('Abundance','Both')){
-                     message(paste0('Plotting abundance prfiles => Gene: ', gene, ' (',which(genes %in% gene), ' of ', length(genes),')'))
+                     # message(paste0('Plotting abundance prfiles => Gene: ', gene, ' (',which(genes %in% gene), ' of ', length(genes),')'))
                      g.pr <- plotAbundance(data.exp = data.exp,
                                            gene = gene,
                                            mapping = mapping,
