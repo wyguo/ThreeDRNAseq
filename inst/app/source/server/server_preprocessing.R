@@ -1,4 +1,18 @@
 ##----------Step 1: Filter low expression------------
+##update parameters
+observe({
+  if(is.null(DDD.data$params_list$cpm_cut))
+    return(NULL)
+  updateSliderInput(session = session,inputId = 'cpm_cut',value = DDD.data$params_list$cpm_cut)
+})
+
+observe({
+  if(is.null(DDD.data$params_list$cpm_samples_n) | is.null(DDD.data$samples_new))
+    return(NULL)
+  updateSliderInput(session = session,inputId = 'cpm_samples_n',
+                    value = DDD.data$params_list$cpm_samples_n,min = 0,max = nrow(DDD.data$samples_new))
+})
+
 observeEvent(input$run_filter,{
   if(is.null(DDD.data$trans_counts) | is.null(DDD.data$mapping))
     return(NULL)
@@ -49,7 +63,9 @@ output$RNAseq_datainfo <- DT::renderDataTable({
 
 ##-------------- > mean-variance plots---------------
 ###--mean variance trans trend plot
-mv.trans <- eventReactive(input$mv_plot_button,{
+mv.trans <- eventReactive(input$run_filter,{
+  if(is.null(DDD.data$samples_new) | is.null(DDD.data$trans_counts) | is.null(DDD.data$target_high))
+    return(NULL)
   condition <- paste0(DDD.data$samples_new$condition)
   ###---transcript levels
   counts.raw = DDD.data$trans_counts[rowSums(DDD.data$trans_counts>0)>0,]
@@ -60,7 +76,9 @@ mv.trans <- eventReactive(input$mv_plot_button,{
                       condition = condition)
 })
 
-mv.trans.plot <- eventReactive(input$mv_plot_button,{
+mv.trans.plot <- eventReactive(input$run_filter,{
+  if(is.null(mv.trans()))
+    return(NULL)
   mv.trans.plot <- function(){
     fit.raw <- mv.trans()$fit.raw
     fit.filtered <- mv.trans()$fit.filtered
@@ -80,12 +98,16 @@ mv.trans.plot <- eventReactive(input$mv_plot_button,{
 })
 #
 output$mv.trans.plot <- renderPlot({
+  if(is.null(mv.trans.plot()))
+    return(NULL)
   # cat('\nMake mean-variance trend plot\n')
   mv.trans.plot()()
 })
 
 ###--mean variance genes trend plot
-mv.genes <- eventReactive(input$mv_plot_button,{
+mv.genes <- eventReactive(input$run_filter,{
+  if(is.null(DDD.data$samples_new) | is.null(DDD.data$genes_counts) | is.null(DDD.data$target_high))
+    return(NULL)
   condition <- paste0(DDD.data$samples_new$condition)
   ###---genes levels
   counts.raw = DDD.data$genes_counts[rowSums(DDD.data$genes_counts>0)>0,]
@@ -96,7 +118,9 @@ mv.genes <- eventReactive(input$mv_plot_button,{
                       condition = condition)
 })
 
-mv.genes.plot <- eventReactive(input$mv_plot_button,{
+mv.genes.plot <- eventReactive(input$run_filter,{
+  if(is.null(mv.genes()))
+    return(NULL)
   mv.genes.plot <- function(){
     fit.raw <- mv.genes()$fit.raw
     fit.filtered <- mv.genes()$fit.filtered
@@ -115,10 +139,15 @@ mv.genes.plot <- eventReactive(input$mv_plot_button,{
 })
 #
 output$mv.genes.plot <- renderPlot({
+  if(is.null(mv.genes.plot()))
+    return(NULL)
   mv.genes.plot()()
 })
 
 observeEvent(input$save.mv.plot,{
+  if(is.null(mv.trans.plot()) | is.null(mv.genes.plot()))
+    return(NULL)
+ 
   ##transcript level
   png(filename = paste0(DDD.data$figure.folder,'/Transcript mean-variance trend.png'),
       width = input$mv.plot.width,height = input$mv.plot.height,res=input$mv.plot.res, 
@@ -297,6 +326,19 @@ observeEvent(input$save.pca.plot,{
 
 
 ##--------------Step 3: Remove batch effects-trans level---------------
+## update does the data has batch effects
+observe({
+  if(is.null(DDD.data$params_list$has_batcheffect))
+    return(NULL)
+  updateRadioButtons(session = session,inputId = 'has_batcheffect',selected = DDD.data$params_list$has_batcheffect)
+})
+
+observe({
+  if(is.null(DDD.data$params_list$RUVseq_method))
+    return(NULL)
+  updateRadioButtons(session = session,inputId = 'RUVseq_method',selected = DDD.data$params_list$RUVseq_method)
+})
+
 ###---update remove_batch action button
 observe({
   if(input$has_batcheffect=='Yes'){
@@ -462,6 +504,13 @@ observeEvent(input$save.pca.br.plot,{
 })
 
 ##--------------Step 4-normalization--------------
+##update normalisation method
+observe({
+  if(is.null(DDD.data$params_list$norm_method))
+    return(NULL)
+  updateRadioButtons(session = session,inputId = 'norm_method',selected = DDD.data$params_list$norm_method)
+})
+
 observeEvent(input$run_norm,{
   cat('\nNormalise transcript read counts\n')
   withProgress(message = 'Normalise transcript read counts...', value = 0, {

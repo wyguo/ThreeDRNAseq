@@ -1,7 +1,7 @@
 ###parameters
-observe({
-  if(is.null(DDD.data$params_list)){
-    DDD.data$params_list <- list()
+observeEvent(input$save_ddd_data_button,{
+  # if(is.null(DDD.data$params_list)){
+  #   DDD.data$params_list <- list()
     DDD.data$params_list$condition_n = length(unique((DDD.data$samples_new$condition)))
     DDD.data$params_list$brep_n = length(unique(DDD.data$samples0[,DDD.data$brep_column]))
     DDD.data$params_list$srep_n = length(unique(DDD.data$samples0[,DDD.data$srep_column]))
@@ -15,6 +15,7 @@ observe({
     DDD.data$params_list$has_batcheffect = input$has_batcheffect
     DDD.data$params_list$RUVseq_method = input$RUVseq_method
     DDD.data$params_list$contrast = DDD.data$contrast
+    DDD.data$params_list$DE_pipeline = input$DE_pipeline
     DDD.data$params_list$pval_adj_method = input$pval_adj_method
     DDD.data$params_list$pval_cut = input$pval_cut
     DDD.data$params_list$l2fc_cut = input$l2fc_cut
@@ -22,14 +23,14 @@ observe({
     DDD.data$params_list$DAS_pval_method = input$DAS_pval_method
     
     ##heatmap
-    DDD.data$params_list$dist_method <- input$dist.method
-    DDD.data$params_list$cluster_method <- input$cluster.method
-    DDD.data$params_list$cluster_number <- input$cluster.number
+    DDD.data$params_list$dist_method <- input$dist_method
+    DDD.data$params_list$cluster_method <- input$cluster_method
+    DDD.data$params_list$cluster_number <- input$cluster_number
     
     ##TSIS
     DDD.data$params_list$TSISorisokTSP <- input$TSISorisokTSP
-    DDD.data$params_list$TSIS_method_intersection <- input$method.intersection
-    DDD.data$params_list$TSIS_spline_df <- input$spline.df
+    DDD.data$params_list$TSIS_method_intersection <- input$method_intersection
+    DDD.data$params_list$TSIS_spline_df <- input$spline_df
     DDD.data$params_list$TSIS_prob_cut <- input$TSIS_prob_cut
     DDD.data$params_list$TSIS_diff_cut <- input$TSIS_diff_cut
     DDD.data$params_list$TSIS_adj_pval_cut <- input$TSIS_adj_pval_cut
@@ -44,7 +45,7 @@ observe({
     
     x$Description[x$Description=='IS method intersection'] <- 'Values to identify ISs'
     DDD.data$params_table <- x
-  }
+  # }
   
 })
 
@@ -112,7 +113,8 @@ observeEvent(input$save_ddd_data_button,{
                  save(intermediate_data,file=paste0(DDD.data$data.folder,'/intermediate_data.RData'))
                  incProgress(0.3)
                  ####save results 
-                 idx <- c('DE_genes','DAS_genes','DE_trans','DTU_trans','samples','contrast','DDD_numbers','DEvsDAS_results','DEvsDTU_results','RNAseq_info')
+                 idx <- c('DE_genes','DAS_genes','DE_trans','DTU_trans','samples','contrast',
+                          'DDD_numbers','DEvsDAS_results','DEvsDTU_results','RNAseq_info')
                  idx.names <-gsub('_',' ',idx)
                  idx.names <- gsub('trans','transcripts',idx.names)
                  idx.names[1:4] <- paste0('Significant ',idx.names[1:4],' list and statistics')
@@ -151,27 +153,27 @@ observeEvent(input$save_ddd_data_button,{
                  ##save all gene/transcript statistics
                  incProgress(0.8)
                  write.csv(x = DDD.data$genes_3D_stat$DE.stat,
-                           file = paste0(DDD.data$result.folder,'/Significant DE and not DE genes list and statistics.csv'),
+                           file = paste0(DDD.data$result.folder,'/DE gene testing statistics.csv'),
                            row.names = F,na = '')
                  
                  write.csv(x = DDD.data$trans_3D_stat$DE.stat,
-                           file = paste0(DDD.data$result.folder,'/Significant DE and not DE transcripts list and statistics.csv'),
+                           file = paste0(DDD.data$result.folder,'/DE transcripts testing statistics.csv'),
                            row.names = F,na = '')
                  
                  if(DDD.data$params_list$DAS_pval_method=='F-test'){
                    write.csv(x = DDD.data$trans_3D_stat$DAS.F.stat,
-                             file = paste0(DDD.data$result.folder,'/Significant DAS and not DAS genes list and statistics.csv'),
+                             file = paste0(DDD.data$result.folder,'/DAS genes testing statistics.csv'),
                              row.names = F,na = '')
                  }
                  
                  if(DDD.data$params_list$DAS_pval_method=='Simes'){
                    write.csv(x = DDD.data$trans_3D_stat$DAS.simes.stat,
-                             file = paste0(DDD.data$result.folder,'/Significant DAS and not DAS genes list and statistics.csv'),
+                             file = paste0(DDD.data$result.folder,'/DAS genes testing statistics.csv'),
                              row.names = F,na = '')
                  }
                  
                  write.csv(x = DDD.data$trans_3D_stat$DTU.stat,
-                           file = paste0(DDD.data$result.folder,'/Significant DTU and not DTU transcripts list and statistics.csv'),
+                           file = paste0(DDD.data$result.folder,'/DTU transcripts testing statistics.csv'),
                            row.names = F,na = '')
                  incProgress(1)
                  

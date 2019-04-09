@@ -82,12 +82,12 @@ tabItem('TSIS',
                        column(3,
                               uiOutput('show.spline.df')
                        ),
-                       br(),
-                       div(style="display:inline-block;vertical-align:middle; margin-top:5px",
+                       p(),
+                       column(12,
                            actionButton('scoring','Scoring',icon("send outline icon"),class="btn btn-primary",
                                         style="color: #fff; background-color: #428bca; border-color: #2e6da4")
+                           )
                            
-                       )
                      ),
                      HTML('<div align="justify">
                           Press Scoring button to implement the scoring of isoform switches. The details of parameters:

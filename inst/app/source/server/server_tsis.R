@@ -1,9 +1,62 @@
-# output$TSIS_time_point_cut_btn <- renderUI({
-#   if(input$TSISorisokTSP=='isokTSP')
-#     return(NULL)
-#   selectInput('TSIS_time_point_cut',label='Min time in interval:',choices = 1:10,selected = 2,multiple = F)
-# })
+###update parameter
+observe({
+  if(is.null(DDD.data$params_list$TSISorisokTSP))
+    return(NULL)
+  updateRadioButtons(session = session,
+                    inputId = 'TSISorisokTSP',selected = DDD.data$params_list$TSISorisokTSP)
+})
 
+observe({
+  if(is.null(DDD.data$params_list$TSIS_method_intersection))
+    return(NULL)
+  updateSelectInput(session = session,
+                     inputId = 'method_intersection',
+                     selected = DDD.data$params_list$TSIS_method_intersection)
+})
+
+observe({
+  if(is.null(DDD.data$params_list$TSIS_prob_cut))
+    return(NULL)
+  updateSelectInput(session = session,
+                    inputId = 'TSIS_prob_cut',
+                    selected = DDD.data$params_list$TSIS_prob_cut)
+})
+
+observe({
+  if(is.null(DDD.data$params_list$TSIS_diff_cut))
+    return(NULL)
+  updateSelectInput(session = session,
+                    inputId = 'TSIS_diff_cut',
+                    selected = DDD.data$params_list$TSIS_diff_cut)
+})
+
+observe({
+  if(is.null(DDD.data$params_list$TSIS_adj_pval_cut))
+    return(NULL)
+  updateSelectInput(session = session,
+                    inputId = 'TSIS_adj_pval_cut',
+                    selected = DDD.data$params_list$TSIS_adj_pval_cut)
+})
+
+observe({
+  if(is.null(DDD.data$params_list$TSIS_time_point_cut))
+    return(NULL)
+  updateSelectInput(session = session,
+                    inputId = 'TSIS_time_point_cut',
+                    selected = DDD.data$params_list$TSIS_time_point_cut)
+})
+
+observe({
+  if(is.null(DDD.data$params_list$TSIS_cor_cut))
+    return(NULL)
+  updateSelectInput(session = session,
+                    inputId = 'TSIS_cor_cut',
+                    selected = DDD.data$params_list$TSIS_cor_cut)
+})
+
+
+
+#######
 observe({
   if(is.null(DDD.data$samples0))
     return(NULL)
@@ -31,18 +84,18 @@ observe({
 # })
 
 output$show.spline.df <- renderUI({
-  if(is.null(input$method.intersection))
+  if(is.null(input$method_intersection))
     return(NULL)
-  if(input$method.intersection == 'Mean' | input$TSISorisokTSP=='isokTSP')
+  if(input$method_intersection == 'Mean' | input$TSISorisokTSP=='isokTSP')
     return(NULL)
-  numericInput('spline.df',label='Spline degree:',value = ceiling(length(unique(DDD.data$samples$condition))*2/3))
+  numericInput('spline_df',label='Spline degree:',value = ceiling(length(unique(DDD.data$samples$condition))*2/3))
 })
 
 output$show.method.intersection <- renderUI({
   if(input$TSISorisokTSP=='isokTSP'){
-    selectInput('method.intersection','Search intersections',c('Mean'))
+    selectInput('method_intersection','Search intersections',c('Mean'))
   } else {
-    selectInput('method.intersection','Search intersections',c('Mean','Spline'))
+    selectInput('method_intersection','Search intersections',c('Mean','Spline'))
   }
 })
 
@@ -50,7 +103,7 @@ output$show.method.intersection <- renderUI({
 
 ##---------->isokTSP or TSIS scoring------------
 observeEvent(input$scoring,{
-  contrast <- DDD.data$contrast0
+  contrast <- DDD.data$contrast_pw
   condition <- DDD.data$samples$condition
   samples <- DDD.data$samples
   DAS_genes <- DDD.data$DAS_genes
@@ -107,8 +160,8 @@ observeEvent(input$scoring,{
                                        rank=F,
                                        min.t.points = 1,
                                        min.difference = 1,
-                                       spline = (input$method.intersection == 'Spline'),
-                                       spline.df = input$spline.df,
+                                       spline = (input$method_intersection == 'Spline'),
+                                       spline.df = input$spline_df,
                                        verbose = T)
     # scores.results <- roundDF(scores,digits = 6)
     
@@ -223,7 +276,7 @@ output$show.contrst.button <- renderUI({
     return(NULL)
   conditionalPanel(condition = "input.TSISorisokTSP == 'isokTSP'",
                    selectInput(inputId = 'select.contrast',label = 'Select a contrast group',
-                               choices = DDD.data$contrast,
+                               choices = DDD.data$contrast_pw,
                                multiple = F)
   )
 })
@@ -282,8 +335,8 @@ IS.g <- eventReactive(input$plot.IS,{
                                  ribbon.plot = (input$ribbon.plot=='Ribbon'),
                                  iso2 = iso2,
                                  y.lab = 'TPM',
-                                 spline = (input$method.intersection == 'Spline'),
-                                 spline.df = input$spline.df,
+                                 spline = (input$method_intersection == 'Spline'),
+                                 spline.df = input$spline_df,
                                  times = times,
                                  errorbar.width = 0.03,
                                  x.lower.boundary = ifelse(is.numeric(times),min(times),1),
@@ -347,7 +400,8 @@ observeEvent(input$plot_all_IS_btn,{
   
   scores2plot <- DDD.data$scores_filtered
   withProgress(message = 'Plot isoform switch...', value = 0, {
-    for(i in 1:nrow(scores2plot)){
+    start.time <- Sys.time()
+    lapply(1:nrow(scores2plot),function(i){
       message(paste0(i,' of ',nrow(scores2plot)))
       incProgress(1/nrow(scores2plot))
       iso1 <- scores2plot$iso1[i]
@@ -383,8 +437,8 @@ observeEvent(input$plot_all_IS_btn,{
                                      ribbon.plot = (input$ribbon.plot=='Ribbon'),
                                      iso2 = iso2,
                                      y.lab = 'TPM',
-                                     spline = (input$method.intersection == 'Spline'),
-                                     spline.df = input$spline.df,
+                                     spline = (input$method_intersection == 'Spline'),
+                                     spline.df = input$spline_df,
                                      times = times,
                                      errorbar.width = 0.03,
                                      x.lower.boundary = ifelse(is.numeric(times),min(times),1),
@@ -394,7 +448,7 @@ observeEvent(input$plot_all_IS_btn,{
                               scale_x_continuous(breaks = unique(times),labels = xlabs)+
                               scale_color_manual(values = c(input$color.iso1,input$color.iso2,'black'))+
                               scale_fill_manual(values = c(input$color.iso1,input$color.iso2,'black'))
-                            )
+      )
       
       file2save <- paste0(folder2save,'/',paste0(iso1,'_vs_',iso2))
       
@@ -411,10 +465,15 @@ observeEvent(input$plot_all_IS_btn,{
         print(g)
         dev.off()
       }
-    }
+    })
+    # for(i in 1:nrow(scores2plot)){
+    #  
+    # }
   })
   showmessage('Done!')
-  
+  end.time <- Sys.time()
+  time.taken <- end.time - start.time
+  message(format(time.taken))
 })
 
 observeEvent(input$page_before_tsis, {

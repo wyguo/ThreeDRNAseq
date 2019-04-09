@@ -41,111 +41,6 @@ library(ComplexHeatmap)
 
 options(stringsAsFactors=F)
 # setwd("D:/PhD project/R projects/test round 2019/ThreeDRNAseq")
-##Functions######################################################
-
-##Functions######################################################
-# ========================== Functions ======================== #
-selectorUI <- function(id){
-  ns = NS(id)
-  rev_label <- function(label){
-    paste0(rev(unlist(strsplit(label,split = '-'))),collapse = '-')
-  }
-  tags$div(
-    fluidRow(
-      div(style="display:inline-block;vertical-align:middle;margin-left:15px",
-          HTML(paste0(rev_label(ns('Contrast group'))))
-      ),
-      br(),
-      div(style="display:inline-block;vertical-align:middle;margin-left:15px;margin-right:10px",
-          uiOutput(ns('Treatment'))),
-      div(style="display:inline-block;vertical-align:middle;height:45px",
-          HTML('VS')
-      ),
-      div(style="display:inline-block;vertical-align:middle;margin-left:10px;margin-right:15px",
-          uiOutput(ns('Control'))
-      )
-    ),
-    id = paste0('param', id)
-  )
-}
-
-selectorServer <- function(input, output, session, thisList){
-  ns = session$ns
-  output$Treatment <- renderUI({
-    selectInput(
-      inputId = ns('Treatment'),multiple = T,
-      label = NULL,
-      width = '250px',
-      choices = thisList, selected = NULL)
-  })
-  
-  output$Control <- renderUI({
-    selectInput(
-      inputId = ns('Control'),multiple = T,
-      label = NULL,
-      width = '250px',
-      choices = thisList, selected = NULL)
-  })
-}
-
-########################
-selectorUI2 <- function(id){
-  ns = NS(id)
-  rev_label <- function(label){
-    paste0(rev(unlist(strsplit(label,split = '-'))),collapse = '-')
-  }
-  tags$div(
-    fluidRow(
-      div(style="display:inline-block;vertical-align:middle;margin-left:15px",
-          HTML(paste0(rev_label(ns('Contrast of contrast groups'))))
-      ),
-      br(),
-      div(style="display:inline-block;vertical-align:middle;margin-left:15px;margin-right:10px",
-          uiOutput(ns('Contrast2'))),
-      div(style="display:inline-block;vertical-align:middle;height:45px",
-          HTML('VS')
-      ),
-      div(style="display:inline-block;vertical-align:middle;margin-left:10px;margin-right:15px",
-          uiOutput(ns('Contrast1'))
-      )
-    ),
-    id = paste0('param_cofc', id)
-  )
-}
-
-selectorServer2 <- function(input, output, session, thisList){
-  ns = session$ns
-  output$Contrast2 <- renderUI({
-    selectInput(
-      inputId = ns('Contrast2'),
-      label = NULL,
-      width = '250px',
-      choices = thisList, selected = NULL)
-  })
-  
-  output$Contrast1 <- renderUI({
-    selectInput(
-      inputId = ns('Contrast1'),
-      label = NULL,
-      width = '250px',
-      choices = thisList, selected = NULL)
-  })
-}
-
-
-create.folders <- function(wd=getwd()){
-  folder.name <- paste0(wd,'/',c('data','figure','result','report'))
-  for(i in folder.name){
-    if(!file.exists(i))
-      dir.create(i,recursive = T)
-  }
-}
-
-showmessage <- function(text='Done! Plots in pdf and png formats are saved into figure folder',duration = 5){
-  message(text)
-  showNotification(text,duration = duration)
-}
-
 
 ##dashboardHeader######################################################
 # ========================== dashboardHeader ======================== #
@@ -224,6 +119,7 @@ server <- function(input, output, session) {
   
   observe_helpers(withMathJax = TRUE)
   DDD.data <- reactiveValues(
+    dataClass='intermediate_data',
     folder=getwd(),
     data.folder=NULL,
     result.folder=NULL,
@@ -241,13 +137,14 @@ server <- function(input, output, session) {
     trans_counts=NULL,
     genes_counts=NULL,
     trans_TPM=NULL,
-    # genes_TPM=NULL,
     target_high=NULL,
     trans_batch=NULL,
     genes_batch=NULL,
     contrast0=NULL,
     contrast=NULL,
-    contrast_cofc=NULL,
+    contrast_pw=NULL,
+    contrast_mean=NULL,
+    contrast_pgdiff=NULL,
     PS=NULL,
     deltaPS=NULL,
     genes_log2FC=NULL,
