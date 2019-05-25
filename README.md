@@ -5,7 +5,7 @@ Description
 ===========
 
 <div align="justify">
-<h3> Note: The latest 3D RNA-seq App is coming soon...</h3>
+<h3> Note: The latest 3D RNA-seq App is on the way...</h3>
 
 ThreeDRNAseq (3D RNA-seq) R package provides an interactive graphical user interface (GUI) for RNA-seq data differential expression (DE), differential alternative splicing (DAS) and differential transcript usage (DTU) (3D) analyses based on two popular pipelines: <a href="https://bioconductor.org/packages/release/bioc/html/limma.html" target="_blank">limma</a> (Smyth et al. 2013) and <a href="https://bioconductor.org/packages/release/bioc/html/edgeR.html" target="_blank">edgeR</a> (Robinson et al., 2010). The 3D RNA-seq GUI is based on R <a href="https://shiny.rstudio.com/" target="_blank">shiny</a> App and enables the RNA-seq analysis to be done only with in 3 Days (3D). To perform the 3D analysis,
 
