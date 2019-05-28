@@ -2,7 +2,7 @@
 ==============
 <i><h4>Command-line based user manual</h4></i>
 <i><h4>Wenbin Guo</h4></i>
-<i><h4>25 May 2019</h4></i>
+<i><h4>28 May 2019</h4></i>
 <i><h4>Division of Plant Sciences, University of Dundee at the James Hutton Institute, Dundee DD2 5DA, UK</h4></i>
 
 Table of contents
@@ -62,7 +62,7 @@ Introduction
 
 Instead of the 3D RNA-seq App, advanced R users can use command line to perform 3D analysis. This file includes the R codes, which corresponds to the steps in the 3D RNA-seq App. Users can refer to the details in the manual:
 
-<a href="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md" target="_blank">https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user\_manuals/3D\_RNA-seq\_App\_manual.md </a>
+<a href="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md" target="_blank">https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md</a>
 
 To use our pipeline in your work, please cite:
 

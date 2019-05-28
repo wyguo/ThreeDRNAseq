@@ -1,3 +1,11 @@
+3D RNA-seq App
+==============
+<i><h4>"Easy-to-use" user manual</h4></i>
+<i><h4>Wenbin Guo</h4></i>
+<i><h4>28 May 2019</h4></i>
+<i><h4>Division of Plant Sciences, University of Dundee at the James Hutton Institute, Dundee DD2 5DA, UK</h4></i>
+
+
 -   [Introduction](#introduction)
 -   [How to get help](#how-to-get-help)
     -   [User manuals](#user-manuals)
