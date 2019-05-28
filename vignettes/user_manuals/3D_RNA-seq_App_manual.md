@@ -1,13 +1,3 @@
-3D RNA-seq App
-==============
-<i><h4>Interactive shiny App user manual</h4></i>
-<i><h4>Wenbin Guo</h4></i>
-<i><h4>25 May 2019</h4></i>
-<i><h4>Division of Plant Sciences, University of Dundee at the James Hutton Institute, Dundee DD2 5DA, UK</h4></i>
-
-Table of contents
------------------
-
 -   [Introduction](#introduction)
 -   [How to get help](#how-to-get-help)
     -   [User manuals](#user-manuals)
@@ -63,7 +53,7 @@ How to get help
 
 <mark style="background-color: yellow;">This is an old link. Update later</mark>
 
-<a href="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md" target="_blank">https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user\_manuals/3D\_RNA-seq\_App\_manual.md </a>
+<a href="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md" target="_blank">https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user\_manuals/3D\_RNA-seq\_App\_manual.md</a>
 
 ### Tooltips
 
@@ -148,7 +138,7 @@ run3DApp()
 
 The ThreeDRNAseq R package can be used as a normal R package. The user manual of 3D analysis pipeline using command line can be found in:
 
-<a href="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/Command_line_based_manul.md" target="_blank">https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user\_manuals/Command\_line\_based\_manul.md </a>
+<a href="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_command_line_user_manual.md" target="_blank">https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user\_manuals/3D\_RNA-seq\_command\_line\_user\_manual.md</a>
 
 **NOTE**:
 
