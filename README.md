@@ -40,6 +40,8 @@ Run 3D RNA-seq App
 ------------------
 
 ### Shiny docker image (no installation)
+User manual:
+<a href="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md" target="_blank">https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md</a>
 
 The 3D RNA-seq App docker image is hosted by the James Hutton Institute server. Open the App by this link: <a href="http://ics.hutton.ac.uk/3drnaseq" target="_blank">http://ics.hutton.ac.uk/3drnaseq </a>
 
