@@ -121,11 +121,7 @@ if(!requireNamespace("ThreeDRNAseq", quietly = TRUE))
   devtools::install_github('wyguo/ThreeDRNAseq')
 ```
 
-**NOTE**: To run the ThreeDRNAseq App on a local PC, if any other denpendency R packages are missing, please install them. **The installed denpendency R packages of windows version can also be downloaded from the following link. Users can set the RStudio library path to the downloaded folder with command:**
-
-``` r
-.libPaths("xxx/ThreeDRNAseq_lib")
-```
+**NOTE**: To run the ThreeDRNAseq App on a local PC, if any other denpendency R packages are missing, please install them. 
 
 Load R package
 --------------

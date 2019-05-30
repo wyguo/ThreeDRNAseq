@@ -150,13 +150,7 @@ The ThreeDRNAseq R package can be used as a normal R package. The user manual of
 **NOTE**:
 
 -   **If you are working on RNA-seq data with very big size of transcript quantification (≥ 2GB), it is recommended to remove the redundant files in the Salmon/Kallisto outputs (see <a href='#input-files'>Input files</a>) to reduce data size or run the 3D RNA-seq App through RStudio on a local PC.**
--   To run the ThreeDRNAseq App on a local PC, if any other denpendency R packages are missing, please install them. **The installed denpendency R packages of windows version can also be downloaded from the following link. Users can set the RStudio library path to the downloaded folder with command:**
-
-``` r
-.libPaths("xxx/ThreeDRNAseq_lib")
-```
-
-ThreeDRNAseq\_lib.zip: link
+-   To run the ThreeDRNAseq App on a local PC, if any other denpendency R packages are missing, please install them. 
 
 <a href='#table-of-contents'>Go back to Table of contents</a>
 
