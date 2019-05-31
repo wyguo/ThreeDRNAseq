@@ -627,7 +627,7 @@ DDD.stat <- reactive({
   x <- split(x,x$contrast)
   x <- lapply(x,function(i) i[order(i$adj.pval,decreasing = F),])
   
-  stat <- x[[input$contrast.groups]][1:input$top.stat,]
+  stat <- x[[input$contrast.groups]][1:min(nrow(x[[input$contrast.groups]]),input$top.stat),]
   stat <- data.frame(lapply(stat, function(y) if(is.numeric(y)) format(y,digits=5) else y))
   return(stat)
 })

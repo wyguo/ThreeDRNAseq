@@ -123,7 +123,7 @@ server <- function(input, output, session) {
   
   observe_helpers(withMathJax = TRUE)
   DDD.data <- reactiveValues(
-    docker_image=T,
+    docker_image=F,
     run_linux=grepl("unix|linux",.Platform$OS.type),
     num_cores=ceiling(parallel::detectCores()/4),
     dataClass='intermediate_data',

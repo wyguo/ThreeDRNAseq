@@ -28,6 +28,11 @@ observeEvent(input$run_filter,{
   DDD.data$target_high <- target_high
 })
 
+observeEvent(input$run_filter,{
+  DDD.data$params_list$cpm_cut <- input$cpm_cut
+  DDD.data$params_list$cpm_samples_n <- input$cpm_samples_n
+})
+
 observe({
   x <- data.frame(
     Description=c('Raw transcripts',
@@ -61,10 +66,10 @@ output$RNAseq_datainfo <- DT::renderDataTable({
 
 ##-------------- > mean-variance plots---------------
 ###--mean variance trans trend plot
-mv.trans <- eventReactive(input$run_filter,{
+mv.trans.plot <- eventReactive(input$run_filter,{
   if(is.null(DDD.data$samples_new) | is.null(DDD.data$trans_counts) | is.null(DDD.data$target_high))
     return(NULL)
-  showNotification('Plotting mean-variance, please wait ...',
+  showNotification('Estimating mean-variance, please wait ...',
                    # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
                    action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
                    duration = NULL,id = 'mean_variance_trans_message')
@@ -73,24 +78,25 @@ mv.trans <- eventReactive(input$run_filter,{
   counts.raw = DDD.data$trans_counts[rowSums(DDD.data$trans_counts>0)>0,]
   counts.filtered = DDD.data$trans_counts[DDD.data$target_high$trans_high,]
   # graphics.off()
-  check.mean.variance(counts.raw = counts.raw,
+  mv.trans <- check.mean.variance(counts.raw = counts.raw,
                       counts.filtered = counts.filtered,
                       condition = condition)
-})
-
-mv.trans.plot <- eventReactive(input$run_filter,{
-  if(is.null(mv.trans()))
-    return(NULL)
+  
   mv.trans.plot <- function(){
-    fit.raw <- mv.trans()$fit.raw
-    fit.filtered <- mv.trans()$fit.filtered
+    fit.raw <- mv.trans$fit.raw
+    fit.filtered <- mv.trans$fit.filtered
     par(mfrow=c(1,2))
     plotMeanVariance(x = fit.raw$sx,y = fit.raw$sy,
+                     xlim=c(min(fit.raw$sx),max(fit.raw$sx)),
+                     ylim=c(min(fit.raw$sy),max(fit.raw$sy)),
                      l = fit.raw$l,lwd=2,fit.line.col ='gold',col='black')
     title('\n\nRaw counts')
     plotMeanVariance(x = fit.filtered$sx,y = fit.filtered$sy,
+                     xlim=c(min(fit.raw$sx),max(fit.raw$sx)),
+                     ylim=c(min(fit.raw$sy),max(fit.raw$sy)),
                      l = fit.filtered$l,lwd=2,col='black')
-    title(paste0('\n\nFiltered counts (cutoff: cpm=',input$cpm_cut,'; sample=',input$cpm_samples_n,')'))
+    title(paste0('\n\nFiltered counts (cutoff: cpm=',DDD.data$params_list$cpm_cut,
+                 '; sample=',DDD.data$params_list$cpm_samples_n,')'))
     lines(fit.raw$l, col = "gold",lty=4,lwd=2)
     legend('topright',col = c('red','gold'),lty=c(1,4),lwd=3,
            legend = c('low-exp removed','low-exp kept'))
@@ -102,6 +108,10 @@ mv.trans.plot <- eventReactive(input$run_filter,{
 output$mv.trans.plot <- renderPlot({
   if(is.null(mv.trans.plot()))
     return(NULL)
+  showNotification('Plotting mean-variance, please wait ...',
+                   # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
+                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
+                   duration = NULL,id = 'mean_variance_trans_message')
   # cat('\nMake mean-variance trend plot\n')
   mv.trans.plot()()
   removeNotification(id = 'mean_variance_trans_message')
@@ -110,35 +120,46 @@ output$mv.trans.plot <- renderPlot({
 
 ###--mean variance genes trend plot
 mv.genes <- eventReactive(input$run_filter,{
+
+})
+
+mv.genes.plot <- eventReactive(input$run_filter,{
   if(is.null(DDD.data$samples_new) | is.null(DDD.data$genes_counts) | is.null(DDD.data$target_high))
     return(NULL)
+  showNotification('Estimating mean-variance, please wait ...',
+                   # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
+                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
+                   duration = NULL,id = 'mean_variance_genes_message')
   condition <- paste0(DDD.data$samples_new$condition)
   ###---genes levels
   counts.raw = DDD.data$genes_counts[rowSums(DDD.data$genes_counts>0)>0,]
   counts.filtered = DDD.data$genes_counts[DDD.data$target_high$genes_high,]
   # graphics.off()
-  check.mean.variance(counts.raw = counts.raw,
+  mv.genes <- check.mean.variance(counts.raw = counts.raw,
                       counts.filtered = counts.filtered,
                       condition = condition)
-})
-
-mv.genes.plot <- eventReactive(input$run_filter,{
-  if(is.null(mv.genes()))
-    return(NULL)
+  
   mv.genes.plot <- function(){
-    fit.raw <- mv.genes()$fit.raw
-    fit.filtered <- mv.genes()$fit.filtered
+    fit.raw <- mv.genes$fit.raw
+    fit.filtered <- mv.genes$fit.filtered
     par(mfrow=c(1,2))
     plotMeanVariance(x = fit.raw$sx,y = fit.raw$sy,
+                     xlim=c(min(fit.raw$sx),max(fit.raw$sx)),
+                     ylim=c(min(fit.raw$sy),max(fit.raw$sy)),
                      l = fit.raw$l,lwd=2,fit.line.col ='gold',col='black')
     title('\n\nRaw counts')
     plotMeanVariance(x = fit.filtered$sx,y = fit.filtered$sy,
+                     xlim=c(min(fit.raw$sx),max(fit.raw$sx)),
+                     ylim=c(min(fit.raw$sy),max(fit.raw$sy)),
                      l = fit.filtered$l,lwd=2,col='black')
-    title(paste0('\n\nFiltered counts (cutoff: cpm=',input$cpm_cut,'; sample=',input$cpm_samples_n,')'))
+    title(paste0('\n\nFiltered counts (cutoff: cpm=',DDD.data$params_list$cpm_cut,
+                 '; sample=',DDD.data$params_list$cpm_samples_n,')'))
     lines(fit.raw$l, col = "gold",lty=4,lwd=2)
     legend('topright',col = c('red','gold'),lty=c(1,4),lwd=3,
            legend = c('low-exp removed','low-exp kept'))
   }
+  removeNotification(id = 'mean_variance_genes_message')
+  showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
   return(mv.genes.plot)
 })
 #

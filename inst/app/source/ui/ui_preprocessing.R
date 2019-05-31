@@ -191,7 +191,7 @@ tabItem('preprocessing',
                             radioButtons(inputId = 'has_batcheffect',label = 'Data has batch effects?',
                                          choices = c('No','Yes'),selected = 'No',inline = T),
                             HTML('<h5><strong><font color="red">This step is only executed when there are distinct 
-                                 bath effects in the data:
+                                 batch effects in the data:
                                  <ul style="padding-left: 20px">
                                  <li>The biological replicates of the same conditions stay in separate clusters in the PCA plot.</li/>
                                  <li> There is experimental explanation of this separation (e.g. bio-reps in different time/labs).</li>

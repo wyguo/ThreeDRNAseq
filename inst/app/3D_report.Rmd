@@ -1,7 +1,6 @@
 ---
 title: "DE DAS and DTU analysis"
 header-includes: \usepackage{caption}
-date: "Today"
 output:
   word_document:
     fig_caption: yes
@@ -20,6 +19,7 @@ output:
     fig_caption: yes
     toc: yes
     toc_depth: '4'
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 params:
   DDD.data: !r list()
   # DDD.data: !r list()
