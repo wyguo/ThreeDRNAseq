@@ -57,6 +57,11 @@ knitr::opts_chunk$set(echo = F,eval = T,error = T)
 ```
 
 <div align="justify">
+To use our pipeline in your work, please cite:
+
+-   Guo,W., Tzioutziou,N., Stephen,G., Milne,I., Calixto,C., Waugh,R., Brown,J.W., and Zhang,R. (2019) 3D RNA-seq - a powerful and flexible tool for rapid and accurate differential expression and alternative splicing analysis of RNA-seq data for biologists. bioRxiv, 656686. doi: https://doi.org/10.1101/656686.
+-   Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C., Panter,P.E., Knight,H., Nimmo,H.G., Zhang,R., and Brown,J.W.S. (2018) Rapid and Dynamic Alternative Splicing Impacts the Arabidopsis Cold Response Transcriptome. Plant Cell, 30, 1424–1444.
+
 
 ## Method
 The 3D RNA-seq App was developed for rapid and accurate differential expression (DE), differential alternative splicing (DAS) gene and differential transcript usage (DTU) (3D) analysis (Guo et al., 2019; Calixto et al., 2018).
