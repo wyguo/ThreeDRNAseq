@@ -59,7 +59,7 @@ knitr::opts_chunk$set(echo = F,eval = T,error = T)
 <div align="justify">
 
 ## Method
-The 3D RNA-seq App was developed for rapid and accurate differential expression (DE), differential alternative splicing (DAS) gene and differential transcript usage (DTU) (3D) analysis (Calixto et al., 2018).
+The 3D RNA-seq App was developed for rapid and accurate differential expression (DE), differential alternative splicing (DAS) gene and differential transcript usage (DTU) (3D) analysis (Guo et al., 2019; Calixto et al., 2018).
 
 ### RNA-seq datasets
 The RNA-seq data had `r params$DDD.data$params_list$condition_n` factor groups (`r paste0(unique(params$DDD.data$conditions),collapse = ', ')`) and each had `r params$DDD.data$params_list$brep_n` biological replicates `r ifelse(params$DDD.data$params_list$has_srep=='Yes',paste0(' and ',params$DDD.data$params_list$srep_n,' sequencing replicates'),'')` (`r params$DDD.data$params_list$samples_n` samples in total).
@@ -564,6 +564,8 @@ Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C., Panter,P.E., 
 Gu,Z., Eils,R., and Schlesner,M. (2016) Complex heatmaps reveal patterns and correlations in multidimensional genomic data. Bioinformatics, 32, 2847–2849.
 
 Guo,W., Calixto,C.P.G., Brown,J.W.S., and Zhang,R. (2017) TSIS: An R package to infer alternative splicing isoform switches for time-series data. Bioinformatics, 33, 3308–3310.
+
+Guo,W., Tzioutziou,N., Stephen,G., Milne,I., Calixto,C., Waugh,R., Brown,J.W., and Zhang,R. (2019) 3D RNA-seq - a powerful and flexible tool for rapid and accurate differential expression and alternative splicing analysis of RNA-seq data for biologists. bioRxiv, 656686. doi: https://doi.org/10.1101/656686.
 
 Law,C.W., Chen,Y., Shi,W., and Smyth,G.K. (2014) voom: Precision weights unlock linear model analysis tools for RNA-seq read counts. Genome Biol, 15, R29.
 
