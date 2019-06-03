@@ -117,13 +117,13 @@ ui <- dashboardPage(
 
 server <- function(input, output, session) {
   # set data size
-  options(shiny.maxRequestSize = 5000*1024^2)
+  options(shiny.maxRequestSize = 8*1024^3)
   options(DT.options = list(scrollX = TRUE,scrollCollapse=TRUE,autoWidth=F,
                             columnDefs = list(list(className = 'dt-left', targets="_all"))))
   
   observe_helpers(withMathJax = TRUE)
   DDD.data <- reactiveValues(
-    docker_image=F,
+    docker_image=T,
     run_linux=grepl("unix|linux",.Platform$OS.type),
     num_cores=ceiling(parallel::detectCores()/4),
     dataClass='intermediate_data',
