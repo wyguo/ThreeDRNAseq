@@ -97,7 +97,8 @@ The 3D RNA-seq App docker image is hosted by the James Hutton Institute server. 
 cran.package.list <- c("shiny","shinydashboard","rhandsontable","shinyFiles",
                        "shinyjs","shinyBS","shinyhelper","shinyWidgets",
                        "magrittr","DT","plotly","ggplot2","eulerr",
-                       "gridExtra","grid","fastcluster","rmarkdown","base64enc","ggrepel")
+                       "gridExtra","grid","fastcluster","rmarkdown","base64enc",
+                       "ggrepel","zoo","gtools")
 for(i in cran.package.list){
    if(!(i %in% rownames(installed.packages()))){
      message('Installing package: ',i)
