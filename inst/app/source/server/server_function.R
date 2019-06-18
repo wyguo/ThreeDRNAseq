@@ -208,6 +208,13 @@ observeEvent(input$save_heatmap_view, {
 
 ##---------------profile plot-----------------
 observe({
+  if(is.null(DDD.data$samples))
+    return(NULL)
+  updateSelectInput(session = session,inputId = 'profile_slice_group',choices = c('None',colnames(DDD.data$samples)),
+                    selected = 'None')
+})
+
+observe({
   if(is.null(DDD.data$DE_genes) | is.null(DDD.data$DAS_genes) | is.null(DDD.data$DE_trans) |is.null(DDD.data$DTU_trans))
     return(NULL)
   DE.genes <- unique(DDD.data$DE_genes$target)
@@ -255,8 +262,18 @@ g.profiles <- eventReactive(input$make.profile.plot,{
     mapping <- mapping[DDD.data$target_high$trans_high,]
   }
   
+  if(input$profile_slice_group=='None'){
+    groups <- NULL 
+  } else if(input$profile.data.type=='TPM') {
+    groups <-DDD.data$samples[,input$profile_slice_group]
+  } else {
+    groups <-DDD.data$samples_new[,input$profile_slice_group]
+  }
+  
   g.pr <- plotAbundance(data.exp = data.exp,
+                        sliceProfile = T,
                         gene = gene,
+                        groups = groups,
                         mapping = mapping,
                         genes.ann = DDD.data$genes.ann,
                         trans.ann = DDD.data$trans.ann,
@@ -265,8 +282,10 @@ g.profiles <- eventReactive(input$make.profile.plot,{
                         y.lab = input$profile.data.type)
   
   g.ps <- plotPS(data.exp = data.exp,
+                 sliceProfile = T,
                  gene = gene,
                  mapping = mapping,
+                 groups = groups,
                  genes.ann = DDD.data$genes.ann,
                  trans.ann = DDD.data$trans.ann,
                  trans.expressed = NULL,
@@ -417,6 +436,15 @@ observeEvent(input$make.multiple.plot,{
                    action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
                    duration = NULL,id = 'profile_plot_message')
   
+  if(input$profile_slice_group=='None'){
+    groups <- NULL 
+  } else if(input$profile.data.type=='TPM') {
+    groups <-DDD.data$samples[,input$profile_slice_group]
+  } else {
+    groups <-DDD.data$samples_new[,input$profile_slice_group]
+  }
+  
+  
   withProgress(message = paste0('Plotting ',length(genes),' genes'),
                detail = 'This may take a while...', value = 0, {
                  graphics.off()
@@ -429,6 +457,8 @@ observeEvent(input$make.multiple.plot,{
                        # message(paste0('Plotting abundance prfiles => Gene: ', gene, ' (',which(genes %in% gene), ' of ', length(genes),')'))
                        g.pr <- plotAbundance(data.exp = data.exp,
                                              gene = gene,
+                                             sliceProfile = T,
+                                             groups = groups,
                                              mapping = mapping,
                                              genes.ann = DDD.data$genes.ann,
                                              trans.ann = DDD.data$trans.ann,
@@ -458,6 +488,8 @@ observeEvent(input$make.multiple.plot,{
                        # message(paste0('Plotting PS prfiles => Gene: ', gene, ' (',which(genes %in% gene), ' of ', length(genes),')'))
                        g.ps <- plotPS(data.exp = data.exp,
                                       gene = gene,
+                                      sliceProfile = T,
+                                      groups = groups,
                                       mapping = mapping,
                                       genes.ann = DDD.data$genes.ann,
                                       trans.ann = DDD.data$trans.ann,
@@ -494,6 +526,8 @@ observeEvent(input$make.multiple.plot,{
                                              trans.ann = DDD.data$trans.ann,
                                              trans.expressed = NULL,
                                              reps = reps,
+                                             sliceProfile = T,
+                                             groups = groups,
                                              y.lab = input$profile.data.type)
                        n <- length(unique(g.pr$data))-1
                        if(input$multi.plot.format %in% c('png','both')){
@@ -522,6 +556,8 @@ observeEvent(input$make.multiple.plot,{
                                       genes.ann = DDD.data$genes.ann,
                                       trans.ann = DDD.data$trans.ann,
                                       trans.expressed = NULL,
+                                      sliceProfile = T,
+                                      groups = groups,
                                       reps = reps,
                                       y.lab = 'PS')
                        n <- length(unique(g.ps$data))

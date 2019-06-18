@@ -131,6 +131,7 @@ server <- function(input, output, session) {
     ##added by GS-->
     upload_folder=getwd(),
     quant_folder=getwd(),
+    quant_fileNames = NULL,
     ##------------->
     data.folder=NULL,
     result.folder=NULL,

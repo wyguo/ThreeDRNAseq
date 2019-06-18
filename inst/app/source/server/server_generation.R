@@ -61,8 +61,14 @@ observe({
     tempfolder <- tempfile(tmpdir=Sys.getenv("TMP"))
     while(file.exists(tempfolder))
       tempfolder <- tempfile(tmpdir=Sys.getenv("TMP"))
+    
+    ##for JHI docker
+    DDD.data$upload_folder <- paste0('/tmp',tempfolder)
     dir.create(file.path('/tmp', tempfolder))
-    DDD.data$upload_folder <- tempfolder
+    
+    ##for local
+    # dir.create(file.path(tempfolder))
+    # DDD.data$upload_folder <- tempfolder
     
     DDD.data$folder <- DDD.data$upload_folder
     DDD.data$data.folder <- file.path(DDD.data$folder,'data')
@@ -76,6 +82,7 @@ observe({
     DDD.data$result.folder <- file.path(DDD.data$folder,'result')
     DDD.data$report.folder <- file.path(DDD.data$folder,'report')
   }
+  create.folders(wd = DDD.data$folder)
   message(DDD.data$upload_folder)
   message(DDD.data$data.folder)
   message(DDD.data$figure.folder)
@@ -141,12 +148,21 @@ output$show_quant_load <- renderUI({
     tagList(
       HTML('<strong> (3) Select transcript quantification "zip" file.</strong> '),
       p(),
+      radioButtons(inputId = 'quant_method',label = '>Transcripts are quantified by:',
+                   choices = c('salmon','kallisto'),
+                   selected = 'salmon',inline = T),
+      HTML('<strong> > Select the zipped quantification file:</strong> '),
       fileInput("quant_zip_button", "", accept = c(".zip")),
       HTML('<strong>Note:</strong> Please zip the quantification folder before upload.')
     )
   } else {
     tagList(
       HTML('<strong> (3) Select transcript quantification folder from local directory.</strong> '),
+      p(),
+      radioButtons(inputId = 'quant_method',label = '>Transcripts are quantified by:',
+                   choices = c('salmon','kallisto'),
+                   selected = 'salmon',inline = T),
+      HTML('<strong> > Select the quantification folder:</strong> '),
       p(),
       shinyDirButton(id = 'quant_folder_button',label = 'Select a folder',title = 'Select the folder of quantification',
                      buttonType = 'primary',
@@ -169,21 +185,68 @@ observe({
                      # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
                      action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
                      duration = NULL,id = 'upload_zip_quant_message')
-
+    
     withProgress(message = 'Unzipping transcript quantification file...', value = 0, {
       incProgress(0.1)
       incProgress(0.5)
       if(!grepl('.zip',file_path))
         return(showmessage('Please select a zipped file of required format "xxx.zip".'))
+      ###--->quantification file names
+      fileNames0 <- unzip(file_path,list = T)$Name
+      
+      if(input$quant_method=='salmon'){
+        fileNames <- fileNames0[grep('.sf',fileNames0)]
+      } else {
+        fileNames <- fileNames0[grep('.h5',fileNames0)]
+        if(length(fileNames)==0)
+          fileNames <- fileNames0[grep('.tsv',fileNames0)]
+      }
+      
+      if(length(fileNames)==0){
+        showmessage('Please check (1) whether the quantification folder includes transcript quantification files ("quant.sf" for samlom and "abundance.h5/abundance.tsv" for kallisto).(2) whether you have selected the correct quantification method "salmon/kallisto".',
+                    duration = 20,id = 'check_filenames_message')
+        removeNotification(id = 'upload_zip_quant_message')
+        return(NULL)
+      }
+      
+      fileNames.idx <- basename(dirname(fileNames))
+      names(fileNames) <- fileNames.idx
+      DDD.data$quant_fileNames <- fileNames
       unzip(file_path, list = F, exdir = DDD.data$upload_folder)
-      DDD.data$quant_folder = paste0(DDD.data$upload_folder, "/",sub(pattern = ".zip", replacement = "", input$quant_zip_button$name))
+      
+      removeNotification(id = 'check_filenames_message')
+      
       incProgress(1)
       removeNotification(id = 'upload_zip_quant_message')
       showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
-      cat(DDD.data$quant_folder)
+      # cat(DDD.data$upload_folder)
     })
   } else {
-    DDD.data$quant_folder <- parseDirPath(roots = volumes_quant,selection = input$quant_folder_button)
+    if(is.null(input$quant_folder_button))
+      return(NULL)
+    upload_folder <- parseDirPath(roots = volumes_quant,selection = input$quant_folder_button)
+    if(identical(upload_folder,character(0)))
+      return(NULL)
+    DDD.data$upload_folder <- upload_folder 
+    fileNames0 <- list.files(upload_folder,recursive = T)
+    
+    if(input$quant_method=='salmon'){
+      fileNames <- fileNames0[grep('.sf',fileNames0)]
+    } else {
+      fileNames <- fileNames0[grep('.h5',fileNames0)]
+      if(length(fileNames)==0)
+        fileNames <- fileNames0[grep('.tsv',fileNames0)]
+    }
+    
+    if(length(fileNames)==0){
+      showmessage('Please check (1) whether the quantification folder includes transcript quantification files ("quant.sf" for samlom and "abundance.h5/abundance.tsv" for kallisto).(2) whether you have selected the correct quantification method "salmon/kallisto".',
+                  duration = 20,id = 'check_filenames_message')
+      return(NULL)
+    }
+    
+    fileNames.idx <- basename(dirname(fileNames))
+    names(fileNames) <- fileNames.idx
+    DDD.data$quant_fileNames <- fileNames
   }
 })
 
@@ -215,9 +278,9 @@ observe({
 
 
 output$qaunt_folder_path_text <- renderText({
-  if(is.null(DDD.data$quant_folder))
+  if(is.null(DDD.data$upload_folder))
     return(NULL)
-  paste0('Transcript quantification in directory:\n', DDD.data$quant_folder)
+  paste0('Transcript quantification in directory:\n', DDD.data$upload_folder)
 })
 
 # observeEvent(input$samples_update,{
@@ -225,7 +288,7 @@ observeEvent(input$samples_update,{
   if(any(is.null(input$factor_column)) | 
      any(is.null(input$brep_column)) | 
      any(is.null(input$quant_column)) | 
-     is.null(DDD.data$quant_folder) |
+     is.null(DDD.data$upload_folder) |
      is.null(DDD.data$samples0))
     return(NULL)
   
@@ -241,20 +304,31 @@ observeEvent(input$samples_update,{
     DDD.data$samples0[,i] <- make.names(DDD.data$samples0[,i])
   }
   
-  idx <- paste0(DDD.data$quant_folder,'/',DDD.data$samples0[,input$quant_column],'/',
-                ifelse(input$quant_method=='salmon','quant.sf','abundance.h5'))
-  ####new add 
-  if(input$quant_method=='kallisto'){
-    idx <- sapply(idx, function(i){
-      if(!file.exists(i))
-        gsub('abundance.h5','abundance.tsv',i)
-    })
-    idx <- as.vector(idx)
+  
+  quantfile2check <- DDD.data$samples0[,input$quant_column]
+  if(all(quantfile2check %in% names(DDD.data$quant_fileNames))){
+    quant_fileNames <- paste0(DDD.data$upload_folder,'/',DDD.data$quant_fileNames[quantfile2check])
+  } else {
+    showmessage('The quantification file names in the sample meta-table do not match to the quantification files. 
+                Please double check the sample information csv spreadsheet or the selected directory of the quantification files.',
+                duration = 10)
+    return(NULL)
   }
+  
+  
+  # ##new add
+  # if(input$quant_method=='kallisto'){
+  #   idx <- sapply(idx, function(i){
+  #     if(!file.exists(i))
+  #       gsub('abundance.h5','abundance.tsv',i)
+  #     else i
+  #   })
+  #   idx <- as.vector(idx)
+  # }
   
   if(input$has_srep=='Yes'){
     samples <- data.frame(DDD.data$samples0,
-                          quant.path=idx)
+                          quant.path=quant_fileNames)
     samples$sample.name <- as.vector(interaction(DDD.data$samples0[,c(input$factor_column,input$brep_column,input$srep_column)]))
     samples$condition <- make.names(as.vector(interaction(DDD.data$samples0[,c(input$factor_column)])))
     DDD.data$samples <- samples
@@ -263,11 +337,12 @@ observeEvent(input$samples_update,{
     DDD.data$samples_new <- samples[idx2keep,]
   } else {
     samples <- data.frame(DDD.data$samples0,
-                          quant.path=idx)
+                          quant.path=quant_fileNames)
     samples$sample.name <- as.vector(interaction(DDD.data$samples0[,c(input$factor_column,input$brep_column)]))
     samples$condition <- make.names(interaction(DDD.data$samples0[,c(input$factor_column)]))
     DDD.data$samples_new <- DDD.data$samples <- samples
   }
+  save(samples,file='samples.RData')
 })
 
 output$mapping_table <- DT::renderDataTable({
@@ -312,8 +387,6 @@ observe({
 })
 
 
-
-
 observeEvent(input$tximport_run,{
   # if(is.null(DDD.data$samples) | is.null(DDD.data$mapping) | is.null(DDD.data$folder))
   #   return(NULL)
@@ -339,16 +412,41 @@ observeEvent(input$tximport_run,{
   data.files <-  as.character(DDD.data$samples$quant.path)
   if(!all(file.exists(data.files))){
     showmessage('The quantification file names in the sample meta-table do not match to the quantification files. 
-                Please double check the sample information csv spreadsheet or the selected directory of the quantification files.',duration = 20)
+                Please double check the sample information csv spreadsheet or the selected directory of the quantification files.',
+                duration = 10)
     return(NULL)
   }
   
   sample.name <- as.character(t(DDD.data$samples$sample.name))
-  create.folders(wd = DDD.data$folder)
+  
   showNotification('Generating expression, please wait until this step done ...',
                    # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
                    action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
                    duration = NULL,id = 'generate_expression_message')
+  
+  ###check if the transcript names in quantification file matches to the mapping table
+  showNotification('Verifying transcript names...',
+                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
+                   duration = NULL,id = 'message_id')
+  file2check <- data.files[1]
+  txi_trans2check<- tximport(files = file2check, 
+                             type = input$quant_method, 
+                             tx2gene = NULL,
+                             countsFromAbundance = input$tximport_method,
+                             txOut = T,
+                             dropInfReps = T)
+  trans2check <- rownames(txi_trans2check$abundance)
+  idx2keep <- intersect(trans2check,DDD.data$mapping$TXNAME)
+  removeNotification(id = 'message_id')
+  
+  if(length(idx2keep)==0){
+    removeNotification(id = 'generate_expression_message')
+    showmessage('The transcript names in transctipt-gene association table do not match to the transcript names in the quantification files.',
+                duration = 20)
+    return(NULL)
+  }
+  
+  DDD.data$mapping <- DDD.data$mapping[idx2keep,]
   
   withProgress(message = 'Generate gene expression...', value = 0, {
     incProgress(0.1)
@@ -356,6 +454,12 @@ observeEvent(input$tximport_run,{
                           type = input$quant_method, 
                           tx2gene = DDD.data$mapping,
                           countsFromAbundance = input$tximport_method)
+    
+    idx2keep <- intersect(DDD.data$mapping$GENEID,rownames(txi_genes$counts))
+    txi_genes$counts <- txi_genes$counts[idx2keep,]
+    txi_genes$abundance <- txi_genes$abundance[idx2keep,]
+    txi_genes$length <- txi_genes$length[idx2keep,]
+    
     colnames(txi_genes$counts) <-
       colnames(txi_genes$abundance) <- 
       colnames(txi_genes$length)<-sample.name
@@ -378,7 +482,7 @@ observeEvent(input$tximport_run,{
     DDD.data$genes_counts <- genes_counts
     
     incProgress(1)
-  
+    
     
   })
   
@@ -390,6 +494,12 @@ observeEvent(input$tximport_run,{
                          countsFromAbundance = input$tximport_method,
                          txOut = T,
                          dropInfReps = T)
+    
+    idx2keep <- intersect(DDD.data$mapping$TXNAME,rownames(txi_trans$counts))
+    txi_trans$counts <- txi_trans$counts[idx2keep,]
+    txi_trans$abundance <- txi_trans$abundance[idx2keep,]
+    txi_trans$length <- txi_trans$length[idx2keep,]
+    
     colnames(txi_trans$counts) <-
       colnames(txi_trans$abundance) <- 
       colnames(txi_trans$length)<-sample.name
@@ -408,6 +518,7 @@ observeEvent(input$tximport_run,{
     write.csv(trans_counts,file=paste0(DDD.data$result.folder,'/Transcript read counts.csv'))
     
     ####
+    
     DDD.data$trans_TPM <- trans_TPM
     DDD.data$trans_counts <- trans_counts
     incProgress(1)

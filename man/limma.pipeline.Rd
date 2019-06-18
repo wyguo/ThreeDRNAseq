@@ -3,13 +3,19 @@
 \name{limma.pipeline}
 \alias{limma.pipeline}
 \alias{edgeR.pipeline}
+\alias{TStrend.pipeline}
 \title{Dfferential expression (DE) and alternative splicing (DAS) analysis}
 \usage{
 limma.pipeline(dge, contrast, span = 0.5, design, deltaPS = NULL,
-  diffAS = F, adjust.method = "BH", block = NULL)
+  diffAS = F, adjust.method = "BH", block = NULL, voomWeights = F,
+  ...)
 
 edgeR.pipeline(dge, method = c("glm", "glmQL"), design, contrast,
   diffAS = F, deltaPS = NULL, adjust.method = "BH")
+
+TStrend.pipeline(dge, design, span = 0.5, contrast.list,
+  adjust.method = "BH", diffAS = F, aggPvalue.method = c("Simes",
+  "Fisher"), voomWeights = F)
 }
 \arguments{
 \item{dge}{a numeric matrix of read counts or a \code{\link[edgeR]{DGEList}} object.

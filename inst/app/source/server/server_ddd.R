@@ -420,6 +420,11 @@ observe({
 
 
 observeEvent(input$run.DE,{
+  if(is.null(DDD.data$contrast)){
+    showmessage('Please generate contrast groups.')
+    return(NULL)
+  }
+   
   cat('\nDE gene analysis\n')
   ##---------------+ DE genes -----------------
   withProgress(message = 'DE gene analysis...', detail = 'This may take a while...',

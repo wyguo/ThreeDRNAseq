@@ -6,14 +6,15 @@
 \title{Plot gene and transcript expression profiles}
 \usage{
 plotAbundance(data.exp, gene, mapping, genes.ann = NULL,
-  trans.ann = NULL, trans.expressed = NULL, reps,
-  x.lab = "Conditions", y.lab = "TPM", marker.size = 3,
-  legend.text.size = 11, error.type = "stderr", error.bar = T,
-  show.annotation = T, plot.gene = T)
+  trans.ann = NULL, trans.expressed = NULL, reps, groups = NULL,
+  sliceProfile = F, x.lab = "Conditions", y.lab = "TPM",
+  marker.size = 3, legend.text.size = 11, error.type = "stderr",
+  error.bar = T, show.annotation = T, plot.gene = T)
 
 plotPS(data.exp, gene, mapping, genes.ann = NULL, trans.ann = NULL,
-  trans.expressed = NULL, reps, y.lab = "TPM", x.lab = "Conditions",
-  marker.size = 3, legend.text.size = 11, show.annotation = T)
+  trans.expressed = NULL, reps, groups = NULL, sliceProfile = F,
+  y.lab = "TPM", x.lab = "Conditions", marker.size = 3,
+  legend.text.size = 11, show.annotation = T)
 }
 \arguments{
 \item{data.exp}{a data.frame of transcript level expression, e.g. read counts and TPM.}
@@ -30,7 +31,13 @@ Default is \code{NULL}.}
 \item{trans.expressed}{a vector of expressed transcripts. If not \code{NULL}, only the profiles of provided transcripts
 will be shown in the plot.}
 
-\item{reps}{a vecotr of replicate labels, which provide the grouping information to calculate the average expression in each conditions.}
+\item{reps}{a vecotr of replicate labels, which provide the grouping information of biolocial replciates to 
+calculate the average expression in each conditions.}
+
+\item{groups}{a vecotr of grouping labels for \code{reps}, which provide the grouping information to slice the profile plot into different segments, e.g. samples in "treatment"
+vs "Control", samples in different development stages, etc. The vector length of \code{groups} is the same to the length of \code{reps}.}
+
+\item{sliceProfile}{logical, whether to slice profile plot according to \code{groups} labels.}
 
 \item{x.lab, y.lab}{characters for x-axis and y-axis labels, respectively.}
 

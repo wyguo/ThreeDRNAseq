@@ -42,7 +42,11 @@ plotUpdown <- function(data2plot,contrast,plot.title=NULL,angle=0,
 #' Default is \code{NULL}.
 #' @param trans.expressed a vector of expressed transcripts. If not \code{NULL}, only the profiles of provided transcripts
 #' will be shown in the plot.
-#' @param reps a vecotr of replicate labels, which provide the grouping information to calculate the average expression in each conditions.
+#' @param reps a vecotr of replicate labels, which provide the grouping information of biolocial replciates to 
+#' calculate the average expression in each conditions.
+#' @param groups a vecotr of grouping labels for \code{reps}, which provide the grouping information to slice the profile plot into different segments, e.g. samples in "treatment"
+#' vs "Control", samples in different development stages, etc. The vector length of \code{groups} is the same to the length of \code{reps}.
+#' @param sliceProfile logical, whether to slice profile plot according to \code{groups} labels.
 #' @param x.lab,y.lab characters for x-axis and y-axis labels, respectively.
 #' @param marker.size a number passed to \code{geom_point} to control the point size in the plot.
 #' @param legend.text.size a number to control the legend text size.
@@ -83,6 +87,8 @@ plotAbundance<- function(
   trans.ann=NULL,
   trans.expressed=NULL,
   reps,
+  groups=NULL,
+  sliceProfile=F,
   x.lab='Conditions',
   y.lab='TPM',
   marker.size=3,
@@ -156,8 +162,24 @@ plotAbundance<- function(
     plot.title <- paste0('Gene: ',genes.idx)
   }
 
-
   data2plot$Conditions <- factor(data2plot$Conditions,levels = unique(reps))
+  if(!is.null(groups)){
+    group.idx <- data.frame(reps=reps,groups=groups)
+    idx2check <- as.vector(unlist(by(data = group.idx,INDICES = group.idx$reps,FUN = function(x){
+      length(unique(x$groups))
+    })))
+    if(any(idx2check>1)){
+      groups <- NULL
+    } else {
+      group.idx <- group.idx[!duplicated(group.idx$reps),]
+      if(length(unique(group.idx$groups))==1){
+        groups <- NULL
+      } else {
+        rownames(group.idx) <- group.idx$reps
+        data2plot$Group <- factor(group.idx[data2plot$Conditions,'groups'])
+      }
+    }
+  }
 
   profiles <- ggplot(data2plot,aes(x=Conditions,y=mean,group=Targets,color=Targets))+
     geom_line(size=1)+
@@ -173,6 +195,8 @@ plotAbundance<- function(
   if(error.bar)
     profiles <- profiles+
     geom_errorbar(aes(ymin=mean-error,ymax=mean+error),width=0.1,color='black',size=0.3)
+  if(sliceProfile & !is.null(groups))
+    profiles <- profiles+facet_grid(.~Group,scales = 'free_x')
   profiles
 }
 
@@ -186,6 +210,8 @@ plotPS <- function(
   trans.ann=NULL,
   trans.expressed=NULL,
   reps,
+  groups=NULL,
+  sliceProfile=F,
   y.lab='TPM',
   x.lab='Conditions',
   marker.size=3,
@@ -239,7 +265,24 @@ plotPS <- function(
   data2plot <- reshape2::melt(data2plot)
   colnames(data2plot) <- c('Targets','Conditions','PS')
   data2plot$Conditions <- factor(data2plot$Conditions,levels = unique(reps))
-
+  
+  if(!is.null(groups)){
+    group.idx <- data.frame(reps=reps,groups=groups)
+    idx2check <- as.vector(unlist(by(data = group.idx,INDICES = group.idx$reps,FUN = function(x){
+      length(unique(x$groups))
+    })))
+    if(any(idx2check>1)){
+      groups <- NULL
+    } else {
+      group.idx <- group.idx[!duplicated(group.idx$reps),]
+      if(length(unique(group.idx$groups))==1){
+        groups <- NULL
+      } else {
+        rownames(group.idx) <- group.idx$reps
+        data2plot$Group <- factor(group.idx[data2plot$Conditions,'groups'])
+      }
+    }
+  }
   profiles <- ggplot(data2plot,aes(x=Conditions,y=PS,group=Targets,color=Targets))+
     geom_bar(stat='identity',aes(fill=Targets))+
     labs(x=x.lab,y=y.lab,title=plot.title)+
@@ -249,6 +292,9 @@ plotPS <- function(
       fill=guide_legend(ncol = legend.ncol),
       shape=guide_legend(ncol = legend.ncol),
       color=guide_legend(ncol = legend.ncol))
+  
+  if(sliceProfile & !is.null(groups))
+    profiles <- profiles+facet_grid(.~Group,scales = 'free_x')
   profiles
 }
 

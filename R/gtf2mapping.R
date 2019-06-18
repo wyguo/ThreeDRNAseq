@@ -43,8 +43,8 @@ fa2mapping <- function(pafile){
   x <- Lines[idx]
   mapping <- lapply(x, function(i){
     ann <- unlist(strsplit(i,'[[:space:]]|[|]|[=]|[:]|[>]'))
-    tg <- c(ifelse("transcript" %in% ann,ann[grep(pattern = 'transcript',x = ann)+1],ann[2]),
-      ann[grep(pattern = 'gene',x = ann)+1])
+    tg <- c(ifelse("^transcript$" %in% ann,ann[grep(pattern = 'transcript',x = ann)+1],ann[2]),
+      ann[grep(pattern = '^gene$',x = ann)+1])
     if(length(tg)!=2)
       NA else tg
   })
@@ -53,6 +53,5 @@ fa2mapping <- function(pafile){
   colnames(mapping) <- c('TXNAME','GENEID')
   mapping
 }
-
 
 

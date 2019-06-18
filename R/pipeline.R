@@ -168,13 +168,19 @@ limma.pipeline <- function(dge,
                            deltaPS=NULL,
                            diffAS=F,
                            adjust.method='BH',
-                           block=NULL){
+                           block=NULL,
+                           voomWeights=F,...){
   start.time <- Sys.time()
   results <- list()
   ##########################################################
   ##--limma voom
   message('Limma-voon to estimate mean-vriance trend ...')
-  voom.object<-voom(dge,design,plot=F,span = span)
+  if(voomWeights){
+    voom.object<-voomWithQualityWeights(dge,design,plot=F,span = span)
+  } else {
+    voom.object<-voom(dge,design,plot=F,span = span,...)
+  }
+  
   results$voom.object <- voom.object
   targets <- rownames(voom.object$E)
 
@@ -586,4 +592,245 @@ edgeR.pipeline <- function(dge,
   return(results)
 }
 
+#' @rdname limma.pipeline
+#' @export
+TStrend.pipeline <- function(dge,
+                             design,
+                             span=0.5,
+                             contrast.list,
+                             adjust.method='BH',
+                             diffAS=F,
+                             # DASPvalue.method='F-test',
+                             aggPvalue.method=c('Simes','Fisher'),
+                             voomWeights=F){
+  
+  aggPvalue.method <- match.arg(aggPvalue.method,c('Simes','Fisher'))
+  results <- list()
+  
+  ###====>fit model
+  message('Limma-voon to estimate mean-vriance trend ...')
+  if(voomWeights){
+    voom.object<-voomWithQualityWeights(dge,design,plot=F,span = span)
+  } else {
+    voom.object<-voom(dge,design,plot=F,span = span)
+  }
+  targets <- rownames(voom.object$E)
+  
+  message('Fit a basic linear model ...')
+  fit.lmFit <- lmFit(voom.object, design)
+  results$fit.lmFit <- fit.lmFit
+  
+  message('Fit the contrast model ...')
+  contrast <- unique(unlist(contrast.list))
+  contrast.matrix <- makeContrasts(contrasts = contrast, levels=design)
+  print(paste0('Contrast groups: ',paste0(contrast,collapse = '; ')))
+  fit.contrast<-contrasts.fit(fit.lmFit, contrast.matrix)
+  results$fit.contrast<-fit.contrast
+  
+  message('Fit the eBayes model ...')
+  fit.eBayes<-eBayes(fit.contrast)
+  results$fit.eBayes <- fit.eBayes
+  
+  targets <- rownames(fit.eBayes$p.value)
+  DE.stat.list <- lapply(contrast.list,function(i){
+    x <- topTable(fit.eBayes,
+                  coef=i,
+                  adjust.method =adjust.method,
+                  number = Inf)
+    x <- x[targets,]
+    x
+  })
+  names(DE.stat.list) <- names(contrast.list)
+  results$DE.stat.list <- DE.stat.list
+  
+  DE.pval <- lapply(DE.stat.list,function(i){
+    x <- i[targets,'adj.P.Val']
+    x
+  })
+  names(DE.pval) <- names(DE.stat.list)
+  DE.pval <- do.call(cbind,DE.pval)
+  rownames(DE.pval) <- targets
+  # colnames(DE.pval) <- paste0('adj.pval:',colnames(DE.pval))
+  results$DE.pval <- DE.pval
+  
+  if(diffAS){
+    message('Fit the AS model ...')
+    fit.splice<-diffSplice(fit.contrast, geneid = 'GENEID')
+    results$fit.splice <- fit.splice
+    genes.idx <- unique(fit.splice$genes$GENEID)
+    trans.idx <- unique(fit.splice$genes$TXNAME)
+    GXmapping <- fit.splice$genes
+    rownames(GXmapping) <- GXmapping$TXNAME
+    GXmapping <- GXmapping[trans.idx,]
+    
+    ###====>DTU transcripts
+    ##---->DTU.stat.list
+    DTU.stat.list <- lapply(contrast.list,function(i){
+      x <- lapply(i,function(j){
+        y <- topSplice(fit.splice, 
+                       coef=j, 
+                       test="t", 
+                       number=Inf, 
+                       FDR=10000)
+        y <- y[trans.idx,]
+        y
+      })
+      names(x) <- i
+      x
+    })
+    names(DTU.stat.list) <- names(contrast.list)
+    results$DTU.stat.list <- DTU.stat.list
+    
+    ##---->DTU.pval.list
+    DTU.pval.list <- lapply(DTU.stat.list,function(i){
+      x <- lapply(i,function(j){
+        j[,'P.Value']
+      })
+      names(x) <- names(i)
+      x <- do.call(cbind,x)
+      rownames(x) <- trans.idx
+      x
+    })
+    names(DTU.pval.list) <- names(DTU.stat.list)
+    results$DTU.pval.list <- DTU.pval.list
+    
+    ##---->DTU.pval
+    DTU.pval <- lapply(DTU.pval.list, function(x){
+      apply(x,1,function(i) aggPvalue(pvals = i,method = aggPvalue.method))
+    })
+    names(DTU.pval) <- names(DTU.pval.list)
+    DTU.pval <- do.call(cbind,DTU.pval)
+    DTU.pval <- apply(DTU.pval,2,function(i) p.adjust(p = i,method = adjust.method))
+    # colnames(DTU.pval) <- paste0('adj.pval:',colnames(DTU.pval))
+    results$DTU.pval <- DTU.pval
+    
+    ###====>DAS genes
+    ##F-test
+    DAS.stat.F.list <- lapply(contrast.list,function(i){
+      x <- lapply(i,function(j){
+        y <- topSplice(fit.splice, 
+                       coef=j, 
+                       test="F", 
+                       number=Inf, 
+                       FDR=10000)
+        rownames(y) <- y$GENEID
+        y <- y[genes.idx,]
+        y
+      })
+      names(x) <- i
+      x
+    })
+    names(DAS.stat.F.list) <- names(contrast.list)
+    
+    DAS.pval.F.list <- lapply(DAS.stat.F.list,function(i){
+      x <- lapply(i,function(j){
+        j[,'P.Value']
+      })
+      names(x) <- names(i)
+      x <- do.call(cbind,x)
+      rownames(x) <- genes.idx
+      x
+    })
+    names(DAS.pval.F.list) <- names(contrast.list)
+    results$DAS.pval.F.list <- DAS.pval.F.list
+    
+    DAS.pval.F <- lapply(DAS.pval.F.list, function(x){
+      apply(x,1,function(i) aggPvalue(pvals = i,method = aggPvalue.method))
+    })
+    names(DAS.pval.F) <- names(DAS.pval.F.list)
+    DAS.pval.F <- do.call(cbind,DAS.pval.F)
+    DAS.pval.F <- apply(DAS.pval.F,2,function(i) p.adjust(p = i,method = adjust.method))
+    # colnames(DAS.pval.F) <- paste0('adj.pval:',colnames(DAS.pval.F))
+    results$DAS.pval.F <- DAS.pval.F
+    
+    
+    ###====>DAS genes
+    ##Simes-test
+    ##simes-test
+    DAS.stat.simes.list <- lapply(contrast.list,function(i){
+      x <- lapply(i,function(j){
+        y <- topSplice(fit.splice, 
+                       coef=j, 
+                       test="simes", 
+                       number=Inf, 
+                       FDR=10000)
+        rownames(y) <- y$GENEID
+        y <- y[genes.idx,]
+        y
+      })
+      names(x) <- i
+      x
+    })
+    names(DAS.stat.simes.list) <- names(contrast.list)
+    
+    DAS.pval.simes.list <- lapply(DAS.stat.simes.list,function(i){
+      x <- lapply(i,function(j){
+        j[,'P.Value']
+      })
+      names(x) <- names(i)
+      x <- do.call(cbind,x)
+      rownames(x) <- genes.idx
+      x
+    })
+    names(DAS.pval.simes.list) <- names(contrast.list)
+    results$DAS.pval.simes.list <- DAS.pval.simes.list
+    
+    DAS.pval.simes <- lapply(DAS.pval.simes.list, function(x){
+      apply(x,1,function(i) aggPvalue(pvals = i,method = aggPvalue.method))
+    })
+    names(DAS.pval.simes) <- names(DAS.pval.simes.list)
+    DAS.pval.simes <- do.call(cbind,DAS.pval.simes)
+    DAS.pval.simes <- apply(DAS.pval.simes,2,function(i) p.adjust(p = i,method = adjust.method))
+    # colnames(DAS.pval.simes) <- paste0('adj.pval:',colnames(DAS.pval.simes))
+    results$DAS.pval.simes <- DAS.pval.simes
+  }
+  return(results)
+}
 
+
+#' Generate contrast groups of time-series trend test
+TSgroup2contrast <- function(Group,Time,Intercept=list(Time=NULL,Group=NULL)){
+  g.idx0 <- Intercept$Group
+  t.idx0 <- Intercept$Time
+  g.idx <- setdiff(Group,g.idx0)
+  t.idx <- setdiff(Time,t.idx0)
+  if(g.idx0 %in% Group){
+    as.vector(t(interaction(expand.grid(g.idx,t.idx))))
+  } else {
+    a1 <- expand.grid(g.idx[-1],t.idx)
+    a2 <- expand.grid(g.idx[1],t.idx)
+    rownames(a2) <- a2[,2]
+    a3 <- a2[a1[,2],]
+    paste0(interaction(a1),'-',interaction(a3))
+  }
+}
+
+
+# TSgroup2contrast <- function(Group.list,Time,Group,Spline=F){
+#   if(!is.factor(Time))
+#     Time <- factor(Time,levels = unique(Time))
+#   if(!is.factor(Group))
+#     Group <- factor(Group,levels = unique(Group))
+#   if(Spline){
+#     t.idx <- levels(Time)
+#   } else {
+#     t.idx <- levels(Time)[-1]
+#   }
+# 
+#   g.idx <- levels(Group)[-1]
+#   g.idx0 <- levels(Group)[1]
+#   contrast <- lapply(Group.list, function(x){
+#     if(g.idx0 %in% x){
+#       as.vector(interaction(expand.grid(x[-which(x==g.idx0)],t.idx)))
+#     } else {
+#       y <- expand.grid(x,t.idx)
+#       z <- by(data = y,INDICES = y[,2],function(i){
+#         w <- interaction(i)
+#         w <- paste0(w[-1],'-',w[1])
+#         w
+#       })
+#       as.vector(unlist(z))
+#     }
+#   })
+#   return(contrast)
+# }

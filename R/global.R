@@ -133,6 +133,39 @@ selectorServer_pgdiff <- function(input, output, session, thisList, multiple=T){
   })
 }
 
+
+###=====>TS trend
+selectorUI_tstrend <- function(id){
+  ns = NS(id)
+  rev_label <- function(label){
+    paste0(rev(unlist(strsplit(label,split = '-'))),collapse = '-')
+  }
+  tags$div(
+    fluidRow(
+      div(style="display:inline-block;vertical-align:middle;margin-left:15px",
+          HTML(paste0(rev_label(ns('Time series groups'))))
+      ),
+      br(),
+      div(style="display:inline-block;vertical-align:middle;margin-left:15px;margin-right:10px",
+          uiOutput(ns('tstrend_groups')))
+    ),
+    id = paste0('param_tstrend', id)
+  )
+}
+
+selectorServer_tstrend  <- function(input, output, session, thisList,selected=NULL){
+  ns = session$ns
+  output$tstrend_groups <- renderUI({
+    selectInput(
+      inputId = ns('tstrend_groups'),multiple = T,
+      label = NULL,
+      width = '300px',
+      choices = thisList, selected = selected)
+  })
+}
+
+
+
 create.folders <- function(wd=getwd()){
   folder.name <- paste0(wd,'/',c('data','figure','result','report'))
   for(i in folder.name){
