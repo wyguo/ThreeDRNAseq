@@ -4,6 +4,7 @@ Table of contents
 -----------------
 
 -   [Description](#description)
+-   [User group](#user-group)
 -   [Prior to 3D RNA-seq](#prior-to-3d-rna-seq)
 -   [Capability of 3D RNA-seq](#capability-of-3d-rna-seq)
 -   [Run 3D RNA-seq App](#run-3d-rna-seq-app)
@@ -24,6 +25,13 @@ The ThreeDRNAseq (3D RNA-seq) R package provides an interactive graphical user i
 
 - Guo,W., Tzioutziou,N., Stephen,G., Milne,I., Calixto,C., Waugh,R., Brown,J.W., and Zhang,R. (2019) 3D RNA-seq - a powerful and flexible tool for rapid and accurate differential expression and alternative splicing analysis of RNA-seq data for biologists. bioRxiv, 656686. doi: https://doi.org/10.1101/656686.
 - Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C., Panter,P.E., Knight,H., Nimmo,H.G., Zhang,R., and Brown,J.W.S. (2018) Rapid and Dynamic Alternative Splicing Impacts the Arabidopsis Cold Response Transcriptome. Plant Cell, 30, 1424–1444.
+
+User group
+-----------
+To report bugs, leave comments, ask questions and post discussions, please go to:
+
+- Group group: https://groups.google.com/forum/#!forum/3d-rna-seq-app-user-group
+- Or Github Issues: https://github.com/wyguo/ThreeDRNAseq/issues
 
 Prior to 3D RNA-seq
 -------------------
