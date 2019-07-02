@@ -1017,7 +1017,7 @@ idx <- factor(DE_genes$contrast,levels = contrast)
 targets <-  split(DE_genes,idx)
 data2plot <- lapply(contrast,function(i){
   if(nrow(targets[[i]])==0){
-    x <- data.frame(contrast=i,regulation=c('down_regulate','up_regulate'),number=0)
+    x <- data.frame(contrast=i,regulation=c('down-regulate','up-regulate'),number=0)
   } else {
     x <- data.frame(contrast=i,table(targets[[i]]$up.down))
     colnames(x) <- c('contrast','regulation','number')
@@ -1045,7 +1045,7 @@ idx <- factor(DE_trans$contrast,levels = contrast)
 targets <-  split(DE_trans,idx)
 data2plot <- lapply(contrast,function(i){
   if(nrow(targets[[i]])==0){
-    x <- data.frame(contrast=i,regulation=c('down_regulate','up_regulate'),number=0)
+    x <- data.frame(contrast=i,regulation=c('down-regulate','up-regulate'),number=0)
   } else {
     x <- data.frame(contrast=i,table(targets[[i]]$up.down))
     colnames(x) <- c('contrast','regulation','number')
