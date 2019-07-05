@@ -1,6 +1,7 @@
 ![](vignettes/user_manuals/3D_App_figure/logo.png)
 
 <hr>
+
 **3D RNA-seq is currently under a dual-licensing model. **
 
 1) 	**Open source under GPLV3.0. For academic and non-commercial use, it is free. **
