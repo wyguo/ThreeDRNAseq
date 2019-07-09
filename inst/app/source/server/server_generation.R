@@ -63,12 +63,12 @@ observe({
       tempfolder <- tempfile(tmpdir=Sys.getenv("TMP"))
     
     ##for JHI docker
-    DDD.data$upload_folder <- paste0('/tmp',tempfolder)
-    dir.create(file.path('/tmp', tempfolder))
-    
+    # DDD.data$upload_folder <- paste0('/tmp',tempfolder)
+    # dir.create(file.path('/tmp', tempfolder))
+    # 
     ##for local
-    # dir.create(file.path(tempfolder))
-    # DDD.data$upload_folder <- tempfolder
+    dir.create(file.path(tempfolder))
+    DDD.data$upload_folder <- tempfolder
     
     DDD.data$folder <- DDD.data$upload_folder
     DDD.data$data.folder <- file.path(DDD.data$folder,'data')
@@ -153,7 +153,7 @@ output$show_quant_load <- renderUI({
                    selected = 'salmon',inline = T),
       HTML('<strong> > Select the zipped quantification file:</strong> '),
       fileInput("quant_zip_button", "", accept = c(".zip")),
-      HTML('<strong>Note:</strong> Please zip the quantification folder before upload.')
+      HTML('<strong>Note:</strong> Please zip the quantification folder before upload. If transcripts are quantified by using Kallisto, the 3D RNA-seq App will read transcript quantifications from "abundance.tsv" files in the sub-folders of the zipped file.')
     )
   } else {
     tagList(
@@ -197,9 +197,15 @@ observe({
       if(input$quant_method=='salmon'){
         fileNames <- fileNames0[grep('.sf',fileNames0)]
       } else {
-        fileNames <- fileNames0[grep('.h5',fileNames0)]
-        if(length(fileNames)==0)
-          fileNames <- fileNames0[grep('.tsv',fileNames0)]
+        fileNames <- fileNames0[grep('.tsv',fileNames0)]
+        if(length(fileNames)==0){
+          fileNames <- fileNames0[grep('.h5',fileNames0)]
+          showmessage('Please use the kallisto quantification files "abundance.tsv" as input files for 3D Anlaysis.',
+                      duration = NULL,id = 'check_filenames_message')
+          removeNotification(id = 'upload_zip_quant_message')
+          return(NULL)
+        }
+          
       }
       
       if(length(fileNames)==0){
@@ -289,9 +295,10 @@ observeEvent(input$samples_update,{
      any(is.null(input$brep_column)) | 
      any(is.null(input$quant_column)) | 
      is.null(DDD.data$upload_folder) |
-     is.null(DDD.data$samples0))
+     is.null(DDD.data$samples0) |
+     is.null(DDD.data$quant_fileNames))
     return(NULL)
-  
+
   DDD.data$brep_column <- input$brep_column
   DDD.data$srep_column <- input$srep_column
   DDD.data$factor_column <- input$factor_column
@@ -314,18 +321,7 @@ observeEvent(input$samples_update,{
                 duration = 10)
     return(NULL)
   }
-  
-  
-  # ##new add
-  # if(input$quant_method=='kallisto'){
-  #   idx <- sapply(idx, function(i){
-  #     if(!file.exists(i))
-  #       gsub('abundance.h5','abundance.tsv',i)
-  #     else i
-  #   })
-  #   idx <- as.vector(idx)
-  # }
-  
+
   if(input$has_srep=='Yes'){
     samples <- data.frame(DDD.data$samples0,
                           quant.path=quant_fileNames)
@@ -342,7 +338,6 @@ observeEvent(input$samples_update,{
     samples$condition <- make.names(interaction(DDD.data$samples0[,c(input$factor_column)]))
     DDD.data$samples_new <- DDD.data$samples <- samples
   }
-  save(samples,file='samples.RData')
 })
 
 output$mapping_table <- DT::renderDataTable({
@@ -425,16 +420,24 @@ observeEvent(input$tximport_run,{
                    duration = NULL,id = 'generate_expression_message')
   
   ###check if the transcript names in quantification file matches to the mapping table
+  file2check <- data.files[1]
   showNotification('Verifying transcript names...',
                    action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
                    duration = NULL,id = 'message_id')
-  file2check <- data.files[1]
+  
+  if(grepl('.h5',file2check) & DDD.data$docker_image){
+    showmessage('Please use the kallisto quantification files "abundance.tsv" as input files for 3D Anlaysis.',
+                duration = 20)
+    return(NULL)
+  }
+  
   txi_trans2check<- tximport(files = file2check, 
                              type = input$quant_method, 
                              tx2gene = NULL,
                              countsFromAbundance = input$tximport_method,
-                             txOut = T,
-                             dropInfReps = T)
+                             txOut = T)
+
+
   trans2check <- rownames(txi_trans2check$abundance)
   idx2keep <- intersect(trans2check,DDD.data$mapping$TXNAME)
   removeNotification(id = 'message_id')
@@ -450,7 +453,7 @@ observeEvent(input$tximport_run,{
   
   withProgress(message = 'Generate gene expression...', value = 0, {
     incProgress(0.1)
-    txi_genes <- tximport(data.files,dropInfReps = T,
+    txi_genes <- tximport(data.files,
                           type = input$quant_method, 
                           tx2gene = DDD.data$mapping,
                           countsFromAbundance = input$tximport_method)
@@ -492,8 +495,7 @@ observeEvent(input$tximport_run,{
                          type = input$quant_method, 
                          tx2gene = NULL,
                          countsFromAbundance = input$tximport_method,
-                         txOut = T,
-                         dropInfReps = T)
+                         txOut = T)
     
     idx2keep <- intersect(DDD.data$mapping$TXNAME,rownames(txi_trans$counts))
     txi_trans$counts <- txi_trans$counts[idx2keep,]
@@ -540,3 +542,35 @@ observeEvent(input$page_after_generation, {
   updateTabItems(session, "tabs", newtab)
   shinyjs::runjs("window.scrollTo(0, 50)")
 })
+
+
+##test for h5 input
+# xh5 <- reactiveValues(x1=NULL,x2=NULL)
+# 
+# observeEvent(input$h5_file_input,{
+#   file_path <- input$h5_file_input$datapath
+#   if (is.null(file_path) | length(file_path)==0)
+#     return(NULL)
+#   x1 <- rhdf5::h5read(file_path, "est_counts")
+#   x <- data.frame(est_counts=x1[1:10])
+#   xh5$x1 <- x
+# })
+# 
+# output$h5table1 <- renderTable({
+#   xh5$x1
+# })
+# 
+# observeEvent(input$h5_file_input,{
+#   file_path <- input$h5_file_input$datapath
+#   if (is.null(file_path) | length(file_path)==0)
+#     return(NULL)
+#   x1 <- rhdf5::h5read(file_path, "est_counts")
+#   x2 <- rhdf5::h5read(file_path, "aux/ids")
+#   x3 <- rhdf5::h5read(file_path, "aux/eff_lengths")
+#   x <- data.frame(est_counts=x1[1:10],ids=x2[1:10],eff_lengths=x3[1:10])
+#   xh5$x2 <- x
+# })
+# 
+# output$h5table2 <- renderTable({
+#   xh5$x2
+# })

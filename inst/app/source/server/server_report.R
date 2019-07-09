@@ -145,6 +145,8 @@ observeEvent(input$save_ddd_data_button,{
                    n <- max(sapply(threeD.list, length))
                    threeD.list <- lapply(threeD.list, function(x){
                      y <- rep(NA,n)
+                     if(length(x)==0)
+                       return(y)
                      y[1:length(x)] <- x
                      y
                    })

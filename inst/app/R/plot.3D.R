@@ -42,6 +42,7 @@ plotUpdown <- function(data2plot,contrast,plot.title=NULL,angle=0,
 #' Default is \code{NULL}.
 #' @param trans.expressed a vector of expressed transcripts. If not \code{NULL}, only the profiles of provided transcripts
 #' will be shown in the plot.
+#' @param trans.highlight a vector of transcripts. If not \code{NULL}, all the other transcripts which are not in this vector will be hidden in the plot.
 #' @param reps a vecotr of replicate labels, which provide the grouping information of biolocial replciates to 
 #' calculate the average expression in each conditions.
 #' @param groups a vecotr of grouping labels for \code{reps}, which provide the grouping information to slice the profile plot into different segments, e.g. samples in "treatment"
@@ -86,6 +87,7 @@ plotAbundance<- function(
   genes.ann=NULL,
   trans.ann=NULL,
   trans.expressed=NULL,
+  trans.highlight=NULL,
   reps,
   groups=NULL,
   sliceProfile=F,
@@ -138,7 +140,6 @@ plotAbundance<- function(
     }
   }
   rownames(data2plot) <- c(genes.idx,trans.idx)
-  legend.ncol <- ceiling(length(trans.idx)/15)
 
   ##--mean and error
   mean2plot <- t(rowmean(t(data2plot),group = reps))
@@ -180,7 +181,17 @@ plotAbundance<- function(
       }
     }
   }
-
+  
+  if(!is.null(trans.highlight)){
+    if(plot.gene){
+      data2plot <- droplevels(data2plot[data2plot$Targets %in% c(genes.idx,trans.highlight),])
+    } else {
+      data2plot <- droplevels(data2plot[data2plot$Targets %in% trans.highlight,])
+    }
+  }
+  
+  legend.ncol <- ceiling(length(unique(data2plot$Targets))/15)
+  
   profiles <- ggplot(data2plot,aes(x=Conditions,y=mean,group=Targets,color=Targets))+
     geom_line(size=1)+
     geom_point(size=marker.size,aes(fill=Targets,shape=Targets))+
@@ -539,22 +550,32 @@ plotVolcano <- function(data2plot,
                         size=1,
                         top.n=10){
   data2plot$distance <- sqrt((data2plot$x)^2+(data2plot$y)^2)
-  data2label <- data2plot[data2plot$significance=='Significant',]
-  data2label <- droplevels(data2label[order(data2label$distance,decreasing = T),][1:top.n,])
-  g <- ggplot(data = data2plot,aes(x=x,y=y))+
-    geom_point(aes(colour=significance),size=size)+
-    scale_color_manual(values=c('Not significant'=col0,'Significant'=col1))+
-    theme_bw()+
-    labs(x=xlab,y=ylab,title = title)+
-    scale_x_continuous(breaks = pretty(data2plot$x, n = 10))
-  q <- g+
-    geom_label_repel(data=data2label,
-      aes(x=x,y=y,label=target,fill=contrast),
-      alpha=0.6,
-      nudge_y      = -0.35,
-      direction    = "both",
-      segment.color = "black",
-      hjust        = 1,
-      segment.size = 0.2)
+  if('Significant' %in% data2plot$significance){
+    data2label <- data2plot[data2plot$significance=='Significant',]
+    data2label <- droplevels(data2label[order(data2label$distance,decreasing = T),][1:top.n,])
+    g <- ggplot(data = data2plot,aes(x=x,y=y))+
+      geom_point(aes(colour=significance),size=size)+
+      scale_color_manual(values=c('Not significant'=col0,'Significant'=col1))+
+      theme_bw()+
+      labs(x=xlab,y=ylab,title = title)+
+      scale_x_continuous(breaks = pretty(data2plot$x, n = 10))
+    q <- g+
+      geom_label_repel(data=data2label,
+                       aes(x=x,y=y,label=target,fill=contrast),
+                       alpha=0.6,
+                       nudge_y      = -0.35,
+                       direction    = "both",
+                       segment.color = "black",
+                       hjust        = 1,
+                       segment.size = 0.2)
+  } else {
+    g <- ggplot(data = data2plot,aes(x=x,y=y))+
+      geom_point(aes(colour=significance),size=size)+
+      scale_color_manual(values=c('Not significant'=col0))+
+      theme_bw()+
+      labs(x=xlab,y=ylab,title = title)+
+      scale_x_continuous(breaks = pretty(data2plot$x, n = 10))
+    q <- g
+  }
   q
 }

@@ -26,3 +26,27 @@ set2 <- function(x,y){
 }
 
 
+set3 <- function(x,y,z){
+  a5 <- Reduce(intersect, list(x,y,z))
+  a2 <- setdiff(intersect(x,y),a5)
+  a4 <- setdiff(intersect(x,z),a5)
+  a6 <- setdiff(intersect(y,z),a5)
+  a1 <- setdiff(x,c(a2,a4,a5))
+  a3 <- setdiff(y,c(a2,a5,a6))
+  a7 <- setdiff(z,c(a4,a5,a6))
+  results <- list(a1=a1,a2=a2,a3=a3,a4=a4,a5=a5,a6=a6,a7=a7)
+  # attributes(results) <- list(
+  #   a1='x-(y&z)',
+  #   a2='(x&y)-z',
+  #   a3='y-(x&z)',
+  #   a4='(x&z)-y',
+  #   a5='x&y&z',
+  #   a6='(y&z)-x',
+  #   a7='z-(x&y)'
+  # )
+  name.idx <- c('x-(y&z)','(x&y)-z','y-(x&z)','(x&z)-y','x&y&z','(y&z)-x','z-(x&y)')
+  name.idx <- paste0(paste0('a',1:7,':'),name.idx)
+  names(results) <- name.idx
+  return(results)
+}
+

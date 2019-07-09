@@ -12,6 +12,7 @@ sourceDir(path = 'R',encoding = 'UTF-8')
 # data.size.max <- 500
 message('Many thanks for using our 3D RNA-seq shiny App o^_^o!')
 message('The step-by-step user manual of this app can be found in:\n https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md')
+message('If you have questions to raise or are experiencing difficulties using the 3D RNA-seq, please use the 3D RNA-seq user group:\n https://groups.google.com/forum/#!forum/3d-rna-seq-app-user-group')
 ## app.R ##
 library(shiny)
 library(shinydashboard)
@@ -72,6 +73,26 @@ mainsidebar <- dashboardSidebar(
 
 ##dashboardBody########################################################
 # ========================== dashboardBody ========================== #
+###timeout if no mouse click
+inactivity <- "function idleTimer() {
+var t = setTimeout(logout, 3600000);
+window.onmousemove = resetTimer; // catches mouse movements
+window.onmousedown = resetTimer; // catches mouse movements
+window.onclick = resetTimer;     // catches mouse clicks
+window.onscroll = resetTimer;    // catches scrolling
+window.onkeypress = resetTimer;  //catches keyboard actions
+
+function logout() {
+window.close();  //close the window
+}
+
+function resetTimer() {
+clearTimeout(t);
+t = setTimeout(logout, 3600000);  // time is in milliseconds (10000 is 10 second; 3600000 is a hour)
+}
+}
+idleTimer();"
+
 mainbody <- dashboardBody(
   # tags$head(includeScript(system.file("google-analytics.js", package = "ThreeDRNAseq"))),
   # tags$head(includeScript("google-analytics.js")),
@@ -81,6 +102,7 @@ mainbody <- dashboardBody(
   # tags$head(tags$style(HTML('.box {margin-left: -15px;}'))),
   withMathJax(),
   shinyjs::useShinyjs(),
+  tags$script(inactivity),
   tabItems(
     #=======================>> Introduction panel <<==========================
     source(file.path("source/ui", "ui_introduction.R"),local = TRUE)$value,
@@ -107,6 +129,8 @@ mainbody <- dashboardBody(
     # source(file.path("ui", "ui_contact.R"),local = TRUE)$value
   )
 )
+
+
 
 ui <- dashboardPage(
   mainheader,
@@ -186,6 +210,22 @@ server <- function(input, output, session) {
     updateTabItems(session, "tabs", newtab)
     shinyjs::runjs("window.scrollTo(0, 50)")
   })
+  #Important information
+  observe({
+    if(DDD.data$docker_image){
+      showModal(modalDialog(
+        title = HTML("<font color='red'><strong>Important message </strong></font><i class='fa fa-bell'></i>"),
+        HTML("<div align='justify'>Many thanks for using our 3D RNA-seq App for your RNA-seq data analysis.
+             <ul>
+             <li>Due to our server capacity, it may take a while for the web browser to response when multi-users are running the analysis at the same time. Please be patience and only click the button once and wait until one step done. </li>
+             <li>The App will be disconnected from our server after a hour if there is no mouse action on the web browser.</li>
+             <li>We have fixed most of the bugs in the 3D RNA-seq App. But disconnection from server may also happen due to unexpected bugs or server maintaince. In such case, please double check your input data format or re-try later.</li> 
+             <li>If you have questions to raise or are experiencing difficulties using the 3D RNA-seq, please use the 3D RNA-seq user group: <a href='https://groups.google.com/forum/#!forum/3d-rna-seq-app-user-group' target='_blank'>https://groups.google.com/forum/#!forum/3d-rna-seq-app-user-group</a>.</li> 
+             <li>The 3D RNA-seq App can also be run through RStudio on a local computer. Please go to the Github page for details: <a href='https://github.com/wyguo/ThreeDRNAseq' target='_blank'>https://github.com/wyguo/ThreeDRNAseq</a>. </li>
+             </ul></div>")
+      ))
+    }
+  })
   
   #=======================>> Data generation panel <<============================
   source(file.path("source/server", "server_generation.R"),local = TRUE)$value
@@ -213,6 +253,12 @@ server <- function(input, output, session) {
   # })
   
   session$allowReconnect(TRUE)
+  
+  
+  ##stop the session
+  session$onSessionEnded(function() {
+    stopApp()
+  })
   
 }
 shinyApp(ui, server,options=list(launch.browser=T))

@@ -208,6 +208,12 @@ ISnumber.g <- eventReactive(input$plotISnumber,{
     scores2plot <- DDD.data$scores_filtered
   }
   
+  if(nrow(scores2plot)==0){
+    showNotification('No isoform switches.',
+                     duration = 20)
+    return(NULL)
+  }
+  
   if(input$TSISorisokTSP=='TSIS'){
     x <- scores2plot$x.value
     time.points <- unique(DDD.data$samples$condition)
@@ -323,6 +329,12 @@ IS.g <- eventReactive(input$plot.IS,{
     scores2plot <- DDD.data$scores
   } else {
     scores2plot <- DDD.data$scores_filtered
+  }
+  
+  if(nrow(scores2plot)==0){
+    showNotification('No isoform switches.',
+                     duration = 20)
+    return(NULL)
   }
   
   iso1 <- input$iso1
@@ -461,6 +473,13 @@ observeEvent(input$plot_all_IS_btn,{
     dir.create(path = folder2save0,recursive = T)
   
   scores2plot <- DDD.data$scores_filtered
+  if(nrow(scores2plot)==0){
+    showNotification('No isoform switches.',
+                     duration = 20)
+    return(NULL)
+  }
+  
+  
   withProgress(message = 'Plot isoform switch...', value = 0, {
     start.time <- Sys.time()
     ###on linux system, do parallel plots

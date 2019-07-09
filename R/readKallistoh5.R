@@ -5,7 +5,7 @@ readKallistoh5 <- function(fpath, ...) {
   counts <- rhdf5::h5read(fpath, "est_counts")
   ids <- rhdf5::h5read(fpath, "aux/ids")
   efflens <- rhdf5::h5read(fpath, "aux/eff_lengths")
-  
+  lens <- rhdf5::h5read(fpath, "aux/lengths")
   # as suggested by https://support.bioconductor.org/p/96958/#101090
   ids <- as.character(ids)
   
@@ -13,6 +13,7 @@ readKallistoh5 <- function(fpath, ...) {
   stopifnot(length(efflens) == length(ids))
   
   result <- data.frame(target_id = ids,
+                       length=lens,
                        eff_length = efflens,
                        est_counts = counts,
                        stringsAsFactors = FALSE)

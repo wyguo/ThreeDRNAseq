@@ -191,4 +191,12 @@ tabItem("generation",
                        style="color: #fff; background-color: #428bca; border-color: #2e6da4;")
           )
         )
+        # fluidRow(
+        #   fileInput("h5_file_input", "This is a test for h5 file input. It will be removed later.",
+        #             accept = c(
+        #               ".h5")
+        #   ),
+        #   tableOutput('h5table1'),
+        #   tableOutput('h5table2')
+        # )
         )

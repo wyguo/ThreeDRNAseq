@@ -6,10 +6,11 @@
 \title{Plot gene and transcript expression profiles}
 \usage{
 plotAbundance(data.exp, gene, mapping, genes.ann = NULL,
-  trans.ann = NULL, trans.expressed = NULL, reps, groups = NULL,
-  sliceProfile = F, x.lab = "Conditions", y.lab = "TPM",
-  marker.size = 3, legend.text.size = 11, error.type = "stderr",
-  error.bar = T, show.annotation = T, plot.gene = T)
+  trans.ann = NULL, trans.expressed = NULL, trans.highlight = NULL,
+  reps, groups = NULL, sliceProfile = F, x.lab = "Conditions",
+  y.lab = "TPM", marker.size = 3, legend.text.size = 11,
+  error.type = "stderr", error.bar = T, show.annotation = T,
+  plot.gene = T)
 
 plotPS(data.exp, gene, mapping, genes.ann = NULL, trans.ann = NULL,
   trans.expressed = NULL, reps, groups = NULL, sliceProfile = F,
@@ -30,6 +31,8 @@ Default is \code{NULL}.}
 
 \item{trans.expressed}{a vector of expressed transcripts. If not \code{NULL}, only the profiles of provided transcripts
 will be shown in the plot.}
+
+\item{trans.highlight}{a vector of transcripts. If not \code{NULL}, all the other transcripts which are not in this vector will be hidden in the plot.}
 
 \item{reps}{a vecotr of replicate labels, which provide the grouping information of biolocial replciates to 
 calculate the average expression in each conditions.}

@@ -492,7 +492,7 @@ observeEvent(input$run.DE,{
   mapping <- DDD.data$mapping
   rownames(mapping) <- mapping$TXNAME
   deltaPS <- transAbundance2PS(transAbundance = DDD.data$trans_TPM[DDD.data$target_high$trans_high,],
-                               PS = DDD.data$PS,
+                               PS = NULL,
                                contrast = DDD.data$contrast,
                                condition = condition,
                                mapping = mapping[DDD.data$target_high$trans_high,])
@@ -555,7 +555,7 @@ observeEvent(input$run.DE,{
                  
                  ##DAS genes
                  if(input$DAS_pval_method=='F-test')
-                   DAS.stat <- trans_3D_stat$DAS.F.stat else DAS.stat <- trans_3D_stat$DAS.Simes.stat
+                   DAS.stat <- trans_3D_stat$DAS.F.stat else DAS.stat <- trans_3D_stat$DAS.simes.stat
                  
                  lfc <- DDD.data$genes_log2FC
                  lfc <- reshape2::melt(as.matrix(lfc))
