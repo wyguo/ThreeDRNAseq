@@ -36,8 +36,6 @@ To see a demo video, click the screenshot
   <img alt="Youtube video" src="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_App_figure/youtube.png"/>
 </a>
 
-![](vignettes/user_manuals/3D_App_figure/youtube.png)
-
 <hr>
 
 Description
