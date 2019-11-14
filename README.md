@@ -27,6 +27,18 @@ Table of contents
 
 <div align="justify">
 
+Demo video
+-----------
+
+To see a demo video, click the screenshot
+
+<a style="float:center" href="https://youtu.be/rqeXECX1-T4" target="_blank">
+  <img alt="Youtube video" src="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_App_figure/youtube.png"/>
+</a>
+
+![](vignettes/user_manuals/3D_App_figure/youtube.png)
+
+<hr>
 
 Description
 -----------
