@@ -3,7 +3,7 @@ title: "Transcript quantification using Galaxy"
 author: |
   | Wenbin Guo
   | Information & Computational Sciences, James Hutton Institute, Dundee DD2 5DA, UK
-date: "09 December, 2019"
+date: "10 December, 2019"
 output:
   html_document:
     toc: yes
