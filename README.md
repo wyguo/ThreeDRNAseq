@@ -106,7 +106,7 @@ for(i in bioconductor.package.list){
     install.packages("BiocManager")
   if(!(i %in% rownames(installed.packages()))){
     message('Installing package: ',i)
-    BiocManager::install(i, version = "3.8",dependencies = T)
+    BiocManager::install(i,dependencies = T)
   } else next
 }
 ```
