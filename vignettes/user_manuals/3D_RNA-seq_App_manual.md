@@ -1,10 +1,11 @@
 3D RNA-seq App
 ==============
-<i><h4>"Easy-to-use" user manual</h4></i>
-<i><h4>Wenbin Guo</h4></i>
-<i><h4>10 December 2019</h4></i>
-<i><h4>Information & Computational Sciences, James Hutton Institute, Dundee DD2 5DA, UK</h4></i>
-
+  <i><h4>"Easy-to-use" user manual</h4></i>
+  <i><h4>Wenbin Guo</h4></i>
+  <i><h4>10 December 2019</h4></i>
+  <i><h4>Information & Computational Sciences, James Hutton Institute, Dundee DD2 5DA, UK</h4></i>
+  
+  
 -   [License](#license)
 -   [Citation](#citation)
 -   [Demo video](#demo-video)
@@ -789,56 +790,120 @@ Reports are saved in report folder.
 
 Important results are saved in csv (comma delimited) files.
 
-File names (alphabetical)  
-Description \|
-
-\|————————————————————————————————————————-\|————————————————————————————————————————————————————–\|
-\| contrast.csv \| Contrast groups used for 3D analysis. \| \| DDD genes
-and transcript lists across all contrast groups.csv \| List of DE genes,
-DAS genes, DE transcripts and DTU transcripts, which are the union sets
-across all contrast groups. \| \| DDD numbers.csv \| DE/DAS/DTU
-genes/transcript numbers in each contrast group. \| \| DE genes/DAS
-genes/DE transcripts/DTU transcripts testing statistics.csv \| DAS
-genes/DE genes/DE transcripts/DTU transcripts test statistics, including
-not significant results. \| \| DEvsDAS/DEvsDTU results.csv \| Number of
-DE vs DAS genes/DE vs DTU transcripts. \| \| Gene read counts.csv \| Raw
-read counts of genes before data pre-processing. \| \| Gene TPM.csv \|
-Raw TPM of genes before data pre-processing. \| \| Raw isoform switch
-scores.csv \| Statistics of all possible isoform switches, including not
-significant results. \| \| RNAseq info.csv \| RNA-seq data information
-before and after pre-processing. \| \| samples.csv \| Meta-data table of
-sample information. \| \| Significant DE genes/DAS genes/DE
-transcripts/DTU transcripts list and statistics.csv \| Significant DE
-genes/DAS genes/DE transcripts/DTU transcripts test statistics; not
-significant results are filtered. \| \| Significant isoform switch
-scores.csv \| Statistics of significant isoform switches. \| \|
-Significant TS DAS trend gene/DE trend gene/DE trend transcript/DTU
-trend transcript list and statistics.csv \| Significant time-series DE
-trend genes/DAS trend genes/DE trend transcripts/DTU trend transcripts
-test statistics; not significant results are filtered. \| \| Target in
-each cluster heatmap DE genes.csv \| DE gene lists of individual
-clusters of the heatmap \| \| Target in each cluster heatmap DE
-transcripts.csv \| DE transcript lists of individual clusters of the
-heatmap \| \| Target in each cluster heatmap DE+DAS genes (DAS only are
-filtered).csv \| DE+DAS gene lists of individual clusters of the
-heatmap; DAS only are filtered \| \| Target in each cluster heatmap
-DE+DTU transcripts (DTU only are filtered).csv \| DE+DTU transcript
-lists of individual clusters of the heatmap; DAS only are filtered \| \|
-Target in each cluster heatmap TS DAS trend genes in contrast All.csv \|
-TS DAS trend gene lists of individual clusters of the heatmap \| \|
-Target in each cluster heatmap TS DE trend genes in contrast All.csv \|
-TS DE trend gene lists of individual clusters of the heatmap \| \|
-Target in each cluster heatmap TS DE trend transcripts in contrast
-All.csv \| TS DE trend transcript lists of individual clusters of the
-heatmap \| \| Target in each cluster heatmap TS DTU trend transcripts in
-contrast All.csv \| TS DTU trend transcript lists of individual clusters
-of the heatmap \| \| Transcript and gene mapping.csv \| Transcript-gene
-association table. \| \| Transcript read counts.csv \| Raw read counts
-of transcripts before data pre-processing. \| \| Transcript TPM.csv \|
-Raw TPM of transcripts before data pre-processing. \| \| TS DE trend
-genes/TS DAS trend genes/TS DE trend transcripts/TS DTU trend
-transcripts testing adjusted p-values.csv \| Adjusted p-values of
-time-series 3D trend testing, including not significant results. \|
+<table>
+<colgroup>
+<col style="width: 43%" />
+<col style="width: 56%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>File names (alphabetical)</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>contrast.csv</td>
+<td>Contrast groups used for 3D analysis.</td>
+</tr>
+<tr class="even">
+<td>DDD genes and transcript lists across all contrast groups.csv</td>
+<td>List of DE genes, DAS genes, DE transcripts and DTU transcripts, which are the union sets across all contrast groups.</td>
+</tr>
+<tr class="odd">
+<td>DDD numbers.csv</td>
+<td>DE/DAS/DTU genes/transcript numbers in each contrast group.</td>
+</tr>
+<tr class="even">
+<td>DE genes/DAS genes/DE transcripts/DTU transcripts testing statistics.csv</td>
+<td>DAS genes/DE genes/DE transcripts/DTU transcripts test statistics, including not significant results.</td>
+</tr>
+<tr class="odd">
+<td>DEvsDAS/DEvsDTU results.csv</td>
+<td>Number of DE vs DAS genes/DE vs DTU transcripts.</td>
+</tr>
+<tr class="even">
+<td>Gene read counts.csv</td>
+<td>Raw read counts of genes before data pre-processing.</td>
+</tr>
+<tr class="odd">
+<td>Gene TPM.csv</td>
+<td>Raw TPM of genes before data pre-processing.</td>
+</tr>
+<tr class="even">
+<td>Raw isoform switch scores.csv</td>
+<td>Statistics of all possible isoform switches, including not significant results.</td>
+</tr>
+<tr class="odd">
+<td>RNAseq info.csv</td>
+<td>RNA-seq data information before and after pre-processing.</td>
+</tr>
+<tr class="even">
+<td>samples.csv</td>
+<td>Meta-data table of sample information.</td>
+</tr>
+<tr class="odd">
+<td>Significant DE genes/DAS genes/DE transcripts/DTU transcripts list and statistics.csv</td>
+<td>Significant DE genes/DAS genes/DE transcripts/DTU transcripts test statistics; not significant results are filtered.</td>
+</tr>
+<tr class="even">
+<td>Significant isoform switch scores.csv</td>
+<td>Statistics of significant isoform switches.</td>
+</tr>
+<tr class="odd">
+<td>Significant TS DAS trend gene/DE trend gene/DE trend transcript/DTU trend transcript list and statistics.csv</td>
+<td>Significant time-series DE trend genes/DAS trend genes/DE trend transcripts/DTU trend transcripts test statistics; not significant results are filtered.</td>
+</tr>
+<tr class="even">
+<td>Target in each cluster heatmap DE genes.csv</td>
+<td>DE gene lists of individual clusters of the heatmap</td>
+</tr>
+<tr class="odd">
+<td>Target in each cluster heatmap DE transcripts.csv</td>
+<td>DE transcript lists of individual clusters of the heatmap</td>
+</tr>
+<tr class="even">
+<td>Target in each cluster heatmap DE+DAS genes (DAS only are filtered).csv</td>
+<td>DE+DAS gene lists of individual clusters of the heatmap; DAS only are filtered</td>
+</tr>
+<tr class="odd">
+<td>Target in each cluster heatmap DE+DTU transcripts (DTU only are filtered).csv</td>
+<td>DE+DTU transcript lists of individual clusters of the heatmap; DAS only are filtered</td>
+</tr>
+<tr class="even">
+<td>Target in each cluster heatmap TS DAS trend genes in contrast All.csv</td>
+<td>TS DAS trend gene lists of individual clusters of the heatmap</td>
+</tr>
+<tr class="odd">
+<td>Target in each cluster heatmap TS DE trend genes in contrast All.csv</td>
+<td>TS DE trend gene lists of individual clusters of the heatmap</td>
+</tr>
+<tr class="even">
+<td>Target in each cluster heatmap TS DE trend transcripts in contrast All.csv</td>
+<td>TS DE trend transcript lists of individual clusters of the heatmap</td>
+</tr>
+<tr class="odd">
+<td>Target in each cluster heatmap TS DTU trend transcripts in contrast All.csv</td>
+<td>TS DTU trend transcript lists of individual clusters of the heatmap</td>
+</tr>
+<tr class="even">
+<td>Transcript and gene mapping.csv</td>
+<td>Transcript-gene association table.</td>
+</tr>
+<tr class="odd">
+<td>Transcript read counts.csv</td>
+<td>Raw read counts of transcripts before data pre-processing.</td>
+</tr>
+<tr class="even">
+<td>Transcript TPM.csv</td>
+<td>Raw TPM of transcripts before data pre-processing.</td>
+</tr>
+<tr class="odd">
+<td>TS DE trend genes/TS DAS trend genes/TS DE trend transcripts/TS DTU trend transcripts testing adjusted p-values.csv</td>
+<td>Adjusted p-values of time-series 3D trend testing, including not significant results.</td>
+</tr>
+</tbody>
+</table>
 
 ### Files in data folder
 
