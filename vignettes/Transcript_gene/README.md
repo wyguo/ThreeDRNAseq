@@ -1,6 +1,6 @@
 
 # Transcript-gene association database for 3D analysis
-<img src="gene_transcript_association.png" style="display: block; width: 50%; margin: 0 auto" />
+<img src="gene_transcript_association.png" style="display: block; width: 30%; margin: 0 auto" />
 
 This folder includes <a href='https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md#input-files' target='_blank'>transcript-gene associaton information</a> of several transcriptomes, which can be used as input for 3D RNA-seq analysis.
 
