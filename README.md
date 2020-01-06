@@ -7,8 +7,8 @@
 
 **3D RNA-seq is currently under a dual-licensing model.**
 
-1) 	**Open source under GPLV3.0. For academic and non-commercial use, it is free.**
-2) 	**Commercial. For commercial use, please get in touch to obtain commercial licenses.** 
+- **Open source under GPLV3.0. For academic and non-commercial use, it is free.**
+- **Commercial. For commercial use, please get in touch to obtain commercial licenses.** 
 <a href="#how-to-get-help">Contact us</a>
 
 <hr>
