@@ -1,5 +1,8 @@
 ![](vignettes/user_manuals/3D_App_figure/logo.png)
 
+- 3D RNA-seq App v2.0.0. 
+- Previous versions can be found in <a href='https://github.com/wyguo/ThreeDRNAseq/releases' target='_blank'>https://github.com/wyguo/ThreeDRNAseq/releases</a>
+
 <hr>
 
 **3D RNA-seq is currently under a dual-licensing model.**
