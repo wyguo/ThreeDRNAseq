@@ -666,6 +666,8 @@ iso.switch.pairwise <- function(data.exp=TSIS.tpm,
                        spline.df = spline.df,
                        verbose = verbose)
   }
+  if(is.null(scores))
+    return(NULL)
   if(!is.numeric(times)){
     time.idx <- unique(times)
     time.label <- data.frame(rep(time.idx[1],nrow(scores)),rep(time.idx[2],nrow(scores)))

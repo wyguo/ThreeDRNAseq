@@ -1,5 +1,5 @@
 #' Generate all possible logical relations between set x and y.
-#' @param x,y vectors of set x and set y.
+#' @param x,y,z vectors of set x, set y and set z.
 #' @return a list of three elements: "x.only", "xy" and "y.only".
 #' @examples 
 #' x <- letters[1:10]
@@ -25,6 +25,10 @@ set2 <- function(x,y){
   return(results)
 }
 
+#############################################################################################
+##-----------------------------------------------------------------------------------------
+#' @rdname set2
+#' @export
 
 set3 <- function(x,y,z){
   a5 <- Reduce(intersect, list(x,y,z))

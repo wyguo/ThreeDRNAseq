@@ -1,16 +1,18 @@
 #' Generate all possible logical relations between set x and y.
-#' @param x,y vectors of set x and set y.
+#' @param x,y,z vectors of set x, set y and set z.
 #' @return a list of three elements: "x.only", "xy" and "y.only".
-#' @examples 
+#' @examples
+#' library(gridExtra)
 #' x <- letters[1:10]
 #' y <- letters[5:15]
 #' z <- set2(x,y)
 #' combo <- c(x=length(z$x.only),y=length(z$y.only),"x&y"=length(z$xy))
-#' plotEulerDiagram(combo)
-#' 
+#' g <- plotEulerDiagram(combo)
+#' grid.draw(g)
+#'
 #' @export
 #' @seealso \code{\link{plotEulerDiagram}} and \code{\link{eulerr::euler}}
-#' 
+#'
 set2 <- function(x,y){
   x.only <- setdiff(x,y)
   xy <- intersect(x,y)
@@ -25,6 +27,10 @@ set2 <- function(x,y){
   return(results)
 }
 
+#############################################################################################
+##-----------------------------------------------------------------------------------------
+#' @rdname set2
+#' @export
 
 set3 <- function(x,y,z){
   a5 <- Reduce(intersect, list(x,y,z))

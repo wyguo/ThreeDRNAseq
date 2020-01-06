@@ -1,4 +1,13 @@
 ##----------Step 1: Filter low expression------------
+observeEvent(input$tabs,{
+  if(input$tabs=='preprocessing'){
+    text2show <- 'Page: Data pre-processing'
+    showmessage(text = '############################################################',showNoteify = F,showTime = F)
+    showmessage(text = text2show,showNoteify = F)
+    showmessage(text = '############################################################',showNoteify = F,showTime = F)
+  }
+})
+
 ##update parameters
 observe({
   if(is.null(DDD.data$params_list$cpm_cut))
@@ -13,10 +22,21 @@ observe({
                     value = DDD.data$params_list$cpm_samples_n,min = 0,max = nrow(DDD.data$samples_new))
 })
 
-observeEvent(input$run_filter,{
-  if(is.null(DDD.data$trans_counts) | is.null(DDD.data$mapping))
+observe({
+  if(is.null(DDD.data$brep_column))
     return(NULL)
-  cat('\nFilter low expression\n')
+  updateSelectInput(session =session,inputId = 'pca_color_option',selected = DDD.data$brep_column)
+})
+
+observeEvent(input$run_filter,{
+  if(is.null(DDD.data$trans_counts) | is.null(DDD.data$mapping)){
+    showmessage('Please finish the "Data generation" step before data pre-processing.',
+                duration = NULL,type = 'error')
+    return(NULL)
+  }
+    
+
+  startmessage(text = 'Filter low expression')
   target_high <- low.expression.filter(abundance = DDD.data$trans_counts,
                                        mapping = DDD.data$mapping,
                                        abundance.cut = input$cpm_cut,
@@ -26,6 +46,7 @@ observeEvent(input$run_filter,{
   # save(target_high,file=paste0(DDD.data$data.folder,'/target_high.RData'))
   # message(paste0('target_high.RData is saved in folder: ',DDD.data$data.folder))
   DDD.data$target_high <- target_high
+  endmessage(text = 'Filter low expression')
 })
 
 observeEvent(input$run_filter,{
@@ -69,10 +90,7 @@ output$RNAseq_datainfo <- DT::renderDataTable({
 mv.trans.plot <- eventReactive(input$run_filter,{
   if(is.null(DDD.data$samples_new) | is.null(DDD.data$trans_counts) | is.null(DDD.data$target_high))
     return(NULL)
-  showNotification('Estimating mean-variance, please wait ...',
-                   # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-                   duration = NULL,id = 'mean_variance_trans_message')
+  startmessage(text = 'Estimate transcript mean-variance')
   condition <- paste0(DDD.data$samples_new$condition)
   ###---transcript levels
   counts.raw = DDD.data$trans_counts[rowSums(DDD.data$trans_counts>0)>0,]
@@ -81,6 +99,7 @@ mv.trans.plot <- eventReactive(input$run_filter,{
   mv.trans <- check.mean.variance(counts.raw = counts.raw,
                       counts.filtered = counts.filtered,
                       condition = condition)
+  endmessage(text = 'Estimate transcript mean-variance')
   
   mv.trans.plot <- function(){
     fit.raw <- mv.trans$fit.raw
@@ -101,35 +120,23 @@ mv.trans.plot <- eventReactive(input$run_filter,{
     legend('topright',col = c('red','gold'),lty=c(1,4),lwd=3,
            legend = c('low-exp removed','low-exp kept'))
   }
-  cat('\nMake mean-variance trend plot\n')
   return(mv.trans.plot)
 })
 #
 output$mv.trans.plot <- renderPlot({
   if(is.null(mv.trans.plot()))
     return(NULL)
-  showNotification('Plotting mean-variance, please wait ...',
-                   # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-                   duration = NULL,id = 'mean_variance_trans_message')
-  # cat('\nMake mean-variance trend plot\n')
+  startmessage(text = 'Plot transcript mean-variance trend')
   mv.trans.plot()()
-  removeNotification(id = 'mean_variance_trans_message')
-  showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
+  removeNotification(id = 'message_id')
+  endmessage(text = 'Plot transcript mean-variance trend')
 })
 
 ###--mean variance genes trend plot
-mv.genes <- eventReactive(input$run_filter,{
-
-})
-
 mv.genes.plot <- eventReactive(input$run_filter,{
   if(is.null(DDD.data$samples_new) | is.null(DDD.data$genes_counts) | is.null(DDD.data$target_high))
     return(NULL)
-  showNotification('Estimating mean-variance, please wait ...',
-                   # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-                   duration = NULL,id = 'mean_variance_genes_message')
+  startmessage(text = 'Estimate gene mean-variance trend')
   condition <- paste0(DDD.data$samples_new$condition)
   ###---genes levels
   counts.raw = DDD.data$genes_counts[rowSums(DDD.data$genes_counts>0)>0,]
@@ -138,6 +145,8 @@ mv.genes.plot <- eventReactive(input$run_filter,{
   mv.genes <- check.mean.variance(counts.raw = counts.raw,
                       counts.filtered = counts.filtered,
                       condition = condition)
+  
+  endmessage(text = 'Estimate gene mean-variance trend')
   
   mv.genes.plot <- function(){
     fit.raw <- mv.genes$fit.raw
@@ -158,30 +167,21 @@ mv.genes.plot <- eventReactive(input$run_filter,{
     legend('topright',col = c('red','gold'),lty=c(1,4),lwd=3,
            legend = c('low-exp removed','low-exp kept'))
   }
-  removeNotification(id = 'mean_variance_genes_message')
-  showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
   return(mv.genes.plot)
 })
 #
 output$mv.genes.plot <- renderPlot({
   if(is.null(mv.genes.plot()))
     return(NULL)
-  showNotification('Plotting mean-variance, please wait ...',
-                   # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-                   duration = NULL,id = 'mean_variance_genes_message')
+  startmessage(text = 'Plot gene mean-variance trend')
   mv.genes.plot()()
-  removeNotification(id = 'mean_variance_genes_message')
-  showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
+  endmessage(text = 'Plot gene mean-variance trend')
 })
 
 observeEvent(input$save_mv_plot,{
   if(is.null(mv.trans.plot()) | is.null(mv.genes.plot()))
     return(NULL)
-  showNotification('Saving mean-variance, please wait ...',
-                   # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-                   duration = NULL,id = 'save_mv_plot_message')
+  startmessage(text = 'Save mean-variance plots')
   ##transcript level
   png(filename = paste0(DDD.data$figure.folder,'/Transcript mean-variance trend.png'),
       width = input$mv.plot.width,height = input$mv.plot.height,res=input$mv.plot.res, 
@@ -206,10 +206,8 @@ observeEvent(input$save_mv_plot,{
       width = input$mv.plot.width,height = input$mv.plot.height)
   mv.genes.plot()()
   dev.off()
-  removeNotification(id = 'save_mv_plot_message')
-  showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
-  message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
-  showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+  endmessage(text = 'Save mean-variance plots')
+  showmessage(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
 })
 
 ##*****************preview saved plot******************
@@ -241,6 +239,105 @@ observeEvent(input$save_mv_plot_view, {
     ))
   }
 
+})
+
+##---------------> Transcripts per gene number -----------
+tpg_g <- eventReactive(input$tpg_plot_button,{
+  if(is.null(DDD.data$mapping) | is.null(DDD.data$target_high))
+    return(NULL)
+  
+  ##before
+  x <- DDD.data$mapping$GENEID
+  y <- table(table(x))
+  n.idx <- as.numeric(names(y))
+  y <- y[order(n.idx,decreasing = F)]
+  z <- c(y[n.idx<=10],sum(y[n.idx > 10 & n.idx <=20]),sum(y[n.idx > 20 & n.idx <=30]),sum(y[n.idx > 30]))
+  names(z) <- c(names(y[n.idx<=10]),'11-20','21-30','>30')
+  data2plot <- data.frame(trans=names(z),genes=z)
+  data2plot$trans <- factor(data2plot$trans,levels = data2plot$trans)
+  data2plot$Group <- 'Before filter'
+  data2plot.before <- data2plot
+  
+  ##after
+  x <- DDD.data$mapping[DDD.data$target_high$trans_high,]$GENEID
+  y <- table(table(x))
+  n.idx <- as.numeric(names(y))
+  y <- y[order(n.idx,decreasing = F)]
+  z <- c(y[n.idx<=10],sum(y[n.idx > 10 & n.idx <=20]),sum(y[n.idx > 20 & n.idx <=30]),sum(y[n.idx > 30]))
+  names(z) <- c(names(y[n.idx<=10]),'11-20','21-30','>30')
+  data2plot <- data.frame(trans=names(z),genes=z)
+  data2plot$trans <- factor(data2plot$trans,levels = data2plot$trans)
+  data2plot$Group <- 'After filter'
+  data2plot.after <- data2plot
+  
+  data2plot <- rbind(data2plot.before,data2plot.after)
+  data2plot$Group <- factor(data2plot$Group,levels = c('Before filter','After filter'))
+  g <- ggplot(data = data2plot,aes(x=trans,y=genes,fill=Group))+
+    geom_bar(stat='identity',position = "dodge")+
+    labs(x='Number of transcript per gene',y='Number of genes',
+         title='Distribution of the number of transcripts per gene')+
+    # geom_text(size = 3, position = position_dodge(0.9))+
+    geom_text(aes(label = genes),size=2, position = position_dodge(0.9),vjust = 0)+
+    scale_fill_manual(values = c(input$tpg_color_before,input$tpg_color_after))+
+    theme_bw()+
+    theme(legend.position = 'none',
+          axis.text.x = element_text(angle = input$tpg_number_x_rotate,
+                                     hjust = input$tpg_number_x_hjust,
+                                     vjust = input$tpg_number_x_vjust))
+  return(g)
+})
+
+output$tpg_plot <- renderPlot({
+  if(is.null(tpg_g()))
+    return(NULL)
+  startmessage(text = 'Plot number of transcript per gene')
+  print(tpg_g())
+  endmessage(text = 'Plot number of transcript per gene')
+})
+
+##save plot
+observeEvent(input$tpg_save_button,{
+  if(is.null(tpg_g()))
+    return(NULL)
+  startmessage(text = 'Save number of transcript per gene plot')
+  create.folders(wd = DDD.data$folder)
+  folder2save <- paste0(DDD.data$folder,'/figure')
+  png(paste0(folder2save,'/Distribution of the number of transcripts per gene.png'),
+      width = input$tpg_number_width,height = input$tpg_number_height,res = input$tpg_number_res,units = 'in')
+  print(tpg_g())
+  dev.off()
+  
+  pdf(paste0(folder2save,'/Distribution of the number of transcripts per gene.pdf'),
+      width = input$tpg_number_width,height = input$tpg_number_height)
+  print(tpg_g())
+  dev.off()
+  endmessage(text = 'Save number of transcript per gene plot')
+  showmessage(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+})
+
+
+##*****************preview saved plot******************
+observeEvent(input$tpg_save_button_view, {
+  file2save <- paste0(DDD.data$figure.folder,'/Distribution of the number of transcripts per gene.png')
+  
+  if(!file.exists(file2save)){
+    showModal(modalDialog(
+      h4('Figures are not found in the directory. Please double check if the figures are saved.'),
+      easyClose = TRUE,
+      footer = modalButton("Cancel"),
+      size='l'
+    ))
+  } else {
+    showModal(modalDialog(
+      h4('Saved figure. If the labels are not properly placed, please correct width, height, ect.'),
+      tags$img(src=base64enc::dataURI(file = file2save),
+               style="height: 100%; width: 100%; display: block; margin-left: auto; margin-right: auto;
+               border:1px solid #000000"),
+      easyClose = TRUE,
+      footer = modalButton("Cancel"),
+      size='l'
+      ))
+  }
 })
 
 
@@ -276,7 +373,8 @@ observe({
     return(NULL)
   updateSelectInput(session = session,inputId = 'pca_color_option',
                     label = 'Colour samples based on',
-                    choices = colnames(DDD.data$samples_new))
+                    choices = colnames(DDD.data$samples_new),
+                    selected = ifelse(is.null(input$brep_column),'',input$brep_column))
 })
 
 ###---trans level
@@ -317,17 +415,17 @@ pca.trans.g <- eventReactive(input$plot.pca.button,{
   g
 })
 
-output$trans.pca.plot <- renderPlotly({
-  if(is.null(pca.trans.g()))
-    return(NULL)
-  # showNotification('Making PCA plot, please wait ...',
-  #                  # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-  #                  action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-  #                  duration = NULL,id = 'plot_PCA_message')
-  ggplotly(pca.trans.g())
-  # removeNotification(id = 'plot_PCA_message')
-  # showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
+observeEvent(input$plot.pca.button,{
+  startmessage(text = 'Plot transcript level PCA')
+  output$trans.pca.plot <- renderPlotly({
+    if(is.null(pca.trans.g()))
+      return(NULL)
+    ggplotly(pca.trans.g())
+    
+  })
+  endmessage(text = 'Plot transcript level PCA')
 })
+
 
 ###---genes level
 pca.genes.g <- eventReactive(input$plot.pca.button,{
@@ -369,25 +467,20 @@ pca.genes.g <- eventReactive(input$plot.pca.button,{
   g
 })
 
-output$genes.pca.plot <- renderPlotly({
-  if(is.null(pca.genes.g()))
-    return(NULL)
-  # showNotification('Making PCA plot, please wait ...',
-  #                  # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-  #                  action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-  #                  duration = NULL,id = 'plot_PCA_message')
-  ggplotly(pca.genes.g())
-  # removeNotification(id = 'plot_PCA_message')
-  # showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
+observeEvent(input$plot.pca.button,{
+  startmessage(text = 'Plot gene level PCA')
+  output$genes.pca.plot <- renderPlotly({
+    if(is.null(pca.genes.g()))
+      return(NULL)
+    ggplotly(pca.genes.g())
+  })
+  endmessage(text = 'Plot gene level PCA')
 })
 
 observeEvent(input$save_pca_plot,{
   ##transcript level
   # graphics.off()
-  showNotification('Saving PCA plot ...',
-                   # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-                   duration = NULL,id = 'save_PCA_message')
+  startmessage(text = 'Save transcript and gene level PCA plots')
   if(input$pca.plot.type=='all samples'){
     figure.label <- paste0('all samples ',paste0(input$pca_color_option,collapse = '_'))
   } else {
@@ -417,10 +510,10 @@ observeEvent(input$save_pca_plot,{
       width = input$pca.plot.width,height = input$pca.plot.height)
   print(pca.genes.g)
   dev.off()
-  removeNotification(id = 'save_PCA_message')
-  showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
-  message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
-  showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+  endmessage(text = 'Save transcript and gene level PCA plots')
+  
+  showmessage(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+
 })
 
 
@@ -459,8 +552,6 @@ observeEvent(input$save_pca_plot_view, {
       )
     )
   }
-  
-  
 })
 
 
@@ -496,7 +587,7 @@ observe({
 
 ###---transcript level
 observeEvent(input$remove_batch,{
-  cat('\nEstimate transcript level batch effects...\n')
+  startmessage(text = 'Estimate transcript level batch effects')
   withProgress(message = 'Estimate transcript level batch effects...', value = 0, {
     trans_batch <- remove.batch.shiny(read.counts = DDD.data$trans_counts[DDD.data$target_high$trans_high,],
                                       condition = DDD.data$samples_new$condition,
@@ -511,11 +602,12 @@ observeEvent(input$remove_batch,{
     DDD.data$trans_batch <- trans_batch
     incProgress(1)
   })
+  endmessage(text = 'Estimate transcript level batch effects')
 })
 
 ###---gene level
 observeEvent(input$remove_batch,{
-  cat('\nEstimate gene level batch effects...\n')
+  startmessage(text = 'Estimate gene level batch effects')
   withProgress(message = 'Estimate gene level batch effects...', value = 0, {
     genes_batch <- remove.batch.shiny(read.counts = DDD.data$genes_counts[DDD.data$target_high$genes_high,],
                                       condition = DDD.data$samples_new$condition,
@@ -530,13 +622,14 @@ observeEvent(input$remove_batch,{
     DDD.data$genes_batch <- genes_batch
     incProgress(1)
   })
+  endmessage(text = 'Estimate gene level batch effects')
 })
 
 # ###---trans level
 pca.trans.br.g <- eventReactive(input$update_pca_plot,{
   if(is.null(DDD.data$trans_batch))
     return(NULL)
-  message('Transcript level PCA--batch removed')
+  showmessage('Transcript level PCA--batch removed',showNoteify = F)
   data2pca <- DDD.data$trans_batch$normalizedCounts
   dge <- DGEList(counts=data2pca)
   dge <- suppressWarnings(calcNormFactors(dge))
@@ -573,10 +666,14 @@ pca.trans.br.g <- eventReactive(input$update_pca_plot,{
 })
 #
 
-output$trans.pca.br.plot <- renderPlotly({
-  if(is.null(pca.trans.br.g()))
-    return(NULL)
-  ggplotly(pca.trans.br.g())
+observeEvent(input$update_pca_plot,{
+  startmessage(text = 'Plot transcript level PCA after batch effect removed')
+  output$trans.pca.br.plot <- renderPlotly({
+    if(is.null(pca.trans.br.g()))
+      return(NULL)
+    ggplotly(pca.trans.br.g())
+  })
+  endmessage(text = 'Plot transcript level PCA after batch effect removed')
 })
 
 
@@ -584,7 +681,7 @@ output$trans.pca.br.plot <- renderPlotly({
 pca.genes.br.g <- eventReactive(input$update_pca_plot,{
   if(is.null(DDD.data$trans_batch))
     return(NULL)
-  message('Gene level PCA--batch removed')
+  showmessage('Gene level PCA--batch removed',showNoteify = F)
   data2pca <- DDD.data$genes_batch$normalizedCounts
   dge <- DGEList(counts=data2pca)
   dge <- suppressWarnings(calcNormFactors(dge))
@@ -621,15 +718,20 @@ pca.genes.br.g <- eventReactive(input$update_pca_plot,{
 })
 #
 
-output$genes.pca.br.plot <- renderPlotly({
-  if(is.null(pca.genes.br.g()))
-    return(NULL)
-  ggplotly(pca.genes.br.g())
+observeEvent(input$update_pca_plot,{
+  startmessage(text = 'Plot gene level PCA after batch effect removed')
+  output$genes.pca.br.plot <- renderPlotly({
+    if(is.null(pca.genes.br.g()))
+      return(NULL)
+    ggplotly(pca.genes.br.g())
+  })
+  endmessage(text = 'Plot gene level PCA after batch effect removed')
 })
 
 observeEvent(input$save_pca_br_plot,{
   ###transcript level
   # graphics.off()
+  startmessage(text = 'Save PCA plots after batch effect removed')
   if(input$pca.plot.type=='all samples'){
     figure.label <- paste0('all samples ',paste0(input$pca_color_option,collapse = '_'))
   } else {
@@ -661,8 +763,7 @@ observeEvent(input$save_pca_br_plot,{
       width = input$pca.plot.width,height = input$pca.plot.height)
   print(pca.genes.br.g)
   dev.off()
-  message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
-  showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+  endmessage(text = 'Save PCA plots after batch effect removed')
 })
 
 ##***************** preview saved plots *****************
@@ -699,7 +800,6 @@ observeEvent(input$save_pca_br_plot_view, {
       size='l'
       ))
   }
-
 })
 
 
@@ -713,44 +813,35 @@ observe({
 
 observeEvent(input$run_norm,{
   
-  cat('\nNormalise transcript read counts\n')
+  startmessage(text = 'Normalise transcript read counts')
   withProgress(message = 'Normalise transcript read counts...', value = 0, {
     dge <- DGEList(counts=DDD.data$trans_counts[DDD.data$target_high$trans_high,],
                    group = DDD.data$samples_new$condition,
                    genes = DDD.data$mapping[DDD.data$target_high$trans_high,])
     incProgress(0.7)
     trans_dge <- suppressWarnings(calcNormFactors(dge,method = input$norm_method))
-    # save(trans_dge,file=paste0(DDD.data$data.folder,'/trans_dge.RData'))
-    # message(paste0('trans_dge.RData is saved in folder: ',DDD.data$data.folder))
-    message('Done!!!')
     DDD.data$trans_dge <- trans_dge
     incProgress(1)
   })
+  endmessage(text = 'Normalise transcript read counts')
 })
 
 observeEvent(input$run_norm,{
-  cat('\nNormalise gene read counts\n')
+  startmessage(text = 'Normalise gene read counts')
   withProgress(message = 'Normalise gene read counts...', value = 0, {
     dge <- DGEList(counts=DDD.data$genes_counts[DDD.data$target_high$genes_high,],
                    group = DDD.data$samples_new$condition)
     incProgress(0.7)
     genes_dge <- suppressWarnings(calcNormFactors(dge,method = input$norm_method))
-    # save(genes_dge,file=paste0(DDD.data$data.folder,'/genes_dge.RData'))
-    # message(paste0('genes_dge.RData is saved in folder: ',DDD.data$data.folder))
-    message('Done!!!')
     DDD.data$genes_dge <- genes_dge
     incProgress(1)
   })
+  endmessage(text = 'Normalise gene read counts')
 })
 
 ##-------------> make the distribution plot-------------
 ###---transcript level
 trans.dist.g <- eventReactive(input$run_norm,{
-  # showNotification('Making normalisation plot ...',
-  #                  # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-  #                  action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-  #                  duration = NULL,id = 'norm_plot_message')
-  # sample.name <- paste0(DDD.data$samples_new$condition,'.',DDD.data$samples_new$brep)
   sample.name <- DDD.data$samples_new$sample.name
   condition <- DDD.data$samples_new$condition
   data.before <- DDD.data$trans_counts[DDD.data$target_high$trans_high,]
@@ -760,29 +851,27 @@ trans.dist.g <- eventReactive(input$run_norm,{
                          condition = condition,
                          sample.name = sample.name)
   g
-  
 })
 
-output$trans.dist.plot <- renderPlotly({
-  q <- subplot(style(trans.dist.g()$g1+theme(legend.position = 'none',
-                                             axis.title.x = element_blank(),
-                                             axis.text.x = element_blank()), showlegend = FALSE),
-               trans.dist.g()$g2+labs(title='Data distribution (before and after normalization)'),
-               nrows = 2,
-               titleX=T,
-               titleY = T,margin=0.04)
-  q
-  # removeNotification(id = 'norm_plot_message')
-  # showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
+observeEvent(input$run_norm,{
+  startmessage(text = 'Make transcript level distribution plot')
+  output$trans.dist.plot <- renderPlotly({
+    q <- subplot(style(trans.dist.g()$g1+theme(legend.position = 'none',
+                                               axis.title.x = element_blank(),
+                                               axis.text.x = element_blank()), showlegend = FALSE),
+                 trans.dist.g()$g2+labs(title='Data distribution (before and after normalization)'),
+                 nrows = 2,
+                 titleX=T,
+                 titleY = T,margin=0.04)
+    q
+  })
+  endmessage(text = 'Make transcript level distribution plot')
 })
+
 
 
 ###---gene level
 genes.dist.g <- eventReactive(input$run_norm,{
-  # showNotification('Making normalisation plot ...',
-  #                  # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-  #                  action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-  #                  duration = NULL,id = 'norm_plot_message')
   sample.name <- DDD.data$samples_new$sample.name
   condition <- DDD.data$samples_new$condition
   data.before <- DDD.data$genes_counts[DDD.data$target_high$genes_high,]
@@ -794,26 +883,26 @@ genes.dist.g <- eventReactive(input$run_norm,{
   g
 })
 
-output$genes.dist.plot <- renderPlotly({
-  q <- subplot(style(genes.dist.g()$g1+theme(legend.position = 'none',
-                                             axis.title.x = element_blank(),
-                                             axis.text.x = element_blank()), showlegend = FALSE),
-               genes.dist.g()$g2+labs(title='Data distribution (before and after normalization)'),
-               nrows = 2,
-               titleX=T,
-               titleY = T,margin=0.04)
-  q
-  # removeNotification(id = 'norm_plot_message')
-  # showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
+observeEvent(input$run_norm,{
+  startmessage(text = 'Make gene level distribution plot')
+  output$genes.dist.plot <- renderPlotly({
+    q <- subplot(style(genes.dist.g()$g1+theme(legend.position = 'none',
+                                               axis.title.x = element_blank(),
+                                               axis.text.x = element_blank()), showlegend = FALSE),
+                 genes.dist.g()$g2+labs(title='Data distribution (before and after normalization)'),
+                 nrows = 2,
+                 titleX=T,
+                 titleY = T,margin=0.04)
+    q
+  })
+  endmessage(text = 'Make gene level distribution plot')
 })
+
 
 observeEvent(input$save_dist_plot,{
   ##transcript level
   # graphics.off()
-  showNotification('Saving normalisation plot ...',
-                   # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-                   duration = NULL,id = 'norm_plot_message')
+  startmessage(text = 'Save distribution plots')
   png(filename = paste0(DDD.data$figure.folder,'/Transcript expression distribution.png'),
       width = input$dist.plot.width,height = input$dist.plot.height,res=input$dist.plot.res, units = 'in')
   gridExtra::grid.arrange(trans.dist.g()$g1,trans.dist.g()$g2,ncol=1)
@@ -835,10 +924,9 @@ observeEvent(input$save_dist_plot,{
       width = input$dist.plot.width,height = input$dist.plot.height)
   gridExtra::grid.arrange(genes.dist.g()$g1,genes.dist.g()$g2,ncol=1)
   dev.off()
-  removeNotification(id = 'norm_plot_message')
-  showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
-  message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
-  showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+  endmessage(text = 'Save distribution plots')
+  
+  showmessage(text = paste0('Figures are saved in folder: ',DDD.data$figure.folder))
 })
 
 ##*****************preview saved plot******************

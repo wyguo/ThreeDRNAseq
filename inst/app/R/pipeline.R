@@ -172,9 +172,16 @@ limma.pipeline <- function(dge,
                            voomWeights=F,...){
   start.time <- Sys.time()
   results <- list()
+  if(is.null(dge$genes)){
+    diffAS <- F
+  } else {
+    if(max(table(dge$genes$GENEID)) < 2)
+      diffAS <- F
+  }
+  
   ##########################################################
   ##--limma voom
-  message('Limma-voon to estimate mean-vriance trend ...')
+  cat('> Limma-voon to estimate mean-vriance trend ...','\n')
   if(voomWeights){
     voom.object<-voomWithQualityWeights(dge,design,plot=F,span = span)
   } else {
@@ -187,7 +194,7 @@ limma.pipeline <- function(dge,
   ##########################################################
   ##--Fit block
   if(!is.null(block)){
-    message('Fit block information')
+    cat('> Fit block information','\n')
     corfit <- duplicateCorrelation(voom.object,design,block=block)
     correlation <- corfit$consensus
     results$corfit <- corfit
@@ -199,13 +206,13 @@ limma.pipeline <- function(dge,
   
   ##########################################################
   ##--Fit a basic linear model
-  message('Fit a basic linear model ...')
+  cat('> Fit a basic linear model ...','\n')
   fit.lmFit <- lmFit(voom.object, design,block = block,correlation = correlation)
   results$fit.lmFit <- fit.lmFit
 
   ##########################################################
   ##--Fit a basic linear model
-  message('Fit the contrast model ...')
+  cat('> Fit the contrast model ...','\n')
   contrast.matrix <- makeContrasts(contrasts = contrast, levels=design)
   print(paste0('Contrast groups: ',paste0(contrast,collapse = '; ')))
   fit.contrast<-contrasts.fit(fit.lmFit, contrast.matrix)
@@ -213,13 +220,13 @@ limma.pipeline <- function(dge,
 
   ##########################################################
   ##--Fit a eBayes model
-  message('Fit a eBayes model ...')
+  cat('> Fit a eBayes model ...','\n')
   fit.eBayes<-eBayes(fit.contrast)
   results$fit.eBayes<-fit.eBayes
 
   ##########################################################
   ##--Testing statistics for each contrast group
-  message('Testing for each contrast group ...')
+  cat('> Testing for each contrast group ...','\n')
   DE.pval.list <- lapply(contrast,function(i){
     x <- topTable(fit.eBayes,
                   coef=i,
@@ -250,7 +257,7 @@ limma.pipeline <- function(dge,
 
   ##########################################################
   ##--Testing statistics for across all contrast groups
-  message('Testing across all contrast groups ...')
+  cat('> Testing across all contrast groups ...','\n')
   DE.stat.overalltest<-topTable(fit.eBayes,number = Inf,
                             coef = contrast,adjust.method =adjust.method )
   # DE.stat.overalltest <- DE.stat.overalltest[targets,]
@@ -262,7 +269,7 @@ limma.pipeline <- function(dge,
   results$DE.stat.overalltest<-DE.stat.overalltest
 
   if(diffAS){
-    message('Fit a splicing model ...')
+    cat('> Fit a splicing model ...','\n')
     if(is.null(deltaPS))
       stop('Please provide deltaPS for DAS analysis...')
     fit.splice<-diffSplice(fit.contrast, geneid = 'GENEID')
@@ -384,8 +391,8 @@ limma.pipeline <- function(dge,
   }
   end.time <- Sys.time()
   time.taken <- end.time - start.time
-  message(paste0('Time for analysis: ',round(time.taken,3)))
-  message('Done!!! ')
+  cat(paste0('Time for analysis: ',round(time.taken,3)))
+  cat('\n','> Done!!! ','\n')
   return(results)
 }
 
@@ -404,22 +411,29 @@ edgeR.pipeline <- function(dge,
                            adjust.method='BH'){
 
   start.time <- Sys.time()
+  if(is.null(dge$genes)){
+    diffAS <- F
+  } else {
+    if(max(table(dge$genes$GENEID)) < 2)
+      diffAS <- F
+  }
+    
   results <- list()
   method <- match.arg(method,c('glm','glmQL'))
   targets <- rownames(dge$counts)
-  message('Estimate dispersion ...')
+  cat('> Estimate dispersion ...','\n')
   Disp <- estimateGLMCommonDisp(dge, design)
   Disp <- estimateGLMTagwiseDisp(Disp, design)
   contrast.matrix <- makeContrasts(contrasts = contrast, levels=design)
 
   switch(method,
          glm = {
-           message('Fit Genewise Negative Binomial Generalized Linear Models...')
+           cat('> Fit Genewise Negative Binomial Generalized Linear Models...','\n')
            fit <- glmFit(Disp, design = design)
            results$fit.glm <- fit
 
            ###individual test
-           message('Fit the contrast model ...')
+           cat('> Fit the contrast model ...','\n')
            DE.pval.list <- lapply(contrast,function(i){
              x <- glmLRT(fit, contrast=contrast.matrix[,i,drop=F])
              y <- topTags(x,n = Inf,adjust.method = adjust.method)
@@ -434,12 +448,12 @@ edgeR.pipeline <- function(dge,
            results$DE.stat.overalltest<-DE.stat.overalltest
          },
          glmQL = {
-           message('Genewise Negative Binomial Generalized Linear Models with Quasi-likelihood Tests...')
+           cat('> Genewise Negative Binomial Generalized Linear Models with Quasi-likelihood Tests...','\n')
            fit <- glmQLFit(Disp,design = design)
            results$fit.glmQL <- fit
 
            ###individual test
-           message('Fit the contrast model ...')
+           cat('> Fit the contrast model ...','\n')
            DE.pval.list <- lapply(contrast,function(i){
              x <- glmQLFTest(fit, contrast=contrast.matrix[,i,drop=F])
              y <- topTags(x,n = Inf,adjust.method = adjust.method)
@@ -470,11 +484,14 @@ edgeR.pipeline <- function(dge,
   results$DE.pval<-DE.pval
   results$DE.lfc<-DE.lfc
   results$DE.stat<-DE.stat
+  
+
   ##################################################################
+
   ###---DAS
   if(diffAS){
     fit.splice <- lapply(contrast,function(i){
-      message(paste0('\ndiffSpliceDGE of contrast: ', i))
+      cat(paste0('\ndiffSpliceDGE of contrast: ', i))
       diffSpliceDGE(fit, contrast=contrast.matrix[,i,drop=F], geneid="GENEID")
     })
     names(fit.splice) <- contrast
@@ -587,8 +604,8 @@ edgeR.pipeline <- function(dge,
   }
   end.time <- Sys.time()
   time.taken <- end.time - start.time
-  message(paste0('Time for analysis: ',round(time.taken,3)))
-  message('Done!!! ')
+  cat(paste0('Time for analysis: ',round(time.taken,3)))
+  cat('\n','> Done!!! ','\n')
   return(results)
 }
 
@@ -605,10 +622,18 @@ TStrend.pipeline <- function(dge,
                              voomWeights=F){
   
   aggPvalue.method <- match.arg(aggPvalue.method,c('Simes','Fisher'))
-  results <- list()
+  # if(is.null(dge$genes) | max(table(dge$genes$GENEID)) < 2)
+  #   diffAS <- F
+  if(is.null(dge$genes)){
+    diffAS <- F
+  } else {
+    if(max(table(dge$genes$GENEID)) < 2)
+      diffAS <- F
+  }
   
+  results <- list()
   ###====>fit model
-  message('Limma-voon to estimate mean-vriance trend ...')
+  cat('> Limma-voon to estimate mean-vriance trend ...','\n')
   if(voomWeights){
     voom.object<-voomWithQualityWeights(dge,design,plot=F,span = span)
   } else {
@@ -616,18 +641,18 @@ TStrend.pipeline <- function(dge,
   }
   targets <- rownames(voom.object$E)
   
-  message('Fit a basic linear model ...')
+  cat('> Fit a basic linear model ...','\n')
   fit.lmFit <- lmFit(voom.object, design)
   results$fit.lmFit <- fit.lmFit
   
-  message('Fit the contrast model ...')
+  cat('> Fit the contrast model ...','\n')
   contrast <- unique(unlist(contrast.list))
   contrast.matrix <- makeContrasts(contrasts = contrast, levels=design)
   print(paste0('Contrast groups: ',paste0(contrast,collapse = '; ')))
   fit.contrast<-contrasts.fit(fit.lmFit, contrast.matrix)
   results$fit.contrast<-fit.contrast
   
-  message('Fit the eBayes model ...')
+  cat('> Fit the eBayes model ...','\n')
   fit.eBayes<-eBayes(fit.contrast)
   results$fit.eBayes <- fit.eBayes
   
@@ -654,7 +679,7 @@ TStrend.pipeline <- function(dge,
   results$DE.pval <- DE.pval
   
   if(diffAS){
-    message('Fit the AS model ...')
+    cat('> Fit the AS model ...','\n')
     fit.splice<-diffSplice(fit.contrast, geneid = 'GENEID')
     results$fit.splice <- fit.splice
     genes.idx <- unique(fit.splice$genes$GENEID)

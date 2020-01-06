@@ -4,7 +4,7 @@ tabItem("generation",
         fluidRow(
           box(title = 'Workflow',
               width=12,status = 'primary', solidHeader = T,
-              HTML('<img style="width: 100%; display: block; margin-left: auto; margin-right: auto;" 
+              HTML('<img style="width: 60%; display: block; margin-left: auto; margin-right: auto;" 
                    src="data_generation.png"/>')
               )
           ),
@@ -35,13 +35,13 @@ tabItem("generation",
               column(width = 12,
                      # wellPanel(
                      # style = "background-color: #ffffff;",
-                      br() %>% helper(icon = "question-circle",
-                              colour = NULL,
-                              type = 'markdown',
-                              title = 'Input data of 3D RNA-seq App',
-                              size = 'l',
-                              content = 'input_data',
-                              style="font-size: 2.0rem;margin-right:50px;"),
+                     br() %>% helper(icon = "question-circle",
+                                     colour = NULL,
+                                     type = 'markdown',
+                                     title = 'Input data of 3D RNA-seq App',
+                                     size = 'l',
+                                     content = 'input_data',
+                                     style="font-size: 2.0rem;margin-right:50px;"),
                      fileInput("sample_file_button", "(1) Select sample meta-data csv file (comma delimited)",
                                accept = c(
                                  ".csv")
@@ -64,11 +64,11 @@ tabItem("generation",
                               style="font-size: 2.0rem;margin-right:50px;"),
                      fileInput("mapping_file_button", "",
                                accept = c(
-                                 ".csv",".gtf",".fa")
+                                 ".csv",".gtf",".fa",".fasta")
                      ),
                      HTML('<h5 align="justify"><strong>Note:</strong> Transcript-gene association mapping in "csv" format is recommended. Otherwise it 
                           may take a while to generate the information from a "gtf" or "fa" file.')                     
-              ),
+                     ),
               column(width = 12,
                      br(),
                      uiOutput(outputId = 'show_quant_load'),
@@ -89,19 +89,19 @@ tabItem("generation",
                      # shinyDirButton(id = 'quant_folder_button',label = 'Select a folder',title = 'Select the folder of quantification',
                      #                buttonType = 'primary',
                      #                icon = icon('folder')),
-               
+                     
                      br(),
-                     br(),
-                     verbatimTextOutput('qaunt_folder_path_text')
+                     verbatimTextOutput('qaunt_folder_path_text'),
+                     HTML('Note: If the App is not running locally, but on our server, this folder is not accessible.')
               )
-          ),
-        #   ),
-        # fluidRow(
+                       ),
+          #   ),
+          # fluidRow(
           ##----------Step 4: Select factors of interest------------
           box(title = 'Step 2: Select factors of experimental design',
               width=6,status = 'primary', solidHeader = T,
               column(width = 12,
-                     radioButtons(inputId = 'has_srep',label = '>Does the data have sequencing replicates?',
+                     radioButtons(inputId = 'has_srep',label = '>Does the data have sequencing (technical) replicates?',
                                   choices = c('No','Yes'),selected = 'No',inline = T) %>%
                        helper(icon = "question-circle",
                               colour = NULL,
@@ -181,22 +181,15 @@ tabItem("generation",
               ),
         fluidRow(
           div(style="display:inline-block;vertical-align:middle;margin-left:15px; float: left;",
-          actionButton(inputId = 'page_before_generation',label = '',icon = icon('arrow-left'),
-                       style="color: #fff; background-color: #428bca; border-color: #2e6da4;"),
-          HTML('<i>Introduction</i>')
+              actionButton(inputId = 'page_before_generation',label = '',icon = icon('arrow-left'),
+                           style="color: #fff; background-color: #428bca; border-color: #2e6da4;"),
+              HTML('<i>Introduction</i>')
           ),
           div(style="display:inline-block;vertical-align:middle;margin-right:15px; float: right;",
-          HTML('<i>Data pre-processing</i>'),
-          actionButton(inputId = 'page_after_generation',label = '',icon = icon('arrow-right'),
-                       style="color: #fff; background-color: #428bca; border-color: #2e6da4;")
+              HTML('<i>Data pre-processing</i>'),
+              actionButton(inputId = 'page_after_generation',label = '',icon = icon('arrow-right'),
+                           style="color: #fff; background-color: #428bca; border-color: #2e6da4;")
           )
         )
-        # fluidRow(
-        #   fileInput("h5_file_input", "This is a test for h5 file input. It will be removed later.",
-        #             accept = c(
-        #               ".h5")
-        #   ),
-        #   tableOutput('h5table1'),
-        #   tableOutput('h5table2')
-        # )
-        )
+        
+              )

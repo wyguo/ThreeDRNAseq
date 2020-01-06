@@ -1,3 +1,12 @@
+observeEvent(input$tabs,{
+  if(input$tabs=='ddd'){
+    text2show <- 'Page: 3D analysis'
+    showmessage(text = '############################################################',showNoteify = F,showTime = F)
+    showmessage(text = text2show,showNoteify = F)
+    showmessage(text = '############################################################',showNoteify = F,showTime = F)
+  }
+})
+
 ##--------------- >>Step 1: Select factors <<-----------------
 selected.samples <- reactive({
   if(is.null(DDD.data$samples_new) | all(is.null(DDD.data$factor_column)))
@@ -32,7 +41,7 @@ output$factor_table <- DT::renderDataTable({
   values.n <- sapply(values,length)
   colour.n <- lapply(1:length(colour.from),function(i){
     sub.colour <- colorRampPalette(c(colour.from[i],'white'))(values.n[i]+1)[1:values.n[i]]
-    sub.colour <- paste0(sub.colour,'70')
+    sub.colour <- paste0(sub.colour,'80')
   })
   names(colour.n) <- column.idx
   # DT::datatable(x)
@@ -88,14 +97,19 @@ observeEvent(input$generate_contrast,{
   DDD.data$contrast_pw <- NULL
   x <- lapply(contrastIdx$n,function(i){
     x1 <- input[[NS(i, "Treatment")]]
-    if(length(x1)>1)
-      x1 <- paste0('(',paste0(x1,collapse = '+'),')/',length(x1))
     x2 <- input[[NS(i, "Control")]]
-    if(length(x2)>1)
-      x2 <- paste0('(',paste0(x2,collapse = '+'),')/',length(x2))
-    data.frame(Treatment=x1,
-               Control=x2)
+    if(length(x1)==0 | length(x2)==0 | x1=='' | x2==''){
+      NA
+    } else {
+      data.frame(Treatment=x1,Control=x2)
+    }
   })
+
+  n.x <- length(x)
+  x <- x[!is.na(x)]
+  if(length(x)==0)
+    return(NULL)
+  
   x <- data.frame(do.call(rbind,x))
   colnames(x) <- c('Treatment','Control')
   x <- x[!duplicated(x),]
@@ -103,14 +117,19 @@ observeEvent(input$generate_contrast,{
   idx <- which(as.vector(t(x[,1]))==as.vector(t(x[,2])))
   if(length(idx)>0)
     x <- x[-idx,,drop=F]
+
+  if(nrow(x)!=n.x)
+    showmessage(text = 'Incorrect contrast groups of "Difference of pair-wise group" are removed.')
+  
   if(nrow(x)==0)
     return(NULL)
+  
   DDD.data$contrast_pw <- unique(paste0(x$Treatment,'-',x$Control))
 })
 
 ##--------- + Difference of multiple group mean----
-observe({
-  if('Difference of group mean' %in% input$contrast_type)
+observeEvent(input$contrast_type_mean,{
+  if(input$contrast_type_mean=='Yes')
     thisList = DDD.data$conditions else thisList = NULL
   callModule(module = selectorServer_mean, id = 1, 
              thisList = thisList)
@@ -125,7 +144,7 @@ contrastIdx_mean <- reactiveValues(n=1)
 
 ##insert a line
 observe({
-  if('Difference of group mean' %in% input$contrast_type){
+  if(input$contrast_type_mean=='Yes'){
     updateButton(session, "insertParamBtn_mean", disabled = F,icon = icon('plus'),
                  style="primary")
     updateButton(session, "removeParamBtn_mean", disabled = F,icon = icon('minus'),
@@ -163,8 +182,9 @@ observeEvent(input$removeParamBtn_mean, {
 
 # 
 observeEvent(input$generate_contrast,{
+  
   DDD.data$contrast_mean <- NULL
-  if(!('Difference of group mean' %in% input$contrast_type))
+  if(input$contrast_type_mean=='No')
     return(NULL)
   
   x <- lapply(contrastIdx_mean$n,function(i){
@@ -172,7 +192,10 @@ observeEvent(input$generate_contrast,{
     x2 <- input[[NS(i, "Control_mean")]]
     if(length(x1)==0 | length(x2)==0){
       NA
-    } else {
+    } else if(all(sort(x1)==sort(x2))){
+      NA
+    } 
+    else  {
       if(length(x1)>1)
         x1 <- paste0('(',paste0(x1,collapse = '+'),')/',length(x1))
       if(length(x2)>1)
@@ -180,9 +203,16 @@ observeEvent(input$generate_contrast,{
       data.frame(Treatment=x1, Control=x2)
     }
   })
+  
+  n.x <- length(x)
+  
   x <- x[!is.na(x)]
-  if(length(x)==0)
+  if(length(x)==0){
+    if(length(x)!=n.x)
+      showmessage(text = 'Incorrect contrast groups of "Difference of multiple group mean" are removed.')
     return(NULL)
+  }
+    
   x <- data.frame(do.call(rbind,x))
   colnames(x) <- c('Treatment','Control')
   x <- x[!duplicated(x),]
@@ -190,30 +220,37 @@ observeEvent(input$generate_contrast,{
   idx <- which(as.vector(t(x[,1]))==as.vector(t(x[,2])))
   if(length(idx)>0)
     x <- x[-idx,,drop=F]
+  
+  if(nrow(x)!=n.x)
+    showmessage(text = 'Incorrect contrast groups of "Difference of multiple group mean" are removed.')
+  
   if(nrow(x)==0)
     return(NULL)
+  
   DDD.data$contrast_mean <- unique(paste0(x$Treatment,'-',x$Control))
+  
 })
 
 ##--------- + Difference of pair-wise group diffence----
-observe({
-  if('Difference of group difference' %in% input$contrast_type)
+observeEvent(input$contrast_type_diff,{
+  if(input$contrast_type_diff=='Yes')
     thisList = DDD.data$conditions else thisList = NULL
     
-  callModule(module = selectorServer_pgdiff, id = 1, 
-             thisList = thisList)
-  updateSelectInput(session = session,inputId = NS(1)('Treatment_pgdiff'),
-                    choices = thisList,selected = NULL)
-  updateSelectInput(session = session,inputId = NS(1)('Control_pgdiff'),
-                    choices =thisList,selected = NULL)
+    callModule(module = selectorServer_pgdiff, id = 1, 
+               thisList = thisList)
+    updateSelectInput(session = session,inputId = NS(1)('Treatment_pgdiff'),
+                      choices = thisList,selected = NULL)
+    updateSelectInput(session = session,inputId = NS(1)('Control_pgdiff'),
+                      choices =thisList,selected = NULL)
 })
+
 
 params_pgdiff <- reactiveValues(btn = 1)
 contrastIdx_pgdiff <- reactiveValues(n=1)
 
 ##insert a line
 observe({
-  if('Difference of group difference' %in% input$contrast_type){
+  if(input$contrast_type_diff=='Yes'){
     updateButton(session, "insertParamBtn_pgdiff", disabled = F,icon = icon('plus'),
                  style="primary")
     updateButton(session, "removeParamBtn_pgdiff", disabled = F,icon = icon('minus'),
@@ -252,7 +289,7 @@ observeEvent(input$removeParamBtn_pgdiff, {
 # 
 observeEvent(input$generate_contrast,{
   DDD.data$contrast_pgdiff <- NULL
-  if(!('Difference of group difference' %in% input$contrast_type))
+  if(input$contrast_type_diff=='No')
     return(NULL)
   
   x <- lapply(contrastIdx_pgdiff$n,function(i){
@@ -266,6 +303,7 @@ observeEvent(input$generate_contrast,{
       data.frame(Treatment=x1, Control=x2)
     }
   })
+  n.x <- length(x)
   x <- x[!is.na(x)]
   if(length(x)==0)
     return(NULL)
@@ -276,8 +314,13 @@ observeEvent(input$generate_contrast,{
   idx <- which(as.vector(t(x[,1]))==as.vector(t(x[,2])))
   if(length(idx)>0)
     x <- x[-idx,,drop=F]
+
+  if(nrow(x)!=n.x)
+    showmessage(text = 'Incorrect contrast groups of "Difference of pair-wise group difference" are removed.')
+  
   if(nrow(x)==0)
     return(NULL)
+  
   DDD.data$contrast_pgdiff <- unique(paste0(x$Treatment,'-',x$Control))
 })
 
@@ -298,7 +341,7 @@ observeEvent(input$refresh_contrast,{
 })
 
 observe({
-  if(('Difference of group mean' %in% input$contrast_type))
+  if(input$contrast_type_mean=='Yes')
     return(NULL)
   if(params_mean$btn==1)
     return(NULL)
@@ -331,7 +374,7 @@ observeEvent(input$refresh_contrast,{
 
 
 observe({
-  if(('Difference of group difference' %in% input$contrast_type))
+  if(input$contrast_type_diff=='Yes')
     return(NULL)
   if(params_pgdiff$btn==1)
     return(NULL)
@@ -363,8 +406,10 @@ observeEvent(input$refresh_contrast,{
 })
 
 observeEvent(input$generate_contrast,{
+  startmessage(text = 'Generate contrast groups')
   DDD.data$contrast <- unique(c(DDD.data$contrast_pw,DDD.data$contrast_mean,DDD.data$contrast_pgdiff))
-  message(paste0('Contrast groups: ',paste0(DDD.data$contrast,collapse = '; ')))
+  showmessage(paste0('Contrast groups: ',paste0(DDD.data$contrast,collapse = '; ')),showNoteify = F)
+  endmessage(text = 'Generate contrast groups')
 })
 
 ## show contrast table
@@ -420,12 +465,17 @@ observe({
 
 
 observeEvent(input$run.DE,{
+  if(is.null(DDD.data$genes_dge) | is.null(DDD.data$trans_dge)){
+    showmessage('Please perform data pre-processing before 3D analysis')
+    return(NULL)
+  }
+  
   if(is.null(DDD.data$contrast)){
     showmessage('Please generate contrast groups.')
     return(NULL)
   }
-   
-  cat('\nDE gene analysis\n')
+  startmessage(text = 'Run DE gene analysis')
+
   ##---------------+ DE genes -----------------
   withProgress(message = 'DE gene analysis...', detail = 'This may take a while...',
                value = 0, {
@@ -446,6 +496,7 @@ observeEvent(input$run.DE,{
                         limma={
                           genes_3D_stat <- limma.pipeline(dge = DDD.data$genes_dge,
                                                           design = design,
+                                                          voomWeights = input$mean_variance_method=='voomWeights',
                                                           deltaPS = DDD.data$deltaPS,
                                                           contrast = DDD.data$contrast,
                                                           diffAS = F,
@@ -477,7 +528,6 @@ observeEvent(input$run.DE,{
                  DE_genes <- summaryDEtarget(stat = genes_3D_stat$DE.stat,
                                              cutoff = c(adj.pval=input$pval_cut,
                                                         log2FC=input$l2fc_cut))
-                 
                  DDD.data$DE_genes <- DE_genes
                  DDD.data$genes_log2FC <- genes_3D_stat$DE.lfc
                  # save(DE_genes,file=paste0(DDD.data$data.folder,'/DE_genes.RData'))
@@ -485,9 +535,11 @@ observeEvent(input$run.DE,{
                  # save(genes_3D_stat,file=paste0(DDD.data$data.folder,'/genes_3D_stat.RData'))
                  # message(paste0('genes_3D_stat.RData is saved in folder: ',DDD.data$data.folder))
                })
+  endmessage(text = 'Run DE gene analysis')
   
   ##---------------+ Generating deltaPS -----------------
-  message('Generating deltaPS...')
+  
+  startmessage(text = 'Generate deltaPS')
   condition <- as.vector(interaction(DDD.data$samples0[,DDD.data$factor_column]))
   mapping <- DDD.data$mapping
   rownames(mapping) <- mapping$TXNAME
@@ -498,11 +550,12 @@ observeEvent(input$run.DE,{
                                mapping = mapping[DDD.data$target_high$trans_high,])
   DDD.data$PS <- deltaPS$PS
   DDD.data$deltaPS <- deltaPS$deltaPS
+  endmessage(text = 'Generate deltaPS')
   
+  startmessage(text = 'Run DAS gene, DE and DTU transcript analysis')
   ##---------------+ DAS genes, DE/DTU transcripts -----------------
-  withProgress(message = 'DE gene analysis...', detail = 'This may take a while...',
+  withProgress(message = 'Run AS analysis ...', detail = 'This may take a while...',
                value = 0, {
-                 cat('\nDAS gene, DE and DTU transcript analysis\n')
                  if(is.null(DDD.data$trans_batch)){
                    batch.effect <- NULL
                  } else {
@@ -517,6 +570,7 @@ observeEvent(input$run.DE,{
                         limma={
                           trans_3D_stat <- limma.pipeline(dge = DDD.data$trans_dge,
                                                           design = design,
+                                                          voomWeights = input$mean_variance_method=='voomWeights',
                                                           deltaPS = DDD.data$deltaPS,
                                                           contrast = DDD.data$contrast,
                                                           diffAS = T,
@@ -556,31 +610,34 @@ observeEvent(input$run.DE,{
                  ##DAS genes
                  if(input$DAS_pval_method=='F-test')
                    DAS.stat <- trans_3D_stat$DAS.F.stat else DAS.stat <- trans_3D_stat$DAS.simes.stat
-                 
-                 lfc <- DDD.data$genes_log2FC
-                 lfc <- reshape2::melt(as.matrix(lfc))
-                 colnames(lfc) <- c('target','contrast','log2FC')
-                 DAS_genes <- summaryDAStarget(stat = DAS.stat,
-                                               lfc = lfc,
-                                               cutoff=c(input$pval_cut,input$deltaPS_cut))
-                 DDD.data$DAS_genes <- DAS_genes
-                 # save(DAS_genes,file=paste0(DDD.data$data.folder,'/DAS_genes.RData'))
+                 if(is.null(DAS.stat)){
+                   DDD.data$DAS_genes <- NULL
+                 } else {
+                   lfc <- DDD.data$genes_log2FC
+                   lfc <- reshape2::melt(as.matrix(lfc))
+                   colnames(lfc) <- c('target','contrast','log2FC')
+                   DAS_genes <- summaryDAStarget(stat = DAS.stat,
+                                                 lfc = lfc,
+                                                 cutoff=c(input$pval_cut,input$deltaPS_cut))
+                   DDD.data$DAS_genes <- DAS_genes
+                 }
                  
                  ##DTU  trans
-                 lfc <- DDD.data$trans_log2FC
-                 lfc <- reshape2::melt(as.matrix(lfc))
-                 colnames(lfc) <- c('target','contrast','log2FC')
-                 DTU_trans <- summaryDAStarget(stat = trans_3D_stat$DTU.stat,
-                                               lfc = lfc,cutoff = c(adj.pval=input$pval_cut,
-                                                                    deltaPS=input$deltaPS_cut))
-                 DDD.data$DTU_trans <- DTU_trans
-                 # save(DTU_trans,file=paste0(DDD.data$data.folder,'/DTU_trans.RData'))
+                 DTU.stat <- trans_3D_stat$DTU.stat
+                 if(is.null(DTU.stat)){
+                   DDD.data$DTU_trans <- NULL
+                 } else {
+                   lfc <- DDD.data$trans_log2FC
+                   lfc <- reshape2::melt(as.matrix(lfc))
+                   colnames(lfc) <- c('target','contrast','log2FC')
+                   DTU_trans <- summaryDAStarget(stat = DTU.stat,
+                                                 lfc = lfc,cutoff = c(adj.pval=input$pval_cut,
+                                                                      deltaPS=input$deltaPS_cut))
+                   DDD.data$DTU_trans <- DTU_trans
+                 }
                  incProgress(1)
-                 # 
-                 # save(trans_3D_stat,file=paste0(DDD.data$data.folder,'/trans_3D_stat.RData'))
-                 # 
-                 # message(paste0('trans_3D_stat.RData is saved in folder: ',DDD.data$data.folder))
                })
+  endmessage(text = 'Run DAS gene, DE and DTU transcript analysis')
   
 })
 
@@ -641,65 +698,190 @@ DDD.stat <- reactive({
 output$top.stat.table <- DT::renderDataTable({
   if(is.null(DDD.stat()))
     return(NULL)
+  showmessage(text = '3D statistics table',showNoteify = F)
   DDD.stat()
 },options = list(
   scrollX=T,
   columnDefs = list(list(className = 'dt-center',
                          targets = "_all"))))
-
-##---------------->>  Step 5: Significant 3D numbers   <<-----------------
-##---------------+ Transcripts per gene number -----------
-tpg_g <- eventReactive(input$tpg_plot_button,{
-  if(is.null(DDD.data$mapping) | is.null(DDD.data$target_high))
+##--------------->> Step 5: profile plot-----------------
+observe({
+  if(is.null(DDD.data$samples))
     return(NULL)
-  x <- DDD.data$mapping[DDD.data$target_high$trans_high,]$GENEID
-  y <- table(table(x))
-  z <- c(y[1:10],sum(y[11:20]),sum(y[21:length(y)]))
-  data2plot <- data.frame(trans=c(1:10,'11-20',paste0('21-',length(y))),genes=z)
-  data2plot$trans <- factor(data2plot$trans,levels = data2plot$trans)
-  g <- ggplot(data = data2plot,aes(x=trans,y=genes,label=genes))+
-    geom_bar(stat='identity',fill=input$tpg_color)+
-    labs(x='Number of transcript per gene',y='Number of genes',
-         title='Distribution of the number of transcripts per gene')+
-    geom_text(size = 3, position=position_dodge(width=0.9), vjust=-0.25)+
-    theme_bw()+
-    theme(legend.position = 'none',
-          axis.text.x = element_text(angle = input$tpg_number_x_rotate,
-                                     hjust = input$tpg_number_x_hjust, 
-                                     vjust = input$tpg_number_x_vjust))
-  return(g)
+  updateSelectInput(session = session,inputId = 'profile_slice_group',choices = c('None',colnames(DDD.data$samples)),
+                    selected = 'None')
 })
 
-output$tpg_plot <- renderPlot({
-  if(is.null(tpg_g()))
+observe({
+  if(is.null(DDD.data$DE_genes) | is.null(DDD.data$DAS_genes) | is.null(DDD.data$DE_trans) |is.null(DDD.data$DTU_trans))
     return(NULL)
-  print(tpg_g())
+  DE.genes <- unique(DDD.data$DE_genes$target)
+  DAS.genes <- unique(DDD.data$DAS_genes$target)
+  DE.trans <- unique(DDD.data$DE_trans$target)
+  DTU.trans <- unique(DDD.data$DTU_trans$target)
+  
+  genes.ann <- set2(DE.genes,DAS.genes)
+  names(genes.ann) <- c('DEonly','DE&DAS','DASonly')
+  genes.ann <- plyr::ldply(genes.ann,cbind)[,c(2,1)]
+  colnames(genes.ann) <- c('target','annotation')
+  DDD.data$genes.ann <- genes.ann
+  
+  trans.ann <- set2(DE.trans,DTU.trans)
+  names(trans.ann) <- c('DEonly','DE&DTU','DTUonly')
+  trans.ann <- plyr::ldply(trans.ann,cbind)[,c(2,1)]
+  colnames(trans.ann) <- c('target','annotation')
+  DDD.data$trans.ann <- trans.ann
 })
 
-##save plot
-observeEvent(input$tpg_save_button,{
-  if(is.null(tpg_g()))
+g.profiles <- eventReactive(input$make.profile.plot,{
+  if(is.null(input$gene.id) |
+     input$gene.id=="" |
+     is.null(DDD.data$trans_TPM) |
+     is.null(DDD.data$mapping) |
+     is.null(DDD.data$target_high))
     return(NULL)
-  create.folders(wd = DDD.data$folder)
-  folder2save <- paste0(DDD.data$folder,'/figure')
-  png(paste0(folder2save,'/Distribution of the number of transcripts per gene.png'),
-      width = input$tpg_number_width,height = input$tpg_number_height,res = input$tpg_number_res,units = 'in')
-  print(tpg_g())
+  
+  gene <- trimws(input$gene.id)
+  mapping <- DDD.data$mapping
+  rownames(mapping) <- mapping$TXNAME
+  
+  if(input$profile.data.type=='TPM'){
+    data.exp <- DDD.data$trans_TPM
+    reps <- DDD.data$samples$condition
+  }
+  
+  if(input$profile.data.type=='Read counts'){
+    data.exp <- DDD.data$trans_counts
+    reps <- DDD.data$samples_new$condition
+  }
+  
+  if(input$profile.filter.lowexpressed=='Yes'){
+    data.exp <- data.exp[DDD.data$target_high$trans_high,]
+    mapping <- mapping[DDD.data$target_high$trans_high,]
+  }
+  
+  if(!(gene %in% mapping$GENEID)){
+    showmessage(paste0('Gene ',gene,' is not in the dataset.'),duration = NULL)
+    return(NULL)
+  }
+  
+  if(input$profile_slice_group=='None'){
+    groups <- NULL
+  } else if(input$profile.data.type=='TPM') {
+    groups <-DDD.data$samples[,input$profile_slice_group]
+  } else {
+    groups <-DDD.data$samples_new[,input$profile_slice_group]
+  }
+  
+  g.pr <- plotAbundance(data.exp = data.exp,
+                        sliceProfile = T,
+                        gene = gene,
+                        groups = groups,
+                        mapping = mapping,
+                        genes.ann = DDD.data$genes.ann,
+                        trans.ann = DDD.data$trans.ann,
+                        trans.expressed = NULL,
+                        reps = reps,
+                        y.lab = input$profile.data.type)+
+    theme(axis.text.x = element_text(angle = input$function.profile.x.rotate, 
+                                     hjust = input$function.profile.x.hjust,
+                                     vjust = input$function.profile.x.vjust))
+  
+  g.ps <- plotPS(data.exp = data.exp,
+                 sliceProfile = T,
+                 gene = gene,
+                 mapping = mapping,
+                 groups = groups,
+                 genes.ann = DDD.data$genes.ann,
+                 trans.ann = DDD.data$trans.ann,
+                 trans.expressed = NULL,
+                 reps = reps,
+                 y.lab = 'PS')+
+    theme(axis.text.x = element_text(angle = input$function.profile.x.rotate, 
+                                     hjust = input$function.profile.x.hjust,
+                                     vjust = input$function.profile.x.vjust))
+  return(list(g.pr=g.pr,g.ps=g.ps,gene=gene))
+})
+
+observeEvent(input$make.profile.plot,{
+  startmessage(paste0('Plot profile of gene: ',trimws(input$gene.id)))
+  output$profile.plot.panel <- renderPlotly({
+    if(is.null(g.profiles()$g.pr))
+      return(NULL)
+    ggplotly(g.profiles()$g.pr)
+  })
+  endmessage(paste0('Plot profile of gene: ',trimws(input$gene.id)))
+})
+
+observeEvent(input$make.profile.plot,{
+  startmessage(paste0('Plot PS of gene: ',trimws(input$gene.id)))
+  output$ps.plot.panel <- renderPlotly({
+    if(is.null(g.profiles()$g.ps))
+      return(NULL)
+    ggplotly(g.profiles()$g.ps)
+  })
+  endmessage(paste0('Plot PS of gene: ',trimws(input$gene.id)))
+})
+
+##update heigt and width
+observe({
+  updateNumericInput(session,inputId = 'ps.plot.width',
+                     value = round((16+floor((length(unique(g.profiles()$g.pr$data))-1)/15))/2.54,1))
+})
+
+observeEvent(input$save_abundance_plot,{
+  startmessage('Save profile plot')
+  n <- length(unique(g.profiles()$g.pr$data))-1
+  gene <- g.profiles()$gene
+  folder2save <- paste0(DDD.data$figure.folder,'/Abundance plot')
+  if(!file.exists(folder2save))
+    dir.create(folder2save,recursive = T)
+  
+  png(paste0(folder2save,'/Abundance ',gene,'.png'),
+      width = input$ps.plot.width,height = input$ps.plot.height,
+      res=input$ps.plot.res, units = 'in')
+  print(g.profiles()$g.pr)
   dev.off()
   
-  pdf(paste0(folder2save,'/Distribution of the number of transcripts per gene.pdf'),
-      width = input$tpg_number_width,height = input$tpg_number_height)
-  print(tpg_g())
+  pdf(paste0(folder2save,'/Abundance ',gene,'.pdf'),
+      width = input$ps.plot.width,height = input$ps.plot.height)
+  print(g.profiles()$g.pr)
   dev.off()
-  showmessage()
+  
+  endmessage(paste0('Profile plot is saved in folder: ',DDD.data$figure.folder))
 })
 
 
-##*****************preview saved plot******************
-observeEvent(input$tpg_save_button_view, {
-  file2save <- paste0(DDD.data$figure.folder,'/Distribution of the number of transcripts per gene.png')
+observeEvent(input$save_abundance_plot,{
+  startmessage('Save PS plot')
+  n <- length(unique(g.profiles()$g.ps$data))
+  gene <- g.profiles()$gene
+  folder2save <- paste0(DDD.data$figure.folder,'/PS plot')
+  if(!file.exists(folder2save))
+    dir.create(folder2save,recursive = T)
+  
+  png(paste0(folder2save,'/PS ',gene,'.png'),
+      width = input$ps.plot.width,height = input$ps.plot.height,
+      res=input$ps.plot.res, units = 'in')
+  print(g.profiles()$g.ps)
+  dev.off()
+  
+  pdf(paste0(folder2save,'/PS ',gene,'.pdf'),
+      width = input$ps.plot.width,height = input$ps.plot.height)
+  print(g.profiles()$g.ps)
+  dev.off()
+  
+  endmessage(paste0('PS plot is saved in folder: ',DDD.data$figure.folder))
+})
 
-  if(!file.exists(file2save)){
+
+##preview saved plots
+observeEvent(input$save_abundance_plot_view, {
+  gene <- trimws(input$gene.id)
+  file2save1 <- paste0(DDD.data$figure.folder,'/Abundance plot/Abundance ',gene,'.png')
+  file2save2 <- paste0(DDD.data$figure.folder,'/PS plot/PS ',gene,'.png')
+  
+  if(!file.exists(file2save1) | !file.exists(file2save2)){
     showModal(modalDialog(
       h4('Figures are not found in the directory. Please double check if the figures are saved.'),
       easyClose = TRUE,
@@ -709,15 +891,313 @@ observeEvent(input$tpg_save_button_view, {
   } else {
     showModal(modalDialog(
       h4('Saved figure. If the labels are not properly placed, please correct width, height, ect.'),
-      tags$img(src=base64enc::dataURI(file = file2save),
-               style="height: 100%; width: 100%; display: block; margin-left: auto; margin-right: auto;
+      tags$img(src=base64enc::dataURI(file = file2save1),
+               style="width: 80%; display: block; margin-left: auto; margin-right: auto;
+               border:1px solid #000000"),
+      p(),
+      tags$img(src=base64enc::dataURI(file = file2save2),
+               style="width: 80%; display: block; margin-left: auto; margin-right: auto;
                border:1px solid #000000"),
       easyClose = TRUE,
       footer = modalButton("Cancel"),
       size='l'
       ))
   }
+  
 })
+
+##---------------+ Multiple plots----------------
+output$ddd_profile_plot_folder_text <- renderText({
+  if(is.null(DDD.data$figure.folder))
+    return(NULL)
+  paste0('Figures are saved in:\n', DDD.data$figure.folder)
+})
+
+observeEvent(input$make.multiple.plot,{
+  inFile <- input$multiple.gene.input
+  if (is.null(inFile))
+    return(NULL)
+  genes <- read.csv(inFile$datapath, header = T)
+  genes <- trimws(as.vector(t(genes)))
+  
+  if(is.null(DDD.data$trans_TPM) |
+     is.null(DDD.data$mapping) |
+     is.null(DDD.data$target_high))
+    return(NULL)
+  
+  mapping <- DDD.data$mapping
+  rownames(mapping) <- mapping$TXNAME
+  
+  if(input$profile.data.type=='TPM'){
+    data.exp <- DDD.data$trans_TPM
+    reps <- DDD.data$samples$condition
+  }
+  
+  if(input$profile.data.type=='Read counts'){
+    data.exp <- DDD.data$trans_counts
+    reps <- DDD.data$samples_new$condition
+  }
+  
+  if(input$profile.filter.lowexpressed=='Yes'){
+    data.exp <- data.exp[DDD.data$target_high$trans_high,]
+    mapping <- mapping[DDD.data$target_high$trans_high,]
+  }
+  
+  ###plot abundance
+  folder2Abundance <- paste0(DDD.data$figure.folder,'/Profile plots/Abundance')
+  if(!file.exists(folder2Abundance))
+    dir.create(folder2Abundance,recursive = T)
+  
+  folder2PS <- paste0(DDD.data$figure.folder,'/Profile plots/PS')
+  if(!file.exists(folder2PS))
+    
+    dir.create(folder2PS,recursive = T)
+  
+  
+  if(input$profile_slice_group=='None'){
+    groups <- NULL
+  } else if(input$profile.data.type=='TPM') {
+    groups <-DDD.data$samples[,input$profile_slice_group]
+  } else {
+    groups <-DDD.data$samples_new[,input$profile_slice_group]
+  }
+  
+  startmessage(paste0('Save profile of ',length(genes),' genes'))
+  start.time <- Sys.time()
+  withProgress(message = paste0('Plotting ',length(genes),' genes'),
+               detail = 'This may take a while...', value = 0, {
+                 graphics.off()
+                 ###on linux system
+                 # if(DDD.data$run_linux &!is.null(DDD.data$num_cores)){
+                 if(F){
+                   incProgress(1/length(genes))
+                   mclapply(genes,function(gene){
+                     if(input$multiple.plot.type %in% c('Abundance','Both')){
+                       # message(paste0('Plotting abundance prfiles => Gene: ', gene, ' (',which(genes %in% gene), ' of ', length(genes),')'))
+                       g.pr <- plotAbundance(data.exp = data.exp,
+                                             gene = gene,
+                                             sliceProfile = T,
+                                             groups = groups,
+                                             mapping = mapping,
+                                             genes.ann = DDD.data$genes.ann,
+                                             trans.ann = DDD.data$trans.ann,
+                                             trans.expressed = NULL,
+                                             reps = reps,
+                                             y.lab = input$profile.data.type)+
+                         theme(axis.text.x = element_text(angle = input$function.profile.x.rotate, 
+                                                          hjust = input$function.profile.x.hjust,
+                                                          vjust = input$function.profile.x.vjust))
+                       n <- length(unique(g.pr$data))-1
+                       if(input$multi.plot.format %in% c('png','both')){
+                         png(paste0(folder2Abundance,'/Abundance ',gene,'.png'),
+                             width = input$ps.multiplot.width+floor(n/15)/2.54,
+                             height = input$ps.multiplot.height,
+                             units = 'in',res = input$ps.multiplot.res)
+                         print(g.pr)
+                         dev.off()
+                       }
+                       
+                       if(input$multi.plot.format %in% c('pdf','both')){
+                         pdf(paste0(folder2Abundance,'/Abundance ',gene,'.pdf'),
+                             width = input$ps.multiplot.width+floor(n/15)/2.54,
+                             height = input$ps.multiplot.height)
+                         print(g.pr)
+                         dev.off()
+                       }
+                     }
+                     
+                     if(input$multiple.plot.type %in% c('PS','Both')){
+                       # message(paste0('Plotting PS prfiles => Gene: ', gene, ' (',which(genes %in% gene), ' of ', length(genes),')'))
+                       g.ps <- plotPS(data.exp = data.exp,
+                                      gene = gene,
+                                      sliceProfile = T,
+                                      groups = groups,
+                                      mapping = mapping,
+                                      genes.ann = DDD.data$genes.ann,
+                                      trans.ann = DDD.data$trans.ann,
+                                      trans.expressed = NULL,
+                                      reps = reps,
+                                      y.lab = 'PS')+
+                         theme(axis.text.x = element_text(angle = input$function.profile.x.rotate, 
+                                                          hjust = input$function.profile.x.hjust,
+                                                          vjust = input$function.profile.x.vjust))
+                       n <- length(unique(g.ps$data))
+                       if(input$multi.plot.format %in% c('png','both')){
+                         png(paste0(folder2PS,'/PS ',gene,'.png'),
+                             width = input$ps.multiplot.width+floor(n/15)/2.54,
+                             height = input$ps.multiplot.height,
+                             units = 'in',res = input$ps.multiplot.res)
+                         print(g.ps)
+                         dev.off()
+                       }
+                       if(input$multi.plot.format %in% c('pdf','both')){
+                         pdf(paste0(folder2PS,'/PS ',gene,'.pdf'),
+                             width = input$ps.multiplot.width+floor(n/15)/2.54,
+                             height = input$ps.multiplot.height)
+                         print(g.ps)
+                         dev.off()
+                       }
+                     }
+                   },mc.cores = DDD.data$num_cores)
+                 } else {
+                   lapply(genes,function(gene){
+                     incProgress(1/length(genes))
+                     if(input$multiple.plot.type %in% c('Abundance','Both')){
+                       # message(paste0('Plotting abundance prfiles => Gene: ', gene, ' (',which(genes %in% gene), ' of ', length(genes),')'))
+                       g.pr <- plotAbundance(data.exp = data.exp,
+                                             gene = gene,
+                                             mapping = mapping,
+                                             genes.ann = DDD.data$genes.ann,
+                                             trans.ann = DDD.data$trans.ann,
+                                             trans.expressed = NULL,
+                                             reps = reps,
+                                             sliceProfile = T,
+                                             groups = groups,
+                                             y.lab = input$profile.data.type)+
+                         theme(axis.text.x = element_text(angle = input$function.profile.x.rotate, 
+                                                          hjust = input$function.profile.x.hjust,
+                                                          vjust = input$function.profile.x.vjust))
+                       n <- length(unique(g.pr$data))-1
+                       if(input$multi.plot.format %in% c('png','both')){
+                         png(paste0(folder2Abundance,'/Abundance ',gene,'.png'),
+                             width = input$ps.multiplot.width+floor(n/15)/2.54,
+                             height = input$ps.multiplot.height,
+                             units = 'in',res = input$ps.multiplot.res)
+                         print(g.pr)
+                         dev.off()
+                       }
+                       
+                       if(input$multi.plot.format %in% c('pdf','both')){
+                         pdf(paste0(folder2Abundance,'/Abundance ',gene,'.pdf'),
+                             width = input$ps.multiplot.width+floor(n/15)/2.54,
+                             height = input$ps.multiplot.height)
+                         print(g.pr)
+                         dev.off()
+                       }
+                     }
+                     
+                     if(input$multiple.plot.type %in% c('PS','Both')){
+                       # message(paste0('Plotting PS prfiles => Gene: ', gene, ' (',which(genes %in% gene), ' of ', length(genes),')'))
+                       g.ps <- plotPS(data.exp = data.exp,
+                                      gene = gene,
+                                      mapping = mapping,
+                                      genes.ann = DDD.data$genes.ann,
+                                      trans.ann = DDD.data$trans.ann,
+                                      trans.expressed = NULL,
+                                      sliceProfile = T,
+                                      groups = groups,
+                                      reps = reps,
+                                      y.lab = 'PS')+
+                         theme(axis.text.x = element_text(angle = input$function.profile.x.rotate, 
+                                                          hjust = input$function.profile.x.hjust,
+                                                          vjust = input$function.profile.x.vjust))
+                       n <- length(unique(g.ps$data))
+                       if(input$multi.plot.format %in% c('png','both')){
+                         png(paste0(folder2PS,'/PS ',gene,'.png'),
+                             width = input$ps.multiplot.width+floor(n/15)/2.54,
+                             height = input$ps.multiplot.height,
+                             units = 'in',res = input$ps.multiplot.res)
+                         print(g.ps)
+                         dev.off()
+                       }
+                       if(input$multi.plot.format %in% c('pdf','both')){
+                         pdf(paste0(folder2PS,'/PS ',gene,'.pdf'),
+                             width = input$ps.multiplot.width+floor(n/15)/2.54,
+                             height = input$ps.multiplot.height)
+                         print(g.ps)
+                         dev.off()
+                       }
+                     }
+                   })
+                 }
+                 
+                 ###
+               })
+  end.time <- Sys.time()
+  time.taken <- end.time - start.time
+  showmessage(format(time.taken),showNoteify = F)
+  endmessage(paste0('Plot profile of ',length(genes),' genes'))
+})
+
+
+##---------------->>  Step 6: Significant 3D numbers   <<-----------------
+# ##---------------+ Transcripts per gene number -----------
+# tpg_g <- eventReactive(input$tpg_plot_button,{
+#   if(is.null(DDD.data$mapping) | is.null(DDD.data$target_high))
+#     return(NULL)
+#   x <- DDD.data$mapping[DDD.data$target_high$trans_high,]$GENEID
+#   y <- table(table(x))
+#   z <- c(y[1:10],sum(y[11:20]),sum(y[21:length(y)]))
+#   data2plot <- data.frame(trans=c(1:10,'11-20',paste0('21-',length(y))),genes=z)
+#   data2plot$trans <- factor(data2plot$trans,levels = data2plot$trans)
+#   g <- ggplot(data = data2plot,aes(x=trans,y=genes,label=genes))+
+#     geom_bar(stat='identity',fill=input$tpg_color)+
+#     labs(x='Number of transcript per gene',y='Number of genes',
+#          title='Distribution of the number of transcripts per gene')+
+#     geom_text(size = 3, position=position_dodge(width=0.9), vjust=-0.25)+
+#     theme_bw()+
+#     theme(legend.position = 'none',
+#           axis.text.x = element_text(angle = input$tpg_number_x_rotate,
+#                                      hjust = input$tpg_number_x_hjust,
+#                                      vjust = input$tpg_number_x_vjust))
+#   return(g)
+# })
+# 
+# output$tpg_plot <- renderPlot({
+#   if(is.null(tpg_g()))
+#     return(NULL)
+#   startmessage(text = 'Plot number of transcript per gene')
+#   print(tpg_g())
+#   endmessage(text = 'Plot number of transcript per gene')
+# })
+# 
+# ##save plot
+# observeEvent(input$tpg_save_button,{
+#   if(is.null(tpg_g()))
+#     return(NULL)
+#   startmessage(text = 'Save number of transcript per gene plot')
+#   create.folders(wd = DDD.data$folder)
+#   folder2save <- paste0(DDD.data$folder,'/figure')
+#   png(paste0(folder2save,'/Distribution of the number of transcripts per gene.png'),
+#       width = input$tpg_number_width,height = input$tpg_number_height,res = input$tpg_number_res,units = 'in')
+#   print(tpg_g())
+#   dev.off()
+# 
+#   pdf(paste0(folder2save,'/Distribution of the number of transcripts per gene.pdf'),
+#       width = input$tpg_number_width,height = input$tpg_number_height)
+#   print(tpg_g())
+#   dev.off()
+#   endmessage(text = 'Save number of transcript per gene plot')
+#   showmessage(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+# })
+# 
+# 
+# ##*****************preview saved plot******************
+# observeEvent(input$tpg_save_button_view, {
+#   file2save <- paste0(DDD.data$figure.folder,'/Distribution of the number of transcripts per gene.png')
+# 
+#   if(!file.exists(file2save)){
+#     showModal(modalDialog(
+#       h4('Figures are not found in the directory. Please double check if the figures are saved.'),
+#       easyClose = TRUE,
+#       footer = modalButton("Cancel"),
+#       size='l'
+#     ))
+#   } else {
+#     showModal(modalDialog(
+#       h4('Saved figure. If the labels are not properly placed, please correct width, height, ect.'),
+#       tags$img(src=base64enc::dataURI(file = file2save),
+#                style="height: 100%; width: 100%; display: block; margin-left: auto; margin-right: auto;
+#                border:1px solid #000000"),
+#       easyClose = TRUE,
+#       footer = modalButton("Cancel"),
+#       size='l'
+#       ))
+#   }
+# })
+
+
+
 
 ##---------------+ Euler plot between contrast groups-----------------
 observe({
@@ -768,6 +1248,7 @@ g.across.contrast <- reactive({
 output$DE.genes.euler <- renderPlot({
   if(is.null(g.across.contrast()))
     return(NULL)
+  showmessage(text = 'DE gene Euler plot in contrast groups',showNoteify = F)
   grid.arrange(g.across.contrast()[[1]],top=textGrob('DE genes', gp=gpar(cex=1.2)))
 })
 
@@ -775,6 +1256,7 @@ output$DE.genes.euler <- renderPlot({
 output$DAS.genes.euler <- renderPlot({
   if(is.null(g.across.contrast()))
     return(NULL)
+  showmessage(text = 'DAS gene Euler plot in contrast groups',showNoteify = F)
   grid.arrange(g.across.contrast()[[2]],top=textGrob('DAS genes', gp=gpar(cex=1.2)))
 })
 
@@ -782,6 +1264,7 @@ output$DAS.genes.euler <- renderPlot({
 output$DE.trans.euler <- renderPlot({
   if(is.null(g.across.contrast()))
     return(NULL)
+  showmessage(text = 'DE transcript Euler plot in contrast groups',showNoteify = F)
   grid.arrange(g.across.contrast()[[3]],top=textGrob('DE transcripts', gp=gpar(cex=1.2)))
 })
 
@@ -789,11 +1272,13 @@ output$DE.trans.euler <- renderPlot({
 output$DTU.trans.euler <- renderPlot({
   if(is.null(g.across.contrast()))
     return(NULL)
+  showmessage(text = 'DTU transcript Euler plot in contrast groups',showNoteify = F)
   grid.arrange(g.across.contrast()[[4]],top=textGrob('DTU transcripts', gp=gpar(cex=1.2)))
 })
 
 observeEvent(input$save_3D_euler_plot,{
   ###save DE.genes
+  startmessage(text = 'Save Euler plot in contrast groups')
   lapply(names(g.across.contrast()),function(i){
     figure.name <- paste0(DDD.data$figure.folder,'/',i,' euler plot across contrast ',
                           paste0(gsub('/','over',input$across.contrast.group),collapse = ' vs '))
@@ -809,9 +1294,8 @@ observeEvent(input$save_3D_euler_plot,{
     dev.off()
   })
   
-  message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
-  showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
-  
+  endmessage(text = 'Save Euler plot in contrast groups')
+  showmessage(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
 })
 
 #*****************preview saved plot******************
@@ -861,6 +1345,8 @@ observe({
 })
 
 output$DDD.numbers <- renderTable({
+  if(!is.null(DDD.data$DDD_numbers))
+    showmessage(text = '3D numbers in contrast groups',showNoteify = F)
   DDD.data$DDD_numbers
 },align='c')
 
@@ -903,18 +1389,24 @@ g.updown <- reactive({
 output$up.down.bar.plot.DE.genes <- renderPlot({
   if(is.null((g.updown())))
     return(NULL)
+  startmessage(text = 'Plot DE gene up- and down-regulation bar plot.')
   print(g.updown()[[1]])
+  endmessage(text = 'Plot DE gene up- and down-regulation bar plot.')
 })
 
 output$up.down.bar.plot.DE.trans <- renderPlot({
   if(is.null((g.updown())))
     return(NULL)
+  startmessage(text = 'Plot DE transcript up- and down-regulation bar plot.')
   print(g.updown()[[2]])
+  endmessage(text = 'Plot DE transcript up- and down-regulation bar plot.')
 })
 
 observeEvent(input$save_up_down_bar_plot,{
   if(is.null(g.updown()))
     return(NULL)
+  
+  startmessage(text = 'Save DE up- and down-regulation bar plots.')
   withProgress(message = 'Saving plots ...', detail = 'This may take a while...',
                value = 0, {
                  incProgress(0)
@@ -931,10 +1423,12 @@ observeEvent(input$save_up_down_bar_plot,{
                    dev.off()
                  })
                  incProgress(0.8)
-                 message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
-                 showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+                 # message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+                 # showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
                  incProgress(1)
                })
+  endmessage(text = 'Save DE up- and down-regulation bar plots.')
+  showmessage(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
 })
 
 ##*****************preview saved plot******************
@@ -1050,59 +1544,40 @@ g.volcano <- eventReactive(input$Volcano_plot_button,{
 output$DE_genes_Volcano <- renderPlot({
   if(is.null((g.volcano())))
     return(NULL)
-  showNotification('Plotting volcano plot, please wait ...',
-                   # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-                   duration = NULL,id = 'volcano_de_genes_message')
+  startmessage('Plot DE gene volcano plot')
   print(g.volcano()[['DE genes']])
-  removeNotification(id = 'volcano_de_genes_message')
-  showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
+  endmessage('Plot DE gene volcano plot')
 })
 
 output$DAS_genes_Volcano <- renderPlot({
   if(is.null((g.volcano())))
     return(NULL)
-  showNotification('Plotting volcano plot, please wait ...',
-                   # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-                   duration = NULL,id = 'volcano_das_genes_message')
+  startmessage('Plot DAS gene volcano plot')
   print(g.volcano()[['DAS genes']])
-  removeNotification(id = 'volcano_das_genes_message')
-  showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
+  endmessage('Plot DAS gene volcano plot')
 })
 
 output$DE_trans_Volcano <- renderPlot({
   if(is.null((g.volcano())))
     return(NULL)
-  showNotification('Plotting volcano plot, please wait ...',
-                   # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-                   duration = NULL,id = 'volcano_de_trans_message')
+  startmessage('Plot DE transcript volcano plot')
   print(g.volcano()[['DE transcripts']])
-  removeNotification(id = 'volcano_de_trans_message')
-  showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
+  endmessage('Plot DE transcript volcano plot')
 })
 
 output$DTU_trans_Volcano <- renderPlot({
   if(is.null((g.volcano())))
     return(NULL)
-  showNotification('Plotting volcano plot, please wait ...',
-                   # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-                   duration = NULL,id = 'volcano_dtu_trans_message')
+  startmessage('Plot DTU transcript volcano plot')
   print(g.volcano()[['DTU transcripts']])
-  removeNotification(id = 'volcano_dtu_trans_message')
-  showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
+  endmessage('Plot DTU transcript volcano plot')
 })
 
 ##save plots
 observeEvent(input$save_Volcano_plot,{
   if(is.null(g.volcano()))
     return(NULL)
-  showNotification('Saving volcano plot, please wait ...',
-                   # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-                   duration = NULL,id = 'save_volcano__message')
+  startmessage('Save volcano plots')
   withProgress(message = 'Saving plots ...', detail = 'This may take a while...',
                value = 0, {
                  incProgress(0)
@@ -1120,12 +1595,12 @@ observeEvent(input$save_Volcano_plot,{
                    print(g.volcano()[[i]])
                    dev.off()
                  })
-                 message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
-                 showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+                 # message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+                 # showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
                  incProgress(1)
                })
-  removeNotification(id = 'save_volcano__message')
-  showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
+  endmessage('Save volcano plots')
+  showmessage(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
 })
 
 ##*****************preview saved plot******************
@@ -1157,7 +1632,7 @@ observeEvent(input$save_Volcano_plot_view, {
   }
 })
 
-##---------------->>  Step 6: Transcriptional vs alternative splicing regulation   <<-----------------
+##---------------->>  Step 7: Transcriptional vs alternative splicing regulation   <<-----------------
 
 ##---------------+ flow chat-----------------
 genes.flow.chart <- reactive({
@@ -1173,6 +1648,8 @@ genes.flow.chart <- reactive({
   genes.flow.chart
 })
 output$genes.flow.chart <- renderPlot({
+  if(!is.null(genes.flow.chart()()))
+    showmessage('DE and DAS gene flowchart',showNoteify = F)
   genes.flow.chart()()
 })
 
@@ -1190,11 +1667,14 @@ trans.flow.chart <- reactive({
   trans.flow.chart
 })
 output$trans.flow.chart <- renderPlot({
+  if(!is.null(trans.flow.chart()()))
+    showmessage('DE and DTU transcript flowchart',showNoteify = F)
   trans.flow.chart()()
 })
 
 observeEvent(input$save_union_flow_chart,{
   ##transcript level
+  startmessage(text = 'Save flowcharts')
   withProgress(message = 'Saving plots ...', detail = 'This may take a while...',
                value = 0, {
                  incProgress(0)
@@ -1223,10 +1703,12 @@ observeEvent(input$save_union_flow_chart,{
                  trans.flow.chart()()
                  dev.off()
                  incProgress(0.9)
-                 message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
-                 showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+                 # message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
+                 # showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
                  incProgress(1)
                })
+  endmessage(text = 'Save flowcharts')
+  showmessage(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
 })
 
 ##*****************preview saved plot******************
@@ -1260,15 +1742,10 @@ observeEvent(input$save_union_flow_chart_view, {
 })
 
 
-
 ##---------------+ DE vs DAS-----------------
 observe({
   if(is.null(DDD.data$DE_genes) | is.null(DDD.data$DAS_genes) | is.null(DDD.data$contrast))
     return(NULL)
-  # summary.3D.vs(x = split(DDD.data$DE_genes$target,DDD.data$DE_genes$contrast),
-  #                y = split(DDD.data$DAS_genes$target,DDD.data$DAS_genes$contrast),
-  #                contrast = DDD.data$contrast,
-  #                idx = c('DEonly','DE&DAS','DASonly'))
   DDD.data$DEvsDAS_results <- DEvsDAS(DE_genes = DDD.data$DE_genes,
                                         DAS_genes = DDD.data$DAS_genes,
                                         contrast = DDD.data$contrast)
@@ -1276,6 +1753,8 @@ observe({
 })
 
 output$DE.vs.DAS <- renderTable({
+  if(!is.null(DDD.data$DEvsDAS_results))
+    showmessage('DE vs DAS gene table',showNoteify = F)
   DDD.data$DEvsDAS_results
 },align='c')
 
@@ -1297,13 +1776,13 @@ g.across.target1 <- reactive({
 output$DEvsDAS.euler <- renderPlot({
   if(is.null(g.across.target1()))
     return(NULL)
+  showmessage('DE vs DAS gene Euler plot',showNoteify = F)
   grid.arrange(g.across.target1(),top=textGrob(paste0('DE vs DAS genes\nin contrast group: ',input$across.target), 
                                                gp=gpar(cex=1.2)))
 })
 
 
 ##---------------+ DE vs DTU-----------------
-
 observe({
   if(is.null(DDD.data$DE_trans) | is.null(DDD.data$DTU_trans) | is.null(DDD.data$contrast))
     return(NULL)
@@ -1313,6 +1792,8 @@ observe({
 })
 
 output$DE.vs.DTU <- renderTable({
+  if(!is.null(DDD.data$DEvsDTU_results))
+    showmessage('DE vs DTU transcript table',showNoteify = F)
   DDD.data$DEvsDTU_results
 },align='c')
 
@@ -1332,20 +1813,15 @@ g.across.target2 <- reactive({
 output$DEvsDTU.euler <- renderPlot({
   if(is.null(g.across.target2()))
     return(NULL)
+  showmessage('DE vs DTU transcript Euler plot',showNoteify = F)
   grid.arrange(g.across.target2(),top=textGrob(paste0('DE vs DTU transcripts\nin contrast group: ',input$across.target), 
                                                gp=gpar(cex=1.2)))
 })
 
 observeEvent(input$save_transvsAS_euler_plot,{
-  
-  # g.across.target1 <- reactive({
-  #   if(is.null(DDD.data$DEvsDAS_results)| is.null(input$across.target))
-  #     return(NULL)
-  #   
-  # })
   if(is.null(DDD.data$contrast) | is.null(DDD.data$DEvsDAS_results)| is.null(input$across.target))
     return(NULL)
-  
+  startmessage(text = 'Save DE vs DAS gene Euler plots')
   withProgress(message = paste0('Saving plots ...'),
                detail = 'This may take a while...', value = 0, {
                  for(i in DDD.data$contrast){
@@ -1373,7 +1849,10 @@ observeEvent(input$save_transvsAS_euler_plot,{
                  }
                })
   
+  endmessage(text = 'Save DE vs DAS gene Euler plots')
+  
   ##DE vs DTU transcript
+  startmessage(text = 'Save DE vs DTU transcripts Euler plots')
   withProgress(message = paste0('Plotting venn diagrams...'),
                detail = 'This may take a while...', value = 0, {
                  for(i in DDD.data$contrast){ 
@@ -1399,7 +1878,8 @@ observeEvent(input$save_transvsAS_euler_plot,{
                    dev.off()
                  }
                })
-  
+  endmessage(text = 'Save DE vs DTU transcripts Euler plots')
+  showmessage(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
   # ##DE vs DAS genes
   # figure.name <- paste0(DDD.data$figure.folder,'/DE vs DAS gene euler plot in contrast ',input$across.target)
   # png(paste0(figure.name,'.png'),
@@ -1414,9 +1894,6 @@ observeEvent(input$save_transvsAS_euler_plot,{
   #                                              gp=gpar(cex=1.2)))
   # dev.off()
   # 
-  
-  message(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
-  showNotification(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
 })
 
 #*****************preview saved plot******************
@@ -1458,6 +1935,17 @@ observeEvent(input$save_transvsAS_euler_plot_view, {
 
 ##
 
+# observeEvent(input$page_before_ddd, {
+#   newtab <- switch(input$tabs, "preprocessing" = "ddd","ddd" = "preprocessing")
+#   updateTabItems(session, "tabs", newtab)
+#   shinyjs::runjs("window.scrollTo(0, 50)")
+# })
+# 
+# observeEvent(input$page_after_ddd, {
+#   newtab <- switch(input$tabs, "function" = "ddd","ddd" = "function")
+#   updateTabItems(session, "tabs", newtab)
+#   shinyjs::runjs("window.scrollTo(0, 50)")
+# })
 
 observeEvent(input$page_before_ddd, {
   newtab <- switch(input$tabs, "preprocessing" = "ddd","ddd" = "preprocessing")
@@ -1466,7 +1954,7 @@ observeEvent(input$page_before_ddd, {
 })
 
 observeEvent(input$page_after_ddd, {
-  newtab <- switch(input$tabs, "function" = "ddd","ddd" = "function")
+  newtab <- switch(input$tabs, "tstrend" = "ddd","ddd" = "tstrend")
   updateTabItems(session, "tabs", newtab)
   shinyjs::runjs("window.scrollTo(0, 50)")
 })

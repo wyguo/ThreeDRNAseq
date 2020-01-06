@@ -7,8 +7,28 @@ tabItem("introduction",
                      # DT::dataTableOutput("info")
                      HTML('<img style="width: 40%; display: block; margin-left: auto; margin-right: auto;" src="logo.png"/>'),
                      br(),
+                     HTML('<div align="center"><iframe width="800" height="450" src="https://www.youtube.com/embed/rqeXECX1-T4" 
+                          frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+                          allowfullscreen></iframe></div>'),
                      HTML('<div align="justify">
-
+                          <h3>Licence </h3>
+                          3D RNA-seq is currently under a dual-licensing model.
+                          <ul>
+                          <li>Open source under GPLV3.0. For academic and non-commercial use, it is free.</li>
+                          <li>For commercial use, please get in touch to obtain commercial licenses. <a href="#how-to-get-help">Contact us</a></li>
+                          </ul> 
+                          </div>'),
+                     HTML('<div align="justify">
+                          <h3>Citation</h3>
+                          <ul>
+                          <li>Guo,W., Tzioutziou,N., Stephen,G., Milne,I., Calixto,C., Waugh,R., Brown,J.W., and Zhang,R. (2019) 3D RNA-seq - a powerful and flexible tool for rapid and accurate differential expression and alternative splicing analysis of RNA-seq data for biologists. bioRxiv, 656686. doi: <a href="https://doi.org/10.1101/656686" target="_blank">https://doi.org/10.1101/656686</a>.</li>
+                          <li>Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C., Panter,P.E., Knight,H., Nimmo,H.G., Zhang,R., and Brown,J.W.S. (2018) Rapid and Dynamic Alternative Splicing Impacts the Arabidopsis Cold Response Transcriptome. Plant Cell, 30, 1424-1444.</li>
+                          </ul> 
+                          </div>'),
+                     HTML('<h3>Report issues & feedback </h3>
+                          If you have questions to raise or are experiencing difficulties using the 3D RNA-seq, please use the <a href="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md" target="_blank">3D RNA-seq user group.</a>'),
+                     hr(),
+                     HTML('<div align="justify">
                           <div id="table-of-contents" class="section level3">
                           <h3>Table of contents</h3>
                           <ul>
@@ -23,13 +43,8 @@ tabItem("introduction",
                           </div>
                           <div id="description" class="section level3">
                           <h3>Description</h3>
-                          <p>The ThreeDRNAseq (3D RNA-seq) R package provides an interactive graphical user interface (GUI) for RNA-seq data analysis using accurate quantification of RNA-seq reads. It allows users to perform differential expression (DE), differential alternative splicing (DAS) and differential transcript usage (DTU) (3D) analyses based on limma (Ritchie et al., 2015). The 3D RNA-seq GUI is based on R shiny App and enables a complete RNA-seq analysis to be done within only 3 Days (3D). To use our pipeline in your work, please cite:</p>
-                          <ul>
-                          <li>Guo,W., Tzioutziou,N., Stephen,G., Milne,I., Calixto,C., Waugh,R., Brown,J.W., and Zhang,R. (2019) 3D RNA-seq - a powerful and flexible tool for rapid and accurate differential expression and alternative splicing analysis of RNA-seq data for biologists. bioRxiv, 656686. doi: <a href="https://doi.org/10.1101/656686" target="_blank">https://doi.org/10.1101/656686</a>.</li>
-                          <li>Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C., Panter,P.E., Knight,H., Nimmo,H.G., Zhang,R., and Brown,J.W.S. (2018) Rapid and Dynamic Alternative Splicing Impacts the Arabidopsis Cold Response Transcriptome. Plant Cell, 30, 1424-1444.</li>
-                          </ul>                          
+                          The ThreeDRNAseq (3D RNA-seq) R package provides an interactive graphical user interface (GUI) for RNA-seq data analysis using accurate quantification of RNA-seq reads. It allows users to perform differential expression (DE), differential alternative splicing (DAS) and differential transcript usage (DTU) (3D) analyses based on limma (Ritchie et al., 2015). The 3D RNA-seq GUI is based on R shiny App and enables a complete RNA-seq analysis to be done within only 3 Days (3D).
                           </div>
-                          <p>If you have questions to raise or are experiencing difficulties using the 3D RNA-seq, please use the <a href="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md" target="_blank">3D RNA-seq user group.</a></p>
                           <div id="prior-to-3d-rna-seq" class="section level3">
                           <h3>Prior to 3D RNA-seq</h3>
                           <p>RNA-seq raw read data is organised by sample. Different samples are either generated by different experimental conditions (multiple genotypes, tissue types or treatments, time-of day circadian experiments) or by biological replication (sometimes also sequencing replication) and each of them is used for the construction of individual libraries. Next, quality control and trimming of the RNA-seq reads should be performed to ensure that high quality RNA-seq reads are used for downstream analysis. The read data are then used for RNA-seq quantification. This step can be performed using many different pipelines, and the type of pipeline determines whether you can use 3D RNA-seq for your downstream expression analyses or not. 3D RNA-seq is only compatible with transcript quantification data derived from Salmon (Patro et al., 2017) or Kallisto (Bray et al., 2016) with the use of a reference transcriptome or Reference Transcript Dataset which contains a list of the known genes and transcripts for the organism under study. The Salmon/Kallisto output file contains the TPM values for each transcript organised by biological repeat and treatment(s). Depending on the size of the dataset, the transcript quantification procedure might take up to 1-2 days.</p>

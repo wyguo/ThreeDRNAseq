@@ -1,4 +1,5 @@
 #' Convert list to data frame
+#' @description Generate data frame from a list object of vectors. If the lengths of the vectors in the list object are different, NA is filled in the data frame.
 #' @param x a list object with elements of vectors. The lengths of these vectors can be different.
 #' @return a data frame.
 list2dataframe <- function(x){

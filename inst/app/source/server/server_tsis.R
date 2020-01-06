@@ -1,3 +1,13 @@
+observeEvent(input$tabs,{
+  if(input$tabs=='TSIS'){
+    text2show <- 'Page: Isoform switch'
+    showmessage(text = '############################################################',showNoteify = F,showTime = F)
+    showmessage(text = text2show,showNoteify = F)
+    showmessage(text = '############################################################',showNoteify = F,showTime = F)
+  }
+})
+
+
 ###update parameter
 observe({
   if(is.null(DDD.data$params_list$TSISorisokTSP))
@@ -85,6 +95,11 @@ output$show.method.intersection <- renderUI({
 
 ##---------->isokTSP or TSIS scoring------------
 observeEvent(input$scoring,{
+  if(is.null(DDD.data$contrast_pw)){
+    showmessage('Please perform 3D analysis before TSIS analysis')
+    return(NULL)
+  }
+  startmessage('Score isoform switches')
   contrast <- DDD.data$contrast_pw
   condition <- DDD.data$samples$condition
   samples <- DDD.data$samples
@@ -95,7 +110,7 @@ observeEvent(input$scoring,{
   trans_TPM <- DDD.data$trans_TPM
   
   if(input$TSISorisokTSP == 'isokTSP'){
-    message('Peform isokTSP analysis ...')
+    showmessage(text = 'Peform isokTSP analysis',showNoteify = F)
     if(is.null(contrast) | is.null(condition) | is.null(samples) | is.null(DAS_genes) | is.null(TSIS.mapping.full) | is.null(trans_TPM))
       return(NULL)
     
@@ -104,11 +119,11 @@ observeEvent(input$scoring,{
       contrast.idx <- contrast[i]
       samples.idx <- unlist(strsplit(contrast.idx,'-'))
       if(any((samples.idx %in% condition)==F)){
-        message(paste0('IS analysis of contrast group: ',contrast.idx, ' is not applied'))
+        showmessage(text = paste0('IS analysis of contrast group: ',contrast.idx, ' is not applied'),showNoteify = F)
         next
       }
 
-      message(paste0('IS analysis of contrast group: ',contrast.idx))
+      showmessage(paste0('IS analysis of contrast group: ',contrast.idx),showNoteify = F)
       col.idx <- which(condition %in% samples.idx)
       DAS.genes <- unique(DAS_genes$target[DAS_genes$contrast==contrast.idx])
       if(length(DAS.genes)==0)
@@ -124,8 +139,10 @@ observeEvent(input$scoring,{
                                   rank=F,
                                   min.difference = 1,
                                   spline = F,
-                                  verbose = T,shiny = T)
+                                  verbose = F,shiny = T)
       
+      if(is.null(scores))
+        next
       scores <- data.frame(contrast=contrast.idx,scores,row.names = NULL,check.names = F)
       scores.results <- c(scores.results,setNames(list(scores),contrast.idx))
     }
@@ -148,18 +165,21 @@ observeEvent(input$scoring,{
                                        min.difference = 1,
                                        spline = (input$method_intersection == 'Spline'),
                                        spline.df = input$spline_df,
-                                       verbose = T)
+                                       verbose = F)
     # scores.results <- roundDF(scores,digits = 6)
     
     rownames(scores.results) <- NULL
     DDD.data$scores <- scores.results
   }
+  endmessage('Score isoform switches')
 })
 
 
 observeEvent(input$filtering,{
   if(is.null(DDD.data$scores))
     return(NULL)
+  startmessage('Filter isoform switch scores')
+  
   DDD.data$scores_filtered <- DDD.data$scores
   scores.filtered <-score.filter(
     scores = DDD.data$scores,
@@ -177,6 +197,7 @@ observeEvent(input$filtering,{
     x.value.limit = c(1,length(unique(DDD.data$samples$condition)))
   )
   DDD.data$scores_filtered <- scores.filtered
+  endmessage('Filter isoform switch scores')
 })
 
 scores <- reactive({
@@ -193,6 +214,7 @@ scores <- reactive({
 output$score.table <- DT::renderDataTable({
   if(is.null(scores()))
     return(NULL)
+  showmessage('Isoform switch score table',showNoteify = F)
   datatable(scores())
   # formatStyle(x,c('x.value','before.FDR','after.FDR','before.t.points','after.t.points','prob','diff'),
   #             backgroundColor = 'red')
@@ -214,6 +236,7 @@ ISnumber.g <- eventReactive(input$plotISnumber,{
     return(NULL)
   }
   
+  startmessage('Plot Isoform switch numbers')
   if(input$TSISorisokTSP=='TSIS'){
     x <- scores2plot$x.value
     time.points <- unique(DDD.data$samples$condition)
@@ -245,7 +268,7 @@ output$switch.number <- renderPlot({
   if(is.null(ISnumber.g()))
     return(NULL)
   print(ISnumber.g())
-  
+  endmessage('Plot Isoform switch numbers')
 })
 
 ##download to local
@@ -268,6 +291,7 @@ output$switch.number <- renderPlot({
 observeEvent(input$plotISnumber_save,{
   # if(plotISnumber_save_flag$download_flag==0)
   #   return(NULL)
+  startmessage('Save isoform switch plot')
   create.folders(wd = DDD.data$folder)
   folder2save <- paste0(DDD.data$folder,'/figure')
   png(paste0(folder2save,'/Isoform switch number.png'),
@@ -279,7 +303,8 @@ observeEvent(input$plotISnumber_save,{
       width = input$is.number.width,height = input$is.number.height)
   print(ISnumber.g())
   dev.off()
-  showmessage()
+  endmessage('Save isoform switch plot')
+  showmessage(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
 })
 
 ##preview saved plot
@@ -321,10 +346,17 @@ output$show.contrst.button <- renderUI({
 })
 
 IS.g <- eventReactive(input$plot.IS,{
-  if(is.null(input$iso1) | is.null(input$iso2) | is.null(DDD.data$samples))
+  if(is.null(DDD.data$samples))
     return(NULL)
-  if(is.null(DDD.data$scores_filtered) & is.null(DDD.data$scores))
+  if(is.null(input$iso1) | is.null(input$iso2) | input$iso1=='' | input$iso2==''){
+    showmessage('Please provide the isoform names for plot.')
     return(NULL)
+  }
+  if(is.null(DDD.data$scores_filtered) & is.null(DDD.data$scores)){
+    showmessage('Please perform score or filter process before making plots.')
+    return(NULL)
+  }
+    
   if(is.null(DDD.data$scores_filtered)){
     scores2plot <- DDD.data$scores
   } else {
@@ -337,16 +369,18 @@ IS.g <- eventReactive(input$plot.IS,{
     return(NULL)
   }
   
-  iso1 <- input$iso1
-  iso2 <- input$iso2
+  iso1 <- trimws(input$iso1)
+  iso2 <- trimws(input$iso2)
   # iso1 <- 'AT5G65060_ID6'
   # iso2 <- 'AT5G65060_s1'
+  startmessage(paste0('Plot switch of ', input$iso1, ' and ',input$iso2))
+  
   times0 <- DDD.data$samples$condition
   data2plot <- DDD.data$trans_TPM[c(iso1,iso2),]
   
   if(input$TSISorisokTSP == 'isokTSP'){
     if(!('contrast' %in% colnames(scores2plot))){
-      message('Please select correct type of isoform switch.')
+      showmessage('Please select correct type of isoform switch.')
       return(NULL)
     }
     contrast.idx <- input$select.contrast
@@ -390,6 +424,7 @@ output$IS.plot <- renderPlot({
   if(is.null(IS.g()))
     return(NULL)
   print(IS.g())
+  endmessage(paste0('Plot switch of ', input$iso1, ' and ',input$iso2))
 })
 
 
@@ -408,7 +443,7 @@ observeEvent(input$save_tsis_plot,{
     if(!file.exists(folder2save))
       dir.create(path = folder2save,recursive = T)
   } 
-  
+  startmessage(paste0('Save switch plot of ', input$iso1, ' and ',input$iso2))
   file2save <- paste0(folder2save,'/',paste0(input$iso1,'_vs_',input$iso2))
   png(filename = paste0(file2save,'.png'),width = input$tsis.plot.width,
       height = input$tsis.plot.height,units = 'in',res = input$tsis.plot.res)
@@ -419,7 +454,8 @@ observeEvent(input$save_tsis_plot,{
       height = input$tsis.plot.height)
   print(IS.g())
   dev.off()
-  showmessage('Done! Plots in pdf and png formats are saved into figure folder')
+  endmessage(paste0('Save switch plot of ', input$iso1, ' and ',input$iso2))
+  showmessage(paste0('Figures are saved in folder: ',DDD.data$figure.folder))
 })
 
 ## View saved plot
@@ -463,22 +499,21 @@ output$number_of_IS <- renderText({
 observeEvent(input$plot_all_IS_btn,{
   if(is.null(DDD.data$scores_filtered))
     return(NULL)
-  showNotification('Making isoform switch plot ...',
-                   # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-                   duration = NULL,id = 'is_plot_message')
+
+  
   create.folders(wd = DDD.data$folder)
   folder2save0 <- paste0(DDD.data$folder,'/figure/IS plots')
   if(!file.exists(folder2save0))
     dir.create(path = folder2save0,recursive = T)
   
   scores2plot <- DDD.data$scores_filtered
+  
+  startmessage(paste0('Plot ', nrow(scores2plot),' isoform switches.'))
   if(nrow(scores2plot)==0){
     showNotification('No isoform switches.',
                      duration = 20)
     return(NULL)
   }
-  
   
   withProgress(message = 'Plot isoform switch...', value = 0, {
     start.time <- Sys.time()
@@ -618,11 +653,12 @@ observeEvent(input$plot_all_IS_btn,{
       })
     }
   })
-  removeNotification(id = 'is_plot_message')
-  showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
+  
   end.time <- Sys.time()
   time.taken <- end.time - start.time
-  message(format(time.taken))
+  showmessage(format(time.taken),showNoteify = F)
+  endmessage(paste0('Plot ', nrow(scores2plot),' of isoform switches.'))
+ 
 })
 
 observeEvent(input$page_before_tsis, {

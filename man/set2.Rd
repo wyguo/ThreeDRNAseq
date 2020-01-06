@@ -2,12 +2,15 @@
 % Please edit documentation in R/compare.sets.R
 \name{set2}
 \alias{set2}
+\alias{set3}
 \title{Generate all possible logical relations between set x and y.}
 \usage{
 set2(x, y)
+
+set3(x, y, z)
 }
 \arguments{
-\item{x, y}{vectors of set x and set y.}
+\item{x, y, z}{vectors of set x, set y and set z.}
 }
 \value{
 a list of three elements: "x.only", "xy" and "y.only".
@@ -16,11 +19,13 @@ a list of three elements: "x.only", "xy" and "y.only".
 Generate all possible logical relations between set x and y.
 }
 \examples{
+library(gridExtra)
 x <- letters[1:10]
 y <- letters[5:15]
 z <- set2(x,y)
 combo <- c(x=length(z$x.only),y=length(z$y.only),"x&y"=length(z$xy))
-plotEulerDiagram(combo)
+g <- plotEulerDiagram(combo)
+grid.draw(g)
 
 }
 \seealso{

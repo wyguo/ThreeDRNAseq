@@ -2,10 +2,6 @@
 title: "DE DAS and DTU analysis"
 header-includes: \usepackage{caption}
 output:
-  word_document:
-    fig_caption: yes
-    toc: yes
-    toc_depth: '4'
   html_document:
     fig_caption: yes
     highlight: textmate
@@ -15,6 +11,10 @@ output:
     toc_float:
       collapsed: no
       smooth_scroll: yes
+  word_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: '4'
   pdf_document:
     fig_caption: yes
     toc: yes
@@ -74,6 +74,7 @@ fig2insert <- paste0(DDD.data$figure.folder,'/experimental_design.png')
 if(file.exists(fig2insert)){
   knitr::include_graphics(fig2insert)
 }
+
 ```
 
 ```{r,eval=T,echo=F,results='asis'}
@@ -81,6 +82,7 @@ fig2insert <- paste0(DDD.data$figure.folder,'/experimental_design.png')
 if(file.exists(fig2insert)){
   cat('**Figure**: Experimental design.')
 }
+
 ```
 
 ### Data  pre-processing
@@ -92,15 +94,94 @@ Read counts and transcript per million reads (TPMs) were generated using tximpor
 At the alternative splicing level, DTU transcripts were determined by comparing the $L_2FC$ of a transcript to the `r ifelse(params$DDD.data$params_list$DE_pipeline=='limma','weighted average','sum')` of $L_2FCs$ `r ifelse(params$DDD.data$params_list$DE_pipeline=='limma','(weights were based on their standard deviation)','')` of all `r ifelse(params$DDD.data$params_list$DE_pipeline=='limma','remaining','')` transcripts in the same gene. A transcript was determined as significant DTU if it had adjusted p-value < `r params$DDD.data$params_list$pval_cut` and $\Delta$PS $\geq$ `r params$DDD.data$params_list$deltaPS_cut` (Figure 1). For DAS genes, `r ifelse(params$DDD.data$params_list$DE_pipeline=='limma','each individual transcript $L_2FC$ were compared to gene level $L_2FC$, which was calculated as the weighted average of $L_2FCs$ of all transcripts of the gene. Then','the')` p-values of individual transcript comparison were summarised to a single gene level p-value with `r params$DDD.data$params_list$DAS_pval_method`. A gene was significantly DAS in a contrast group if it had an adjusted p-value < `r params$DDD.data$params_list$pval_cut` and any of its transcript had a $\Delta$ Percent Spliced ($\Delta$PS) ratio $\geq$ `r params$DDD.data$params_list$deltaPS_cut` (Figure 1). 
 
 <!-- <img style="width: 100%; display: block; margin-left: auto; margin-right: auto;" src="www/DDD_test.png"/> -->
+
 ![](www/DDD_test.png)
 
 **Figure 1**: Testing of DE genes, DAS genes, DE transcripts and DTU transcripts.
+
+```{r,echo=FALSE}
+whether_tstrend <- params$DDD.data$params_list$whether_tstrend =='Yes'
+```
+
+```{r conditional_block_tstrend_method, echo=FALSE, results='asis', eval=whether_tstrend}
+cat('### Time-series trend analysis\n')
+cat('Time-points (or equivalence, e.g. developmental series and conditions with sequential orders):',paste0(levels(params$DDD.data$tstrend_timePoints),collapse = ', '), 'in groups: ',paste0(levels(params$DDD.data$tstrend_timeGroups),collapse = ', '), 'are used for 3D trend analysis (see the schematic diagram).\n')
+cat(ifelse(params$DDD.data$tstrend_spline=='Yes',paste0('Natural Cubic Spline method with degree of freedom ',params$DDD.data$tstrend_spline_df,' was used to generate time-series trend.\n'),''))
+cat('Contrast groups of trend were set as:',paste0(paste0(names(params$DDD.data$tstrend_Contrastgroups),collapse = ', '),'.\n'))
+cat('Significant 3D time-series trend genes and transcripts were determined by',params$DDD.data$params_list$pval_adj_method_tstrend,'adjusted p-value <',paste0(params$DDD.data$params_list$pval_cut_tstrend,'.\n'))
+cat('At alternative splicing level, the p-value of a DAS gene was summarised from the p-values of transcript level DTU analysis with',params$DDD.data$params_list$DAS_pval_method_tstrend,'method.\n')
+cat('The overall DAS gene/DTU transcript p-values across time groups in each of the contrast groups were summarised by',params$DDD.data$params_list$DAS_pval_method_across_group,'method.\n')
+
+```
+
+```{r,echo=FALSE,fig.height = 4, fig.width = 9, fig.align = "center", eval=whether_tstrend}
+# Time0 <- Time.points()
+# Time <- as.numeric(factor(Time0))
+Time.points <- params$DDD.data$tstrend_timePoints
+Time.groups <- params$DDD.data$tstrend_timeGroups
+Time <- as.numeric(factor(Time.points))
+set.seed(100)
+Expression <- sin(Time*pi/6)+rnorm(length(Time),1,0.5)
+Expression <- Expression*as.numeric(factor(Time.groups))
+
+if(params$DDD.data$tstrend_spline == 'Yes'){
+  Time.ns <- splines::ns(Time,df=params$DDD.data$tstrend_spline_df)
+  knots <- sort(c(attr(Time.ns,'knots'),attr(Time.ns,'Boundary.knots')),decreasing = F)
+  data2fit <- data.frame(Time=Time,Expression=Expression,Group=Time.groups)
+  data2line <- by(data = data2fit,INDICES = data2fit$Group,function(x){
+    fit <- tryCatch({lm(Expression ~ splines::ns(Time,df=params$DDD.data$tstrend_spline_df),data = x)},
+                    error=function(e){})
+    if(is.null(fit))
+      return(NULL)
+    pred.value <- predict(fit,data.frame(Time=knots))
+    names(pred.value) <- knots
+    pred.value
+  })
+  data2line <- do.call(rbind,data2line)
+
+  data2line <- reshape2::melt(data2line)
+  colnames(data2line) <- c('Group','Time','Expression')
+  
+  data2plot <- data.frame(Time=Time,Label=Time.points,Group=Time.groups,Expression=Expression)
+  # data2line <- data.frame(Time=knots,Expression=pred.value)
+  g <- ggplot(data = data2plot,aes(x=Time,y=Expression))+
+    geom_point(aes(pch='Samples reps'),colour='black')+
+    scale_shape_manual(values = c('Samples reps'=1))+
+    theme_bw()+
+    labs(title='Schematic diagram: spline time-series with Natural Cubic method',shape='Data points')
+  q <- g+geom_line(data = data2line,aes(x=Time,y=Expression,colour='red'))+
+    geom_point(data = data2line,pch=16,size=3,aes(colour='blue'))+facet_grid(.~Group)+
+    scale_color_identity(name = "Spline fit",
+                         breaks = c( "red", "blue"),
+                         labels = c("Spline fitted line", "Spline knots"),
+                         guide = "legend")
+} else {
+  data2plot <- data.frame(Time=Time.points,Expression=Expression,Group=Time.groups)
+  q <- ggplot(data2plot, aes(x=Time, y=Expression)) + 
+    geom_point(aes(pch='Samples reps'),colour='black') +
+    stat_summary(aes(y = Expression,group=1,colour="Mean value"), fun.y=mean, geom="line",group=1)+
+    facet_grid(.~Group)+
+    theme_bw()+
+    labs(title='Schematic diagram: Time-series trend',shape='Data points',colour='Fitted line')+
+    scale_shape_manual(values = c('Samples reps'=1))
+}
+q <- q+labs(y='Simulated expression')
+print(q)
+
+```
 
 ### Isoform switch analysis
 Transcript isoform switches (ISs) occur when a pair of alternatively spliced isoforms reverse the order of their relative expression levels (Figure 2). In this analysis, `r ifelse(params$DDD.data$params_list$TSISorisokTSP=='isokTSP',paste0('Pair-Wise Isoform Switch (isokTSP) method was used to detect the isoform switch points between conditions of contrasts groups: ',paste0(params$DDD.data$contrast_pw,collapse = ', '), ' (Figure 2A)'),' Time-Series Isoform switch (TSIS) method was used to detect the isoform switch points along the sequencial time-points (Figure 2B).')` (Guo et al., 2017). The `r length(which(params$DDD.data$target_high$mapping_high$GENEID %in% unique(params$DDD.data$DAS_genes$target)))` expressed transcripts  of `r length(unique(params$DDD.data$DAS_genes$target))` DAS genes were used for the analysis. The method defined the ISs between any pair of transcripts within genes using `r params$DDD.data$params_list$TSIS_method_intersection` values of conditions. It described the significant ISs using five different features of metrics: 1) the probability of switch (i.e. the frequency of samples reversing their relative abundance at the switches) was set to > `r params$DDD.data$params_list$TSIS_prob_cut`; (2)  the sum of the average differences of the two isoforms in both intervals before and after the switch point were set at $\Delta$TPM > `r params$DDD.data$params_list$TSIS_diff_cut`; (3) the significance of the differences between the switched isoform abundances before and after the switch was set to BH adjusted p-value < `r params$DDD.data$params_list$TSIS_adj_pval_cut`; (4) both of the interval lengths before and after switch were set to `r params$DDD.data$params_list$TSIS_time_point_cut`; (5) Pearson correlation of two isoforms was set to >`r params$DDD.data$params_list$TSIS_cor_cut` (see the paper Guo et al., (2017) for methodology details).
 
 <!-- <img style="width: 100%; display: block; margin-left: auto; margin-right: auto;" src="www/TSIS.png"/> -->
+
 ![](www/TSIS.png)
+
+```{r,eval=T}
+getwd()
+
+list.files('www',full.names = T)
+```
 
 **Figure 2**: Isoform switch analysis methods. Expression data with 3 replicates for each condition/time-point is simulated for isoforms $iso_{i}$ and $iso_j$ (blue and red circles). The points in the plots represent data samples and the black lines connect the average of samples. (A) is the Pair-Wise Isoform Switch (isokTSP) method for comparisons of two conditions $c_1$ and $c_2$ (e.g. conditions in contrast groups of 3D RNA-seq analysis). The Time-Series Isoform Switch (TSIS) tool is designed for detection and characterization of isoform switches for time series data shown in (B). The time-series with 6 time-points is divided into 4 intervals by the intersection points of average expression. If the conditions/time-points on x-axis are not numeric, they will be converted to numeric coordinates 1, 2, 3, ... to fit the lines.
 
@@ -154,7 +235,7 @@ if(!file.exists(fig2insert)){
 
 Figure: Distribution of the number of transcripts per gene. Low expressed transcripts and genes are filtered.
 
-### Number of DE/DAS genes and DE/DTU transcripts
+### Number of 3D genes and transcripts
 
 Table: RNA-seq sample information before and after data pre-processing. 
 
@@ -228,6 +309,20 @@ if(!file.exists(fig2insert)){
 ```
 
 Figure: Number of transcripts regulated only by transcription (DE), only by alternative splicing (DAS) and by both transcription and alternative splicing (DE+DAS).
+
+
+
+```{r conditional_block_tstrend_results, echo=FALSE, results='asis', eval=whether_tstrend}
+cat('### Number of 3D time-series trend genes and transcripts\n')
+```
+
+```{r DDD_tstrend_numbers,eval=T,echo=F}
+if(is.null(params$DDD.data$DDD_tstrend_numbers)){
+  cat('Results are not found.')
+} else {
+  knitr::kable(params$DDD.data$DDD_tstrend_numbers,format = "markdown",align = 'l')
+}
+```
 
 ### Up- and down-regulation
 
@@ -585,6 +680,10 @@ Saraçli,S., Dogan,N., and Dogan,I. (2013) Comparison of hierarchical cluster an
 Soneson,C., Love,M.I., and Robinson,M.D. (2016) Differential analyses for RNA-seq: transcript-level estimates improve gene-level inferences. F1000Research, 4, 1521.
 
 
+## Session information
 
+```{r,echo=F,eval=TRUE}
+sessionInfo()
+```
 
 

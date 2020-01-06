@@ -13,5 +13,5 @@ list2dataframe(x)
 a data frame.
 }
 \description{
-Convert list to data frame
+Generate data frame from a list object of vectors. If the lengths of the vectors in the list object are different, NA is filled in the data frame.
 }

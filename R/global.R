@@ -159,7 +159,7 @@ selectorServer_tstrend  <- function(input, output, session, thisList,selected=NU
     selectInput(
       inputId = ns('tstrend_groups'),multiple = T,
       label = NULL,
-      width = '300px',
+      width = '250px',
       choices = thisList, selected = selected)
   })
 }
@@ -175,8 +175,42 @@ create.folders <- function(wd=getwd()){
 }
 
 showmessage <- function(text='Done! Plots in pdf and png formats are saved to figure folder in App working directory',
-                        duration = 5, type='default',...){
-  message(text)
-  showNotification(text,duration = duration,type=type,...)
+                        duration = 10, type='default',showNoteify=T,showTime=T,...){
+  
+  if(showTime){
+    if(showNoteify)
+      text <- paste0(text,' (click "x" to close) (',Sys.time(),')') else text <- paste0(text,' (',Sys.time(),')')
+  }
+    
+  
+  cat(text,'\n')
+  # if(grepl('\n',text))
+  #   cat(text) else cat(text,'\n')
+  if(showNoteify)
+    showNotification(text,duration = duration,type=type,...)
 }
 
+startmessage <- function(text,id = 'message_id'){
+  showmessage(paste(text,'...'),
+              action = HTML("<i style='font-size:35px;' class='fas fa-coffee'> ... ...</i>"),
+              # action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
+              duration = NULL,id = id )
+}
+
+endmessage <- function(text,id = 'message_id'){
+  showmessage(paste(text,'-> Done!!!'),
+              action = HTML("<i style='font-size:35px;' class='fas fa-coffee'> ... ...</i>"),
+              duration = NULL,showNoteify = F)
+  cat('\n')
+  removeNotification(id = id)
+}
+
+createLog <- function(logfile, path=getwd()) {
+  if (file.exists(paste0(path, logfile))) {
+    file.remove(paste0(path, logfile))
+  }
+  fid <- file(file.path(path, logfile), open = "wt")
+  sink(fid, type = "message", split = F)
+  sink(fid, append = T, type = "output", split = T)
+  # warning("Use closeAllConnections() in the end of the script")
+}

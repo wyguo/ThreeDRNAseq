@@ -1,3 +1,12 @@
+observeEvent(input$tabs,{
+  if(input$tabs=='report'){
+    text2show <- 'Page: Generate report'
+    showmessage(text = '############################################################',showNoteify = F,showTime = F)
+    showmessage(text = text2show,showNoteify = F)
+    showmessage(text = '############################################################',showNoteify = F,showTime = F)
+  }
+})
+
 ###parameters
 observeEvent(input$save_ddd_data_button,{
   # if(is.null(DDD.data$params_list)){
@@ -37,6 +46,24 @@ observeEvent(input$save_ddd_data_button,{
     DDD.data$params_list$TSIS_time_point_cut <- ifelse(input$TSISorisokTSP == 'isokTSP',1,input$TSIS_time_point_cut)
     DDD.data$params_list$TSIS_cor_cut <- input$TSIS_cor_cut
     
+    ##TStrend
+    DDD.data$tstrend_spline <- input$tstrend_spline
+    DDD.data$params_list$whether_tstrend <- input$whether_tstrend
+    DDD.data$params_list$tstrend_Contrastgroups <- DDD.data$tstrend_Contrastgroups
+    DDD.data$params_list$tstrend_time <- input$tstrend_time
+    DDD.data$params_list$tstrend_time_group <- input$tstrend_time_group
+    DDD.data$params_list$tstrend_timePoints <- DDD.data$tstrend_timePoints
+    DDD.data$params_list$tstrend_timeGroups <- DDD.data$tstrend_timeGroups
+    DDD.data$params_list$DAS_pval_method_tstrend <- input$DAS_pval_method_tstrend
+    DDD.data$params_list$DAS_pval_method_across_group <- input$DAS_pval_method_across_group
+    DDD.data$params_list$pval_cut_tstrend <- input$pval_cut_tstrend
+    DDD.data$params_list$pval_adj_method_tstrend <- input$pval_adj_method_tstrend
+    DDD.data$params_list$DE_tstrend_pipeline <- input$DE_tstrend_pipeline
+    DDD.data$params_list$mean_variance_tstrend_method <- input$mean_variance_tstrend_method
+    DDD.data$params_list$tstrend_dist_method <- input$tstrend_dist_method
+    DDD.data$params_list$tstrend_cluster_method <- input$tstrend_cluster_method
+    DDD.data$params_list$tstrend_cluster_number <- input$tstrend_cluster_number
+    
     x <- DDD.data$params_list
     x <- lapply(x,function(i){paste0(i,collapse = '; ')})
     x <- data.frame(Description=names(x),Parameter=unlist(x),row.names = NULL)
@@ -70,10 +97,7 @@ observeEvent(input$save_ddd_data_button,{
 ##----------Step 2: Save data and results ------------
 ##---------->Generate report ------------
 observeEvent(input$generate_report,{
-  showNotification('Generating report ...',
-                   # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-                   duration = NULL,id = 'generate_report_message')
+  startmessage('Generate report')
   withProgress(message = 'Generating report',
                detail = 'This may take a while...', value = 0, {
                  incProgress(0.3)
@@ -98,17 +122,13 @@ observeEvent(input$generate_report,{
                  showmessage('Done!!!')
                  incProgress(1)
                })
-  removeNotification(id = 'generate_report_message')
-  showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
+  endmessage('Generate report')
 })
 
 
 ######
 observeEvent(input$save_ddd_data_button,{
-  showNotification('Saving results ...',
-                   # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-                   duration = NULL,id = 'save_result_message')
+  startmessage('Save all the results')
   ####save intermediate data
   withProgress(message = 'Saving results...',
                detail = 'This may take a while...', value = 0, {
@@ -155,6 +175,58 @@ observeEvent(input$save_ddd_data_button,{
                    write.csv(x = threeD,file = paste0(DDD.data$result.folder,'/DDD genes and transcript lists across all contrast groups.csv'),
                              row.names = F,na = '')
                  }
+                 ## save TS tstrend results
+                 if(T){
+                 # if(input$whether_tstrend=='Yes'){
+                   stat <- DDD.data$genes_3D_tstrend_stat$DE.pval
+                   x <- data.frame(targets=rownames(stat),stat,row.names = NULL,check.names = F)
+                   write.csv(x = x,
+                             file = paste0(DDD.data$result.folder,'/TS DE trend gene testing adjusted p-values.csv'),
+                             row.names = F,na = '')
+                   write.csv(x = DDD.data$DE_tstrend_genes,
+                             file = paste0(DDD.data$result.folder,'/Significant TS DE trend gene list and statistics.csv'),
+                             row.names = F,na = '')
+                   rm(stat)
+                   stat <- DDD.data$trans_3D_tstrend_stat$DE.pval
+                   x <- data.frame(targets=rownames(stat),stat,row.names = NULL,check.names = F)
+                   write.csv(x = x,
+                             file = paste0(DDD.data$result.folder,'/TS DE trend transcript testing adjusted p-values.csv'),
+                             row.names = F,na = '')
+                   write.csv(x = DDD.data$DE_tstrend_trans,
+                             file = paste0(DDD.data$result.folder,'/Significant TS DE trend transcript list and statistics.csv'),
+                             row.names = F,na = '')
+                   
+                   if(DDD.data$params_list$DAS_pval_method_tstrend=='F-test'){
+                     rm(stat)
+                     stat <- DDD.data$trans_3D_tstrend_stat$DAS.pval.F
+                     x <- data.frame(targets=rownames(stat),stat,row.names = NULL,check.names = F)
+                     write.csv(x = x,
+                               file = paste0(DDD.data$result.folder,'/TS DAS trend genes testing adjusted p-values.csv'),
+                               row.names = F,na = '')
+                   } else {
+                     rm(stat)
+                     stat <- DDD.data$trans_3D_tstrend_stat$DAS.pval.simes
+                     x <- data.frame(targets=rownames(stat),stat,row.names = NULL,check.names = F)
+                     write.csv(x = x,
+                               file = paste0(DDD.data$result.folder,'/TS DAS trend genes testing adjusted p-values.csv'),
+                               row.names = F,na = '')
+                   }
+                   write.csv(x = DDD.data$DAS_tstrend_genes,
+                             file = paste0(DDD.data$result.folder,'/Significant TS DAS trend gene list and statistics.csv'),
+                             row.names = F,na = '')
+                   
+                   rm(stat)
+                   stat <- DDD.data$trans_3D_tstrend_stat$DTU.pval
+                   x <- data.frame(targets=rownames(stat),stat,row.names = NULL,check.names = F)
+                   write.csv(x = x,
+                             file = paste0(DDD.data$result.folder,'/TS DTU trend transcript testing adjusted p-values.csv'),
+                             row.names = F,na = '')
+                   write.csv(x = DDD.data$DTU_tstrend_trans,
+                             file = paste0(DDD.data$result.folder,'/Significant TS DTU trend transcript list and statistics.csv'),
+                             row.names = F,na = '')
+                   
+                 }
+                 
                  
                  ##save all gene/transcript statistics
                  incProgress(0.8)
@@ -184,30 +256,29 @@ observeEvent(input$save_ddd_data_button,{
                  incProgress(1)
                  
                })
-  removeNotification(id = 'save_result_message')
-  showmessage('Done!!!',action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"))
+  endmessage('Save all the results')
 })
 # 
-
-observeEvent(input$act_download_zip_results, {
-  showNotification('Starting downloading, it may take quite a while ...',
-                   # action = HTML("<span style='font-size:50px;'>&#9786;</span> <i style='font-size:25px;' class='fas fa-dizzy'></i>"),
-                   action = HTML("<i style='font-size:35px;' class='fas fa-dizzy'> ... ...</i>"),
-                   duration = NULL,id = 'start_download_message')
-  shinyjs::runjs("document.getElementById('download_zip_results').click();")
-  removeNotification(id = 'start_download_message')
-  showmessage('Download is started, please wait ...',
-              action = HTML("<i style='font-size:35px;' class='fas fa-smile-wink'></i>"),
-              duration = NULL)
-})
 
 output$download_zip_results <- downloadHandler(
   filename=function(){
     '3D output.zip'
   },
   content=function(file){
-    zip(zipfile = file,files = c(DDD.data$data.folder,DDD.data$figure.folder,
-                                 DDD.data$result.folder,DDD.data$report.folder))
+    withProgress(message = 'Downloading ...', detail = 'This may take quite a while...',
+                 value = 0, {
+                   incProgress(0.4)
+                   startmessage('Zipping 3D results')
+                   zip(zipfile = file,files = c(file.path(DDD.data$folder,'log.txt'),DDD.data$data.folder,DDD.data$figure.folder,
+                                                DDD.data$result.folder,DDD.data$report.folder))
+                   incProgress(0.9)
+                   endmessage('Zipping 3D results')
+                   showmessage('Start download')
+                   incProgress(1)
+                   # end.time.3d <- Sys.time()
+                   # time.taken.3d <- end.time.3d - start.time.3D
+                   # showmessage(paste0('Time taken for 3D analysis: ',format(time.taken)),showNoteify = F)
+                 })
   },contentType = "application/zip"
 )
 

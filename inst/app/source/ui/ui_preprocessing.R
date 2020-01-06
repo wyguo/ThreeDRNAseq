@@ -82,6 +82,9 @@ tabItem('preprocessing',
                  actionButton(inputId = 'save_mv_plot',label = 'Save',
                               icon = icon('download',lib = 'font-awesome'),
                               style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: left; margin-top: 25px;"),
+                 bsTooltip(id = "save_mv_plot", 
+                           title = 'Save plot to working directory. If App is not running locally, figures can be downloaded in the last page "Generate report"',
+                           placement = "bottom", options = list(container = "body")),
                  actionButton(inputId = 'save_mv_plot_view',label = 'View saved plot',
                               icon = icon('eye',lib = 'font-awesome'),
                               style="color: #fff; background-color: #428bca; border-color: #2e6da4; 
@@ -89,7 +92,76 @@ tabItem('preprocessing',
                  bsTooltip(id = "save_mv_plot_view",
                            title = "Preview saved plots to correct width and height.",
                            placement = "bottom", options = list(container = "body"))
-          )
+          ),
+          HTML('<p>&nbsp;</p>'),
+          ##----------> plot transcript per genes ------------
+          column(width = 3,
+                 box(title='Number of transcripts per gene',
+                     width = NULL,status = 'primary', solidHeader = F,
+                     spectrumInput(
+                       inputId = "tpg_color_before",
+                       label = "Color before low expression filter:",
+                       selected = "#F8766D",
+                       choices = distinct.color(50),
+                       options = list(`toggle-palette-more-text` = "Show more"),
+                       width = "80%"
+                     ),
+                     spectrumInput(
+                       inputId = "tpg_color_after",
+                       label = "Color after low expression filter:",
+                       selected = "#00BFC4",
+                       choices = distinct.color(50),
+                       options = list(`toggle-palette-more-text` = "Show more"),
+                       width = "80%"
+                     ),
+                     numericInput(inputId = "tpg_number_x_hjust",label = 'Horizontal-just x-labs',value = '0.5',
+                                  min = 0,max = 1,step = 0.1,width = "100%"),
+                     numericInput(inputId = "tpg_number_x_vjust",label = 'Vertical-just x-labs',value = '0.5',
+                                  min = 0,max = 1,step = 0.1,width = "100%"),
+                     numericInput(inputId = "tpg_number_x_rotate",label = 'Rotate x-labs',value = '0',
+                                  min = 0,max = 360,step = 15,width = "100%"),
+                     bsTooltip(id = 'tpg_number_x_rotate',
+                               title = "Adjust the labels on x-axis.",
+                               placement = "bottom",
+                               options = list(container = "body")),
+                     actionButton('tpg_plot_button','Plot',icon("send outline icon"),class="btn btn-primary",
+                                  style="color: #fff; background-color: #428bca; border-color: #2e6da4")
+                 )
+          ),
+            column(width = 9,
+                   box(title= NULL,
+                       width = NULL,status = 'primary', solidHeader = T,
+                       plotOutput('tpg_plot'),
+                       hr(),
+                       column(12,
+                              div(style="float:left;margin-left: 0px;",
+                                  numericInput(inputId = "tpg_number_width",label = 'Plot width (inch)',
+                                               value = 8,width = "100%",step = 0.2)
+                              ),
+                              div(style="float:left;margin-left: 25px;",
+                                  numericInput(inputId = "tpg_number_height",label = 'Plot height (inch)',
+                                               value = 5,width = "100%",step = 0.2)
+                              ),
+                              div(style="float:left;margin-left: 25px;",
+                                  numericInput(inputId = "tpg_number_res",label = 'PNG plot resolution',value = '150',
+                                               min = 0,max = 600,step = 60,width = "100%")
+                              ),
+                              actionButton(inputId = 'tpg_save_button',label = 'Save',icon = icon('download',lib = 'font-awesome'),
+                                           style="color: #fff; background-color: #428bca; border-color: #2e6da4;
+                                           float: left; margin-top: 25px; margin-left: 25px"),
+                              bsTooltip(id = "tpg_save_button", 
+                                        title = 'Save plot to working directory. If App is not running locally, figures can be downloaded in the last page "Generate report"',
+                                        placement = "bottom", options = list(container = "body")),
+                              actionButton(inputId = 'tpg_save_button_view',label = 'View saved plot',
+                                           icon = icon('eye',lib = 'font-awesome'),
+                                           style="color: #fff; background-color: #428bca; border-color: #2e6da4;
+                                           float: left; margin-top: 25px; margin-left: 25px"),
+                              bsTooltip(id = "tpg_save_button_view",
+                                        title = "Preview saved plots to correct width and height.",
+                                        placement = "bottom", options = list(container = "body"))
+                              )
+                       )
+                   )
           ),
         br(),
         br(),
@@ -172,6 +244,9 @@ tabItem('preprocessing',
                                      icon = icon('download',lib = 'font-awesome'),
                                      style="color: #fff; background-color: #428bca; 
                                      border-color: #2e6da4; float: left; margin-top: 25px"),
+                        bsTooltip(id = "save_pca_plot", 
+                                  title = 'Save plot to working directory. If App is not running locally, figures can be downloaded in the last page "Generate report"',
+                                  placement = "bottom", options = list(container = "body")),
                         actionButton(inputId = 'save_pca_plot_view',label = 'View saved plot',
                                      icon = icon('eye',lib = 'font-awesome'),
                                      style="color: #fff; background-color: #428bca; border-color: #2e6da4; 
@@ -236,6 +311,9 @@ tabItem('preprocessing',
                actionButton(inputId = 'save_pca_br_plot',label = 'Save',
                             icon = icon('download',lib = 'font-awesome'),
                             style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: left"),
+               bsTooltip(id = "save_pca_br_plot", 
+                         title = 'Save plot to working directory. If App is not running locally, figures can be downloaded in the last page "Generate report"',
+                         placement = "bottom", options = list(container = "body")),
                actionButton(inputId = 'save_pca_br_plot_view',label = 'View saved plot',
                             icon = icon('eye',lib = 'font-awesome'),
                             style="color: #fff; background-color: #428bca; border-color: #2e6da4; 
@@ -298,6 +376,9 @@ tabItem('preprocessing',
                  actionButton(inputId = 'save_dist_plot',label = 'Save',
                               icon = icon('download',lib = 'font-awesome'),
                               style="color: #fff; background-color: #428bca; border-color: #2e6da4; float: left; margin-top: 25px"),
+                 bsTooltip(id = "save_dist_plot", 
+                           title = 'Save plot to working directory. If App is not running locally, figures can be downloaded in the last page "Generate report"',
+                           placement = "bottom", options = list(container = "body")),
                  actionButton(inputId = 'save_dist_plot_view',label = 'View saved plot',
                               icon = icon('eye',lib = 'font-awesome'),
                               style="color: #fff; background-color: #428bca; border-color: #2e6da4; 

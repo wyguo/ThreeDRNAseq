@@ -1,7 +1,7 @@
 Package: ThreeDRNAseq
 Type: Package
 Title: 3D RNA-seq App enables RNA-seq data analysis to be done only within 3 Days.
-Version: 0.1.0
+Version: 2.0.0
 Author: Wenbin Guo <wenbin.guo@hutton.ac.uk>
 Maintainer: Wenbin Guo <wenbin.guo@hutton.ac.uk>
 Description: This package provides an interactive graphical user interface (GUI) for RNA-seq 

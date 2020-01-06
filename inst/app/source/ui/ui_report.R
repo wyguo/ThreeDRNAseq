@@ -42,7 +42,7 @@ tabItem('report',
                                     style="color: #fff; background-color: #428bca; border-color: #2e6da4;",
                                     icon = icon('download')),
                        hr(),
-                       HTML('Reports in word, pdf and html formats are saved in "report" folder in 3D App working directory: ')
+                       HTML('Reports in word, pdf and html formats are saved in "report" folder in 3D App working directory ')
                        # br(),
                        # br(),
                        # HTML('Reports in html, word and pdf format are saved in "report" folder. Reports are also availabe to download by following links:'),
@@ -56,22 +56,16 @@ tabItem('report',
               ),
               column(width = 12,
                      wellPanel(
-                       actionButton("act_download_zip_results", label = "Click to download results", 
-                                    icon = icon("download"),
-                                    style="color: #fff; background-color: #428bca; border-color: #2e6da4; float:left;"),
+                       # actionButton("act_download_zip_results", label = "Click to download results", 
+                       #              icon = icon("download"),
+                       #              style="color: #fff; background-color: #428bca; border-color: #2e6da4; float:left;"),
                        downloadButton('download_zip_results', 'Click to download results',class="btn btn-primary",
-                                      style="color: #fff; background-color: #428bca; border-color: #2e6da4;float:left;visibility: hidden;"),
+                                      style="color: #fff; background-color: #428bca; border-color: #2e6da4;float:left"),
                        br(),
                        br(),
-                       # br(),
-                       # br(),
-                       # HTML('Click to download:'),
-                       # br(),
-                       # # tags$a(href='3D output.zip', '3D output.zip', target='_blank',download = '3D output.zip'),
-                       # HTML("<a href='3D output.zip' target='_blank'><font size='4'><u>3D output.zip</u></font></a>"),
                        hr(),
-                       HTML('If the 3D RNA-seq App is run on a local PC, all results will be directly saved to the App working directory. Please skip this step.
-                            If the App is run on our server, all results can be zipped and downloaded from above link.')
+                       HTML('<h5 align="justify">If the 3D RNA-seq App is running on a local PC, all the results (figures, tables, reports and intermediate .RData objects) are already saved in the working directory.
+                            If the App is running on our server, all the results can be zipped and downloaded by clicking above button.</h5>')
                        )
                      )   
               )
