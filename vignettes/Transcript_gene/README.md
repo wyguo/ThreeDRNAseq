@@ -10,7 +10,7 @@ The objective of making the Reference Transcript Dataset (AtRTD2) was to exploit
 - The transcriptome can be downloaded from: <a href='https://ics.hutton.ac.uk/atRTD/' target='_blank'>https://ics.hutton.ac.uk/atRTD/</a>. 
 - The transcript-gene association file: <a href='https://raw.githubusercontent.com/wyguo/ThreeDRNAseq/master/vignettes/Transcript_gene/AtRTD2_mapping.csv' target='_blank'>AtRTD2_mapping.csv</a>
 
-## barley reference transcript dataset (BaRTv1.0)
+## Barley reference transcript dataset (BaRTv1.0)
 
 A high-quality, non-redundant barley gene RTD and database (Barley Reference Transcripts – BaRTv1.0) (Rapazote-Flores et al., 2019).
 
