@@ -1,11 +1,8 @@
----
-title: "Transcript-gene association database for 3D analysis"
-author: "Wenbin Guo"
-output: html_document
----
 
+# Transcript-gene association database for 3D analysis
+<img src="gene_transcript_association.png" style="display: block; width: 50%; margin: 0 auto" />
 
-This folder includes <a href='https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md#input-files' target='_blank'>transcript-gene associaton information</a> of several transcriptomes. These files can be used as one of the inputs for 3D RNA-seq analysis.
+This folder includes <a href='https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md#input-files' target='_blank'>transcript-gene associaton information</a> of several transcriptomes, which can be used as input for 3D RNA-seq analysis.
 
 ## Arabidopsis Thaliana Reference Transcript Dataset 2 (AtRTD2)
 The objective of making the Reference Transcript Dataset (AtRTD2) was to exploit the accuracy of transcript quantification of programmes such as Salmon and Kallisto in analysing Arabidopsis RNA-seq data for gene expression and, in particular, alternative splicing (AS) (Zhang et al., 2017). 
