@@ -8,14 +8,14 @@ This folder includes <a href='https://github.com/wyguo/ThreeDRNAseq/blob/master/
 The objective of making the Reference Transcript Dataset (AtRTD2) was to exploit the accuracy of transcript quantification of programmes such as Salmon and Kallisto in analysing Arabidopsis RNA-seq data for gene expression and, in particular, alternative splicing (AS) (Zhang et al., 2017). 
 
 - The transcriptome can be downloaded from: <a href='https://ics.hutton.ac.uk/atRTD/' target='_blank'>https://ics.hutton.ac.uk/atRTD/</a>. 
-- The transcript-gene association file: AtRTD2_mapping.csv
+- The transcript-gene association file: <a href='https://raw.githubusercontent.com/wyguo/ThreeDRNAseq/master/vignettes/Transcript_gene/AtRTD2_mapping.csv' target='_blank'>AtRTD2_mapping.csv</a>
 
 ## barley reference transcript dataset (BaRTv1.0)
 
 A high-quality, non-redundant barley gene RTD and database (Barley Reference Transcripts – BaRTv1.0) (Rapazote-Flores et al., 2019).
 
 - The transcriptome can be downloaded from: <a href='https://ics.hutton.ac.uk/barleyrtd/downloads.html' target='_blank'>https://ics.hutton.ac.uk/barleyrtd/downloads.html</a>. 
-- The transcript-gene association file: BaRTv1.0_mapping.csv
+- The transcript-gene association file: <a href='https://raw.githubusercontent.com/wyguo/ThreeDRNAseq/master/vignettes/Transcript_gene/BaRTv1.0_mapping.csv' target='_blank'>BaRTv1.0_mapping.csv</a>
 
 ## References
 
