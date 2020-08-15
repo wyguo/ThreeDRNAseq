@@ -199,7 +199,7 @@ iso.switch<-function(data.exp,
       x1=onegene[iso1,]
       x2=onegene[iso2,]
       
-      if(max(abs(x1-x2))<min.difference)
+      if(max(abs(x1-x2)) < min.difference)
         next
       
       ##intersection points
@@ -218,7 +218,7 @@ iso.switch<-function(data.exp,
       check.consecutive$up<-floor(check.consecutive$up)
       check.consecutive<-check.consecutive$up-check.consecutive$low+1
       
-      if(max(check.consecutive)<min.t.points)
+      if(max(check.consecutive) < min.t.points)
         next
       
       iso.inter<-data.frame(iso1=iso1,iso2=iso2,t(iso.inter))
@@ -260,6 +260,7 @@ iso.switch<-function(data.exp,
     #  i=1
     # i=which(grepl('AT1G01060.2_vs_AT1G01060.3',x = iso.names))
     iso<-unlist(strsplit(iso.names[i],'_vs_'))
+    # message(iso)
     iso1<-iso[1]
     iso2<-iso[2]
     #generate dataset for iso for isoform switch analysis
@@ -289,8 +290,12 @@ iso.switch<-function(data.exp,
       x.diff<-x[,2]-x[,3]
       diff.mean<-mean(x.diff)
       # ##score3:
-      pval<-t.test(x[,3],x[,2],paired = T)$p.value
+      
+      pval <- tryCatch({
+        t.test(x[,3],x[,2],paired = T)$p.value
+      },error=function(e) return(0))
       pval[is.na(pval)]<-1
+        
       #score4:
       # inter.length<-nrow(x)/nrep
       y<-as.character(x$interval[1])
@@ -349,7 +354,7 @@ iso.switch<-function(data.exp,
                       score4,
                       prob=score1,
                       diff=score2,
-                      cor=cor(as.numeric(data.exp[iso1,]),as.numeric(data.exp[iso2,])),
+                      cor=suppressWarnings(cor(as.numeric(data.exp[iso1,]),as.numeric(data.exp[iso2,]))),
                       row.names = NULL)
     
     iso.scores<-rbind(score,iso.scores)
@@ -518,6 +523,8 @@ iso.switch.shiny<-function(data.exp,mapping,times,rank=F,
       iso<-unlist(strsplit(iso.names[i],'_vs_'))
       iso1<-iso[1]
       iso2<-iso[2]
+      
+      # message(iso)
       #generate dataset for iso for isoform switch analysis
       n.inters<-data.frame(iso.intersections[[iso.names[i]]][,-c(1:2)])
       colnames(n.inters)<-colnames(iso.intersections[[iso.names[i]]])[-c(1:2)]
@@ -545,8 +552,12 @@ iso.switch.shiny<-function(data.exp,mapping,times,rank=F,
         x.diff<-x[,2]-x[,3]
         diff.mean<-mean(x.diff)
         # ##score3:
-        pval<-t.test(x[,3],x[,2],paired = T)$p.value
+        
+        pval <- tryCatch({
+          t.test(x[,3],x[,2],paired = T)$p.value
+        },error=function(e) return(0))
         pval[is.na(pval)]<-1
+        
         #score4:
         # inter.length<-nrow(x)/nrep
         
@@ -606,7 +617,7 @@ iso.switch.shiny<-function(data.exp,mapping,times,rank=F,
                         score4,
                         prob=score1,
                         diff=score2,
-                        cor=cor(as.numeric(data.exp[iso1,]),as.numeric(data.exp[iso2,])),
+                        cor=suppressWarnings(cor(as.numeric(data.exp[iso1,]),as.numeric(data.exp[iso2,]))),
                         row.names = NULL)
       
       iso.scores<-rbind(score,iso.scores)
