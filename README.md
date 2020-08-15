@@ -85,6 +85,8 @@ The 3D RNA-seq App docker image is hosted by the James Hutton Institute server. 
 
 ***Install dependency packages***
 
+R version required > 4.0.0
+
 ``` r
 #####################################################################################
 ## Install packages of dependency
