@@ -664,6 +664,8 @@ observeEvent(input$tstrend_make_profile_plot,{
 
 ##update heigt and width
 observe({
+  if(is.null(tstrend_g_profiles()$g.pr$data))
+    return(NULL)
   updateNumericInput(session,inputId = 'tstrend_ps_plot_width',
                      value = round((16+floor((length(unique(tstrend_g_profiles()$g.pr$data))-1)/15))/2.54,1))
 })

@@ -174,6 +174,8 @@ output$heatmap.plot.panel <- renderPlot({
 
 ##update heigt and width
 observe({
+  if(is.null(DDD.data$samples$condition))
+    return(NULL)
   updateNumericInput(session,inputId = 'heatmap.plot.width',
                      value = round(pmax(10,1.5*length(unique(DDD.data$samples$condition)))/2.54,1))
 })
@@ -640,6 +642,8 @@ observeEvent(input$make.go.plot,{
 
 ## update height
 observe({
+  if(is.null(row.height()))
+    return(NULL)
   updateNumericInput(session,inputId = 'go.plot.height',
                      value = round(pmax(10,row.height()*0.4)/2.54,1))
 })

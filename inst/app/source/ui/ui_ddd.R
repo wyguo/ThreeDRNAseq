@@ -177,7 +177,7 @@ tabItem('ddd',
               HTML('<img style="width: 100%; display: block; margin-left: auto; margin-right: auto;" 
                    src="DDD_test.png"/>'),
               hr(),
-              HTML('<p align="justify"><strong>Limma pipeline</strong> is recommended for 3D analysis. We compared different expression comparision pipelines, 
+              HTML('<p align="justify"><strong>Limma pipeline</strong> is recommended for 3D analysis. We compared different expression comparison pipelines, 
                     such as Sleuth (Pimentel et al., 2017), DESeq2 (Love et al., 2014) and EdgeR (Robinson et al., 2011), Limma is more capable
                    for complex experimental design and has more robust predictions without losing stringency (Smyth et al. 2013). At differential gene expression level, 
                    limma and edgeR have comparable performance. Sleuth and DESeq2 have no function of differential alternative splicing analysis, and 

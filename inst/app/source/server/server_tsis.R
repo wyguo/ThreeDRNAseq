@@ -96,7 +96,8 @@ output$show.method.intersection <- renderUI({
 ##---------->isokTSP or TSIS scoring------------
 observeEvent(input$scoring,{
   if(is.null(DDD.data$contrast_pw)){
-    showmessage('Please perform 3D analysis before TSIS analysis')
+    showmessage('Please check whether: (1) 3D analysis was performed or 
+                (2) "Difference of pair-wise group" was set in the window Step 2: Set contrast groups of 3D analysis')
     return(NULL)
   }
   startmessage('Score isoform switches')

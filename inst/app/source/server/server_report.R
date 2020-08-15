@@ -25,6 +25,7 @@ observeEvent(input$save_ddd_data_button,{
     DDD.data$params_list$RUVseq_method = input$RUVseq_method
     DDD.data$params_list$contrast = DDD.data$contrast
     DDD.data$params_list$DE_pipeline = input$DE_pipeline
+    DDD.data$params_list$mean_variance_method=input$mean_variance_method
     DDD.data$params_list$pval_adj_method = input$pval_adj_method
     DDD.data$params_list$pval_cut = input$pval_cut
     DDD.data$params_list$l2fc_cut = input$l2fc_cut
@@ -269,8 +270,13 @@ output$download_zip_results <- downloadHandler(
                  value = 0, {
                    incProgress(0.4)
                    startmessage('Zipping 3D results')
-                   zip(zipfile = file,files = c(file.path(DDD.data$folder,'log.txt'),DDD.data$data.folder,DDD.data$figure.folder,
-                                                DDD.data$result.folder,DDD.data$report.folder))
+                   if(file.exists(file.path(DDD.data$folder,'log.txt'))){
+                     zip(zipfile = file,files = c(file.path(DDD.data$folder,'log.txt'),DDD.data$data.folder,DDD.data$figure.folder,
+                                                  DDD.data$result.folder,DDD.data$report.folder))
+                   } else {
+                     zip(zipfile = file,files = c(DDD.data$data.folder,DDD.data$figure.folder,
+                                                  DDD.data$result.folder,DDD.data$report.folder))
+                   }
                    incProgress(0.9)
                    endmessage('Zipping 3D results')
                    showmessage('Start download')

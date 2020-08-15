@@ -41,17 +41,31 @@ score.filter<-function(scores,
     colnames(msg)<-'Warnings:'
     return(msg)
   } else {
-    scores=scores[which(scores$before.t.points>=t.points.cutoff
-                        & scores$after.t.points >= t.points.cutoff
-                        & scores$prob>prob.cutoff
-                        & scores$diff >diff.cutoff
-                        & scores$before.pval < pval.cutoff
-                        & scores$after.pval< pval.cutoff
-                        & scores$before.FDR < FDR.cutoff
-                        & scores$after.FDR< FDR.cutoff
-                        & abs(scores$cor)>cor.cutoff
-                        & scores$x.value >=x.value.limit[1]
-                        & scores$x.value <=x.value.limit[2]),]
+    if(cor.cutoff==0){
+      scores=scores[which(scores$before.t.points>=t.points.cutoff
+                          & scores$after.t.points >= t.points.cutoff
+                          & scores$prob>prob.cutoff
+                          & scores$diff >diff.cutoff
+                          & scores$before.pval < pval.cutoff
+                          & scores$after.pval< pval.cutoff
+                          & scores$before.FDR < FDR.cutoff
+                          & scores$after.FDR< FDR.cutoff
+                          & scores$x.value >=x.value.limit[1]
+                          & scores$x.value <=x.value.limit[2]),] 
+    } else {
+      scores=scores[which(scores$before.t.points>=t.points.cutoff
+                          & scores$after.t.points >= t.points.cutoff
+                          & scores$prob>prob.cutoff
+                          & scores$diff >diff.cutoff
+                          & scores$before.pval < pval.cutoff
+                          & scores$after.pval< pval.cutoff
+                          & scores$before.FDR < FDR.cutoff
+                          & scores$after.FDR< FDR.cutoff
+                          & abs(scores$cor)>cor.cutoff
+                          & scores$x.value >=x.value.limit[1]
+                          & scores$x.value <=x.value.limit[2]),]
+    }
+
     scores<-scores[order(scores[,'prob'],decreasing = T),]
     rownames(scores)<-NULL
 

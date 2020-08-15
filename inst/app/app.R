@@ -259,6 +259,13 @@ server <- function(input, output, session) {
              <li>Fix the bug in the "Time-series trend" page.</li>
              <li>Improve some parts of the GUI for easy to use. </li> 
              </ul>
+             </div>'),
+        HTML('<div align="justify"><font color="red"><strong>Update: 15/08/2020 </strong></font>
+             <ul>
+             <li>Fix bugs due to shiny R package update.</li>
+             <li>Instead of generating new dataset, a function is added to allow users to directly upload the saved
+             intermediate_data.RData object to the App. </li> 
+             </ul>
              Update history can be found in Github Wiki page: <a href="https://github.com/wyguo/ThreeDRNAseq/wiki" target="_blank">
              https://github.com/wyguo/ThreeDRNAseq/wiki</a>
              </div>')
@@ -275,7 +282,6 @@ server <- function(input, output, session) {
   
   #=======================>> 3D analysis <<============================
   source(file.path("source/server", "server_ddd.R"),local = TRUE)$value
-  
   
   #=======================>> TS trend analysis <<============================
   source(file.path("source/server", "server_tstrend.R"),local = TRUE)$value

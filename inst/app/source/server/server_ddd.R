@@ -45,7 +45,7 @@ output$factor_table <- DT::renderDataTable({
   })
   names(colour.n) <- column.idx
   # DT::datatable(x)
-  datatable(x,options = list(pageLength = 100)) %>% formatStyle(
+  datatable(x,options = list(pageLength = 25)) %>% formatStyle(
     names(x),
     backgroundColor = styleEqual(levels = unlist(values),values = unlist(colour.n))
   )
@@ -825,6 +825,8 @@ observeEvent(input$make.profile.plot,{
 
 ##update heigt and width
 observe({
+  if(is.null(g.profiles()$g.pr$data))
+    return(NULL)
   updateNumericInput(session,inputId = 'ps.plot.width',
                      value = round((16+floor((length(unique(g.profiles()$g.pr$data))-1)/15))/2.54,1))
 })
@@ -1282,6 +1284,8 @@ observeEvent(input$save_3D_euler_plot,{
   lapply(names(g.across.contrast()),function(i){
     figure.name <- paste0(DDD.data$figure.folder,'/',i,' euler plot across contrast ',
                           paste0(gsub('/','over',input$across.contrast.group),collapse = ' vs '))
+    if(nchar(figure.name)>255)
+      figure.name <- substr(figure.name,1,255)
     png(paste0(figure.name,'.png'),
         width = input$across.contrast.euler.plot.width,
         height = input$across.contrast.euler.plot.height,
@@ -1302,8 +1306,11 @@ observeEvent(input$save_3D_euler_plot,{
 observeEvent(input$save_3D_euler_plot_view, {
   title.idx <- c('DE genes','DAS genes','DE transcripts','DTU transcripts')
   file2save <- lapply(title.idx,function(i){
-    paste0(DDD.data$figure.folder,'/',i,' euler plot across contrast ',
-           paste0(gsub('/','over',input$across.contrast.group),collapse = ' vs '),'.png')
+    figure.name <- paste0(DDD.data$figure.folder,'/',i,' euler plot across contrast ',
+                          paste0(gsub('/','over',input$across.contrast.group),collapse = ' vs '))
+    if(nchar(figure.name) > 255)
+      figure.name <- substr(figure.name,1,255)
+    paste0(figure.name,'.png')
   })
   if(!all(sapply(file2save,file.exists))){
     showModal(modalDialog(
@@ -1835,6 +1842,8 @@ observeEvent(input$save_transvsAS_euler_plot,{
                                                         fill = c(input$color4_dedas_number_from,input$color4_dedas_number_to),
                                                         scale.plot = input$across.target.euler.plot.scale)
                    figure.name <- paste0(DDD.data$figure.folder,'/DE vs DAS gene euler plot in contrast ',gsub('/','over',i))
+                   if(nchar(figure.name) > 255)
+                     figure.name <- substr(figure.name,1,255)
                    png(paste0(figure.name,'.png'),
                        width = input$across.target.euler.plot.width,height = input$across.target.euler.plot.height,
                        res=input$across.target.euler.plot.res, units = 'in')
@@ -1864,6 +1873,10 @@ observeEvent(input$save_transvsAS_euler_plot,{
                    g.across.target2 <- plotEulerDiagram(x = x,fill = gg.color.hue(2),
                                                         scale.plot = input$across.target.euler.plot.scale)
                    figure.name <- paste0(DDD.data$figure.folder,'/DE vs DTU transcript euler plot in contrast ', gsub('/','over',i))
+                   
+                   if(nchar(figure.name) > 255)
+                     figure.name <- substr(figure.name,1,255)
+                   
                    png(paste0(figure.name,'.png'),
                        width = input$across.target.euler.plot.width,height = input$across.target.euler.plot.height,
                        res=input$across.target.euler.plot.res, units = 'in')
@@ -1900,10 +1913,18 @@ observeEvent(input$save_transvsAS_euler_plot,{
 observeEvent(input$save_transvsAS_euler_plot_view, {
   
   file2save1 <- lapply(DDD.data$contrast,function(i){
-    paste0(DDD.data$figure.folder,'/DE vs DAS gene euler plot in contrast ', gsub('/','over',i),'.png')
+    figure.name <- paste0(DDD.data$figure.folder,'/DE vs DAS gene euler plot in contrast ', gsub('/','over',i))
+    
+    if(nchar(figure.name) > 255)
+      figure.name <- substr(figure.name,1,255)
+    paste0(figure.name,'.png')
   })
   file2save2 <- lapply(DDD.data$contrast,function(i){
-    paste0(DDD.data$figure.folder,'/DE vs DTU transcript euler plot in contrast ', gsub('/','over',i),'.png')
+    figure.name <- paste0(DDD.data$figure.folder,'/DE vs DTU transcript euler plot in contrast ', gsub('/','over',i))
+    
+    if(nchar(figure.name) > 255)
+      figure.name <- substr(figure.name,1,255)
+    paste0(figure.name,'.png')
   })
   if(!all(sapply(file2save1,file.exists)) | !all(sapply(file2save2,file.exists)) | is.null(DDD.data$contrast)){
     showModal(modalDialog(

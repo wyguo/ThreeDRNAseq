@@ -10,23 +10,23 @@ tabItem("generation",
           ),
         uiOutput('show_how_to_generate_data'),
         ###upload intermediate data is disabled
-        # fluidRow(
-        #   ##----------Step 2: How to generate data of analysis?------------
-        #   box(title = 'How to generate data of analysis?',
-        #       width=6,status = 'primary', solidHeader = T,
-        #       column(12,
-        #              # wellPanel(
-        #              # style = "background-color: #ffffff;",
-        #              radioButtons(inputId = 'generate_new_data',label = 'How to generate data?',
-        #                           choices = c('Generate new data','Upload intermediate data'),selected = 'Generate new data',inline = T),
-        #              uiOutput('upload_data_ui'),
-        #              HTML('<h5 align="justify">If you have already run the 3D RNA-seq analysis once and the intermediate data has been saved as
-        #                   "intermediate_data.RData" object, which can be uploaded here. <font color="red"><strong>By doing this, you can skip the following
-        #                   data genertion steps and visualise/redo the analysis directly from "Data pre-processing" until to "Generate report" step.</strong></font></h4>')
-        #              # )
-        #              )
-        #       )
-        #   ),
+        fluidRow(
+          ##----------Step 2: How to generate data of analysis?------------
+          box(title = 'How to generate data of analysis?',
+              width=6,status = 'primary', solidHeader = T,
+              column(12,
+                     # wellPanel(
+                     # style = "background-color: #ffffff;",
+                     radioButtons(inputId = 'generate_new_data',label = 'How to generate data?',
+                                  choices = c('Generate new data','Upload intermediate data'),selected = 'Generate new data',inline = T),
+                     uiOutput('upload_data_ui'),
+                     HTML('<h5 align="justify">If you have already run the 3D RNA-seq analysis once and the intermediate data has been saved as
+                          "intermediate_data.RData" object, which can be uploaded here. <font color="red"><strong>By doing this, you can skip the following
+                          data genertion steps and visualise/redo the analysis directly from "Data pre-processing" until to "Generate report" step.</strong></font></h4>')
+                     # )
+                     )
+              )
+          ),
         fluidRow(
           ##----------Step 3: Inputs of 3D analysis------------
           box(title = 'Step 1: Input data of 3D analysis',
