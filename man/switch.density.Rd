@@ -4,8 +4,15 @@
 \alias{switch.density}
 \title{Density plot}
 \usage{
-switch.density(x, time.points, make.plotly = T, plot.type = "density",
-  show.line = T, title = "Density of switch points", ...)
+switch.density(
+  x,
+  time.points,
+  make.plotly = T,
+  plot.type = "density",
+  show.line = T,
+  title = "Density of switch points",
+  ...
+)
 }
 \arguments{
 \item{x}{a numeric vector to plot th density.}

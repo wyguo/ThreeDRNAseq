@@ -10,8 +10,14 @@ DEvsDAS(DE_genes, DAS_genes, contrast, consensus = F)
 
 DEvsDTU(DE_trans, DTU_trans, contrast, consensus = F)
 
-summary3Dnumber(DE_genes, DAS_genes, DE_trans, DTU_trans, contrast,
-  consensus = F)
+summary3Dnumber(
+  DE_genes,
+  DAS_genes,
+  DE_trans,
+  DTU_trans,
+  contrast,
+  consensus = F
+)
 }
 \arguments{
 \item{DE_genes, DAS_genes, DE_trans, DTU_trans}{data.frame objects of DE genes, DAS genes, DE transcripts and DTU transcripts,

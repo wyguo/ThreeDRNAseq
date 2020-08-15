@@ -4,8 +4,13 @@
 \alias{transAbundance2PS}
 \title{Calculate transcript PS (percent spliced) and \eqn{\Delta}PS from abundance}
 \usage{
-transAbundance2PS(transAbundance = NULL, PS = NULL, contrast,
-  condition, mapping)
+transAbundance2PS(
+  transAbundance = NULL,
+  PS = NULL,
+  contrast,
+  condition,
+  mapping
+)
 }
 \arguments{
 \item{transAbundance}{matrix of transcript level abundance, e.g. TPM and read count exprssion.}

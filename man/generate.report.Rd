@@ -4,8 +4,11 @@
 \alias{generate.report}
 \title{Generate html, pdf and word report from Rmd (RMardkown) file}
 \usage{
-generate.report(input.Rmd, report.folder, type = c("all",
-  "html_document", "pdf_document", "word_document"))
+generate.report(
+  input.Rmd,
+  report.folder,
+  type = c("all", "html_document", "pdf_document", "word_document")
+)
 }
 \arguments{
 \item{input.Rmd}{the Rmd file used to generate the report.}

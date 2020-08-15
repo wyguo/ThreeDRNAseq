@@ -4,8 +4,14 @@
 \alias{plotTSISnumber}
 \title{Barplot of switch numbers across time-points}
 \usage{
-plotTSISnumber(x, time.points, angle = 0, hjust = 0.5, vjust = 0.5,
-  fill = "dodgerblue3")
+plotTSISnumber(
+  x,
+  time.points,
+  angle = 0,
+  hjust = 0.5,
+  vjust = 0.5,
+  fill = "dodgerblue3"
+)
 }
 \arguments{
 \item{x}{a numeric vector of isoform switch x-axis coordinates}

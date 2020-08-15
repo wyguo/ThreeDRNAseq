@@ -6,15 +6,41 @@
 \alias{iso.switch.pairwise}
 \title{Isoform switch analysis for time-series data}
 \usage{
-iso.switch(data.exp, mapping, times, rank = F, min.t.points = 2,
-  min.difference = 1, spline = F, spline.df = NULL, verbose = T)
+iso.switch(
+  data.exp,
+  mapping,
+  times,
+  rank = F,
+  min.t.points = 2,
+  min.difference = 1,
+  spline = F,
+  spline.df = NULL,
+  verbose = T
+)
 
-iso.switch.shiny(data.exp, mapping, times, rank = F, min.t.points = 2,
-  min.difference = 1, spline = F, spline.df = NULL, verbose = T)
+iso.switch.shiny(
+  data.exp,
+  mapping,
+  times,
+  rank = F,
+  min.t.points = 2,
+  min.difference = 1,
+  spline = F,
+  spline.df = NULL,
+  verbose = T
+)
 
-iso.switch.pairwise(data.exp = TSIS.tpm, mapping = TSIS.mapping,
-  times = times, rank = F, min.difference = 1, spline = F,
-  spline.df = 9, verbose = T, shiny = F)
+iso.switch.pairwise(
+  data.exp = TSIS.tpm,
+  mapping = TSIS.mapping,
+  times = times,
+  rank = F,
+  min.difference = 1,
+  spline = F,
+  spline.df = 9,
+  verbose = T,
+  shiny = F
+)
 }
 \arguments{
 \item{data.exp}{Time-series isoform expression data with first row indicating the replicate labels and second row indicating the time points. The remained lines are isoform names in the first column followed by the expression values. All the replicates for each time point should be grouped together and the time points follow the sequential order.}

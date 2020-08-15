@@ -4,13 +4,31 @@
 \alias{plotTSIS}
 \title{Plot time-series switches of a pair of isoforms}
 \usage{
-plotTSIS(data2plot, scores = NULL, iso1 = NULL, iso2 = NULL,
-  gene.name = NULL, y.lab = "Expression", make.plotly = F, times,
-  prob.cutoff = 0.5, x.lower.boundary = 9, x.upper.boundary = 17,
-  show.region = T, show.scores = T, error.type = "stderr",
-  show.errorbar = T, errorbar.width = 0.03, errorbar.size = 0.5,
-  line.width = 1, point.size = 3, marker.size = 1, spline = F,
-  spline.df = NULL, ribbon.plot = F)
+plotTSIS(
+  data2plot,
+  scores = NULL,
+  iso1 = NULL,
+  iso2 = NULL,
+  gene.name = NULL,
+  y.lab = "Expression",
+  make.plotly = F,
+  times,
+  prob.cutoff = 0.5,
+  x.lower.boundary = 9,
+  x.upper.boundary = 17,
+  show.region = T,
+  show.scores = T,
+  error.type = "stderr",
+  show.errorbar = T,
+  errorbar.width = 0.03,
+  errorbar.size = 0.5,
+  line.width = 1,
+  point.size = 3,
+  marker.size = 1,
+  spline = F,
+  spline.df = NULL,
+  ribbon.plot = F
+)
 }
 \arguments{
 \item{data2plot}{the transcript isoform expression data for switch plots with rows of isoforms and columns of samples. See \code{TSIS.data$data.exp} for details.}

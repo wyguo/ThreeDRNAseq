@@ -4,8 +4,14 @@
 \alias{summaryStat}
 \title{Merge two testing statistics}
 \usage{
-summaryStat(x, y, target, contrast = NULL, stat.type = c("adj.pval",
-  "lfc"), srot.by = stat.type[1])
+summaryStat(
+  x,
+  y,
+  target,
+  contrast = NULL,
+  stat.type = c("adj.pval", "lfc"),
+  srot.by = stat.type[1]
+)
 }
 \arguments{
 \item{x, y}{data.frame object of statistics (e.g. p-values, log2-fold changes, deltaPS), with rows of targets and

@@ -19,13 +19,11 @@ a list of three elements: "x.only", "xy" and "y.only".
 Generate all possible logical relations between set x and y.
 }
 \examples{
-library(gridExtra)
 x <- letters[1:10]
 y <- letters[5:15]
 z <- set2(x,y)
 combo <- c(x=length(z$x.only),y=length(z$y.only),"x&y"=length(z$xy))
-g <- plotEulerDiagram(combo)
-grid.draw(g)
+plotEulerDiagram(combo)
 
 }
 \seealso{

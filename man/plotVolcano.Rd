@@ -4,8 +4,16 @@
 \alias{plotVolcano}
 \title{Volcano plot}
 \usage{
-plotVolcano(data2plot, xlab, ylab, title = "Volcano plot",
-  col0 = "black", col1 = "red", size = 1, top.n = 10)
+plotVolcano(
+  data2plot,
+  xlab,
+  ylab,
+  title = "Volcano plot",
+  col0 = "black",
+  col1 = "red",
+  size = 1,
+  top.n = 10
+)
 }
 \arguments{
 \item{data2plot}{a dataframe with a column of "target" names, a column of x coordinates, a column of y coordinates and

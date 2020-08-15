@@ -4,10 +4,17 @@
 \alias{plotMeanVariance}
 \title{Plot the mean-variance trend}
 \usage{
-plotMeanVariance(x, y, l, fit.line.col = "red",
+plotMeanVariance(
+  x,
+  y,
+  l,
+  fit.line.col = "red",
   x.lab = "log2( count size + 0.5 )",
-  y.lab = "Sqrt(standard deviation)", main = "Mean-variance trend",
-  lwd = 1.5, ...)
+  y.lab = "Sqrt(standard deviation)",
+  main = "Mean-variance trend",
+  lwd = 1.5,
+  ...
+)
 }
 \arguments{
 \item{x}{a numeric vector of mean value from the results of \code{\link{trend.mean.variance}}.}

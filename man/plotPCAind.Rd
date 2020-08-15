@@ -4,9 +4,16 @@
 \alias{plotPCAind}
 \title{Make principal component analysis (PCA) plot of individual samples}
 \usage{
-plotPCAind(data2pca, dim1 = "PC1", dim2 = "PC2", groups,
-  plot.title = "PCA plot", ellipse.type = c("none", "ellipse",
-  "polygon"), add.label = T, adj.label = F)
+plotPCAind(
+  data2pca,
+  dim1 = "PC1",
+  dim2 = "PC2",
+  groups,
+  plot.title = "PCA plot",
+  ellipse.type = c("none", "ellipse", "polygon"),
+  add.label = T,
+  adj.label = F
+)
 }
 \arguments{
 \item{data2pca}{a matrix/data.frame to make the PCA plot of which the rows are defined individuals to plot.}

@@ -4,8 +4,14 @@
 \alias{low.expression.filter}
 \title{Filter low expressed transcripts and genes}
 \usage{
-low.expression.filter(abundance, mapping, abundance.cut = 1,
-  sample.n = 3, Log = F, unit = c("counts", "TPM"))
+low.expression.filter(
+  abundance,
+  mapping,
+  abundance.cut = 1,
+  sample.n = 3,
+  Log = F,
+  unit = c("counts", "TPM")
+)
 }
 \arguments{
 \item{abundance}{a data.frame/matrix of read counts/TPMs at transcript level.}

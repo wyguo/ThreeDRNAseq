@@ -4,8 +4,7 @@
 \alias{TSgroup2contrast}
 \title{Generate contrast groups of time-series trend test}
 \usage{
-TSgroup2contrast(Group, Time, Intercept = list(Time = NULL, Group =
-  NULL))
+TSgroup2contrast(Group, Time, Intercept = list(Time = NULL, Group = NULL))
 }
 \description{
 Generate contrast groups of time-series trend test

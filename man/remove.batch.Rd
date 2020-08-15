@@ -4,9 +4,17 @@
 \alias{remove.batch}
 \title{Estimate batch effects between biological replicates}
 \usage{
-remove.batch(read.counts, condition, design = NULL, contrast = NULL,
-  group = NULL, method = c("RUVr", "RUVg", "RUVs"), cIdx = NULL,
-  k = 1, ...)
+remove.batch(
+  read.counts,
+  condition,
+  design = NULL,
+  contrast = NULL,
+  group = NULL,
+  method = c("RUVr", "RUVg", "RUVs"),
+  cIdx = NULL,
+  k = 1,
+  ...
+)
 }
 \arguments{
 \item{read.counts}{data.frame/matrix of read counts.}

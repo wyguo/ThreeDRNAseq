@@ -5,17 +5,43 @@
 \alias{plotPS}
 \title{Plot gene and transcript expression profiles}
 \usage{
-plotAbundance(data.exp, gene, mapping, genes.ann = NULL,
-  trans.ann = NULL, trans.expressed = NULL, trans.highlight = NULL,
-  reps, groups = NULL, sliceProfile = F, x.lab = "Conditions",
-  y.lab = "TPM", marker.size = 3, legend.text.size = 11,
-  error.type = "stderr", error.bar = T, show.annotation = T,
-  plot.gene = T)
+plotAbundance(
+  data.exp,
+  gene,
+  mapping,
+  genes.ann = NULL,
+  trans.ann = NULL,
+  trans.expressed = NULL,
+  trans.highlight = NULL,
+  reps,
+  groups = NULL,
+  sliceProfile = F,
+  x.lab = "Conditions",
+  y.lab = "TPM",
+  marker.size = 3,
+  legend.text.size = 11,
+  error.type = "stderr",
+  error.bar = T,
+  show.annotation = T,
+  plot.gene = T
+)
 
-plotPS(data.exp, gene, mapping, genes.ann = NULL, trans.ann = NULL,
-  trans.expressed = NULL, reps, groups = NULL, sliceProfile = F,
-  y.lab = "TPM", x.lab = "Conditions", marker.size = 3,
-  legend.text.size = 11, show.annotation = T)
+plotPS(
+  data.exp,
+  gene,
+  mapping,
+  genes.ann = NULL,
+  trans.ann = NULL,
+  trans.expressed = NULL,
+  reps,
+  groups = NULL,
+  sliceProfile = F,
+  y.lab = "TPM",
+  x.lab = "Conditions",
+  marker.size = 3,
+  legend.text.size = 11,
+  show.annotation = T
+)
 }
 \arguments{
 \item{data.exp}{a data.frame of transcript level expression, e.g. read counts and TPM.}

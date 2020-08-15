@@ -4,10 +4,22 @@
 \alias{plotFlowChart}
 \title{Plot flow-chart graph of DE and DAS results}
 \usage{
-plotFlowChart(expressed, x, y, type = c("genes", "transcripts"),
-  pval.cutoff = 0.01, lfc.cutoff = 1, deltaPS.cutoff = 0.1,
-  shadow.dist = 0.7, width.adj = 12, height.adj = 8, text.cex = 1,
-  line.lwd = 2, border.lwd = 1.5, plot.title = NULL)
+plotFlowChart(
+  expressed,
+  x,
+  y,
+  type = c("genes", "transcripts"),
+  pval.cutoff = 0.01,
+  lfc.cutoff = 1,
+  deltaPS.cutoff = 0.1,
+  shadow.dist = 0.7,
+  width.adj = 12,
+  height.adj = 8,
+  text.cex = 1,
+  line.lwd = 2,
+  border.lwd = 1.5,
+  plot.title = NULL
+)
 }
 \arguments{
 \item{expressed}{a vector of expressed genes/transcripts.}

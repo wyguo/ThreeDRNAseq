@@ -4,8 +4,7 @@
 \alias{check.mean.variance}
 \title{Compare expression mean-variance trends before and after low expression filters.}
 \usage{
-check.mean.variance(counts.raw, counts.filtered, condition, span = 0.5,
-  ...)
+check.mean.variance(counts.raw, counts.filtered, condition, span = 0.5, ...)
 }
 \arguments{
 \item{counts.raw}{a matrix/data.frame of raw read counts before low expression filters.}

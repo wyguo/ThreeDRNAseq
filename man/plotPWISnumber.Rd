@@ -4,8 +4,7 @@
 \alias{plotPWISnumber}
 \title{Barplot of switch numbers in contrast groups}
 \usage{
-plotPWISnumber(x, angle = 0, hjust = 0.5, vjust = 0.5,
-  fill = "dodgerblue3")
+plotPWISnumber(x, angle = 0, hjust = 0.5, vjust = 0.5, fill = "dodgerblue3")
 }
 \arguments{
 \item{x}{a data frame with first column of contrast groups and second column of isoform switch numbers in the contrast groups}

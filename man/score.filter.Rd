@@ -4,11 +4,21 @@
 \alias{score.filter}
 \title{Filtering the scores for isoform switch}
 \usage{
-score.filter(scores, prob.cutoff = 0.5, diff.cutoff = 1,
-  t.points.cutoff = 2, pval.cutoff = 0.01, FDR.cutoff = 0.01,
-  cor.cutoff = 0.5, data.exp = NULL, mapping = NULL,
-  sub.isoform.list = NULL, sub.isoform = F, max.ratio = F,
-  x.value.limit = c(9, 17))
+score.filter(
+  scores,
+  prob.cutoff = 0.5,
+  diff.cutoff = 1,
+  t.points.cutoff = 2,
+  pval.cutoff = 0.01,
+  FDR.cutoff = 0.01,
+  cor.cutoff = 0.5,
+  data.exp = NULL,
+  mapping = NULL,
+  sub.isoform.list = NULL,
+  sub.isoform = F,
+  max.ratio = F,
+  x.value.limit = c(9, 17)
+)
 }
 \arguments{
 \item{scores}{the scores object output from \code{\link{iso.switch}}.}

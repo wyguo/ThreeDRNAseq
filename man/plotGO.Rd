@@ -4,8 +4,13 @@
 \alias{plotGO}
 \title{Bar plot of GO annotation}
 \usage{
-plotGO(go.table, col.idx, plot.title = "GO annotation",
-  go.text.cut = 50, legend.position = "right")
+plotGO(
+  go.table,
+  col.idx,
+  plot.title = "GO annotation",
+  go.text.cut = 50,
+  legend.position = "right"
+)
 }
 \arguments{
 \item{go.table}{a data.frame of GO annotation table, with first column "Category" (i.e. BP, CC and MF),
