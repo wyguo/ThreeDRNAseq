@@ -293,7 +293,7 @@ Input files
         for transcript quantification with Salmon/Kallisto. Transcript
         names and gene IDs will be extracted the description line
         starting with “\>” in the “fasta” file. However, if the “gene”
-        tag in the discription line is missing, this file is invalid
+        tag in the description line is missing, this file is invalid
         (<a href='#fig_input_csv'>Figure 1D</a>).
     -   Or a “gtf” file of the transcriptome. Transcript names and gene
         IDs will be extracted from the “transcript\_id” and “gene\_id”
