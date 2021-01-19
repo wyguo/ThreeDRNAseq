@@ -7,8 +7,8 @@ tabItem("introduction",
                      # DT::dataTableOutput("info")
                      HTML('<img style="width: 40%; display: block; margin-left: auto; margin-right: auto;" src="logo.png"/>'),
                      br(),
-                     HTML('<div align="center"><iframe width="800" height="450" src="https://www.youtube.com/embed/rqeXECX1-T4" 
-                          frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+                     HTML('<div align="center"><iframe width="800" height="450" src="https://www.youtube.com/embed/rqeXECX1-T4"
+                          frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                           allowfullscreen></iframe></div>'),
                      HTML('<div align="justify">
                           <h3>Licence </h3>
@@ -16,14 +16,14 @@ tabItem("introduction",
                           <ul>
                           <li>Open source under GPLV3.0. For academic and non-commercial use, it is free.</li>
                           <li>For commercial use, please get in touch to obtain commercial licenses. <a href="#how-to-get-help">Contact us</a></li>
-                          </ul> 
+                          </ul>
                           </div>'),
                      HTML('<div align="justify">
                           <h3>Citation</h3>
                           <ul>
                           <li>Guo,W., Tzioutziou,N., Stephen,G., Milne,I., Calixto,C., Waugh,R., Brown,J.W., and Zhang,R. (2019) 3D RNA-seq - a powerful and flexible tool for rapid and accurate differential expression and alternative splicing analysis of RNA-seq data for biologists. bioRxiv, 656686. doi: <a href="https://doi.org/10.1101/656686" target="_blank">https://doi.org/10.1101/656686</a>.</li>
                           <li>Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C., Panter,P.E., Knight,H., Nimmo,H.G., Zhang,R., and Brown,J.W.S. (2018) Rapid and Dynamic Alternative Splicing Impacts the Arabidopsis Cold Response Transcriptome. Plant Cell, 30, 1424-1444.</li>
-                          </ul> 
+                          </ul>
                           </div>'),
                      HTML('<h3>Report issues & feedback </h3>
                           If you have questions to raise or are experiencing difficulties using the 3D RNA-seq, please use the <a href="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_App_manual.md" target="_blank">3D RNA-seq user group.</a>'),
@@ -105,13 +105,13 @@ tabItem("introduction",
                           <ul>
                           <li>Bray,N.L., Pimentel,H., Melsted,P., and Pachter,L. (2016) Near-optimal probabilistic RNA-seq quantification. Nat. Biotechnol., 34, 525-527.</li>
                           <li>Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C., Panter,P.E., Knight,H., Nimmo,H.G., Zhang,R., and Brown,J.W.S. (2018) Rapid and Dynamic Alternative Splicing Impacts the Arabidopsis Cold Response Transcriptome. Plant Cell, 30, 1424-1444.</li>
-                          <li>Guo,W., Tzioutziou,N., Stephen,G., Milne,I., Calixto,C., Waugh,R., Brown,J.W., and Zhang,R. (2019) 3D RNA-seq - a powerful and flexible tool for rapid and accurate differential expression and alternative splicing analysis of RNA-seq data for biologists. bioRxiv, 656686. doi: https://doi.org/10.1101/656686.</li>
+                          <li>Guo,W. et al. (2020) 3D RNA-seq: a powerful and flexible tool for rapid and accurate differential expression and alternative splicing analysis of RNA-seq data for biologists. RNA Biol., 00, 1–14.</li>
                           <li>Patro,R., Duggal,G., Love,M.I., Irizarry,R.A., and Kingsford,C. (2017) Salmon provides fast and bias-aware quantification of transcript expression. Nat. Methods, 14, 417-419.</li>
                           <li>Ritchie,M.E., Phipson,B., Wu,D., Hu,Y., Law,C.W., Shi,W., and Smyth,G.K. (2015) limma powers differential expression analyses for RNA-sequencing and microarray studies. Nucleic Acids Res, 43, e47.</li>
                           <li>Robinson,M.D., McCarthy,D.J., and Smyth,G.K. (2010) edgeR: a Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics, 26, 139-40.</li>
                           </ul>
                           </div>
-                          </div>          
+                          </div>
                           ')
                  )
           )
