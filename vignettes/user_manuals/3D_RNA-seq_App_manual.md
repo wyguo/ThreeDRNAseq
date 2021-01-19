@@ -61,12 +61,7 @@ Citation
 
 To use our pipeline in your work, please cite:
 
--   Guo,W., Tzioutziou,N., Stephen,G., Milne,I., Calixto,C., Waugh,R.,
-    Brown,J.W., and Zhang,R. (2019) 3D RNA-seq - a powerful and flexible
-    tool for rapid and accurate differential expression and alternative
-    splicing analysis of RNA-seq data for biologists. bioRxiv, 656686.
-    doi:
-    <a href="https://doi.org/10.1101/656686" class="uri">https://doi.org/10.1101/656686</a>.
+-   Guo,W. et al. (2020) 3D RNA-seq: a powerful and flexible tool for rapid and accurate differential      expression and alternative splicing analysis of RNA-seq data for biologists. RNA Biol., 00, 1–14.
 -   Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C.,
     Panter,P.E., Knight,H., Nimmo,H.G., Zhang,R., and
     Brown,J.W.S. (2018) Rapid and Dynamic Alternative Splicing Impacts
@@ -1164,11 +1159,7 @@ Guo,W., Calixto,C.P.G., Brown,J.W.S., and Zhang,R. (2017) TSIS: An R
 package to infer alternative splicing isoform switches for time-series
 data. Bioinformatics, 33, 3308–3310.
 
-Guo,W., Tzioutziou,N., Stephen,G., Milne,I., Calixto,C., Waugh,R.,
-Brown,J.W., and Zhang,R. (2019) 3D RNA-seq - a powerful and flexible
-tool for rapid and accurate differential expression and alternative
-splicing analysis of RNA-seq data for biologists. bioRxiv, 656686. doi:
-<a href="https://doi.org/10.1101/656686" class="uri">https://doi.org/10.1101/656686</a>.
+Guo,W. et al. (2020) 3D RNA-seq: a powerful and flexible tool for rapid and accurate differential expression and alternative splicing analysis of RNA-seq data for biologists. RNA Biol., 00, 1–14.
 
 Law,C.W., Chen,Y., Shi,W., and Smyth,G.K. (2014) voom: Precision weights
 unlock linear model analysis tools for RNA-seq read counts. Genome Biol,
