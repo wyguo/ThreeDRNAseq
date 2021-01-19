@@ -174,7 +174,7 @@ Panter,P.E., Knight,H., Nimmo,H.G., Zhang,R., and Brown,J.W.S. (2018)
 Rapid and Dynamic Alternative Splicing Impacts the Arabidopsis Cold
 Response Transcriptome. Plant Cell, 30, 1424–1444.
 
-Guo,W. et al. (2020) 3D RNA-seq: a powerful and flexible tool for rapid and accurate differential expression and alternative splicing analysis of RNA-seq data for biologists. RNA Biol., 00, 1–14.
+Guo,W. et al. (2020) 3D RNA-seq: a powerful and flexible tool for rapid and accurate differential expression and alternative splicing analysis of RNA-seq data for biologists. RNA Biol., DOI: 10.1080/15476286.2020.1858253.
 
 Patro,R., Duggal,G., Love,M.I., Irizarry,R.A., and Kingsford,C. (2017)
 Salmon provides fast and bias-aware quantification of transcript

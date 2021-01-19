@@ -21,7 +21,7 @@ tabItem("introduction",
                      HTML('<div align="justify">
                           <h3>Citation</h3>
                           <ul>
-                          <li>Guo,W., Tzioutziou,N., Stephen,G., Milne,I., Calixto,C., Waugh,R., Brown,J.W., and Zhang,R. (2019) 3D RNA-seq - a powerful and flexible tool for rapid and accurate differential expression and alternative splicing analysis of RNA-seq data for biologists. bioRxiv, 656686. doi: <a href="https://doi.org/10.1101/656686" target="_blank">https://doi.org/10.1101/656686</a>.</li>
+                          <li>Guo,W. et al. (2020) 3D RNA-seq: a powerful and flexible tool for rapid and accurate differential expression and alternative splicing analysis of RNA-seq data for biologists. RNA Biol., DOI: 10.1080/15476286.2020.1858253.</li>
                           <li>Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C., Panter,P.E., Knight,H., Nimmo,H.G., Zhang,R., and Brown,J.W.S. (2018) Rapid and Dynamic Alternative Splicing Impacts the Arabidopsis Cold Response Transcriptome. Plant Cell, 30, 1424-1444.</li>
                           </ul>
                           </div>'),

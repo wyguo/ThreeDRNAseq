@@ -46,7 +46,7 @@ Description
 
 The ThreeDRNAseq (3D RNA-seq) R package provides an interactive graphical user interface (GUI) for RNA-seq data analysis using accurate quantification of RNA-seq reads. It allows users to perform differential expression (DE), differential alternative splicing (DAS) and differential transcript usage (DTU) (3D) analyses based on a popular pipeline limma (Ritchie et al., 2015). The 3D RNA-seq GUI is based on R shiny App and enables a complete RNA-seq analysis to be done within only 3 Days (3D). To use our pipeline in your work, please cite:
 
-- Guo,W. et al. (2020) 3D RNA-seq: a powerful and flexible tool for rapid and accurate differential expression and alternative splicing analysis of RNA-seq data for biologists. RNA Biol., 00, 1–14.
+- Guo,W. et al. (2020) 3D RNA-seq: a powerful and flexible tool for rapid and accurate differential expression and alternative splicing analysis of RNA-seq data for biologists. RNA Biol., DOI: 10.1080/15476286.2020.1858253.
 - Calixto,C.P.G., Guo,W., James,A.B., Tzioutziou,N.A., Entizne,J.C., Panter,P.E., Knight,H., Nimmo,H.G., Zhang,R., and Brown,J.W.S. (2018) Rapid and Dynamic Alternative Splicing Impacts the Arabidopsis Cold Response Transcriptome. Plant Cell, 30, 1424–1444.
 
 User group
