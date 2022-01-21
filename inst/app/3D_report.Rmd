@@ -441,6 +441,73 @@ if(!file.exists(fig2insert)){
 }
 ```
 
+
+```{r conditional_block_tstrend_method_de_genes_title, echo=FALSE, results='asis', eval=whether_tstrend}
+cat('Figure: Heatmap of TS DE trend genes.\n')
+```
+
+```{r conditional_block_tstrend_method_de_genes_figure, echo=FALSE, results='asis', eval=whether_tstrend}
+files <- list.files(DDD.data$figure.folder)
+fig2insert <- file.path(DDD.data$figure.folder,
+                        files[grep(pattern = 'TS DE trend genes in contrast All.png',files)])
+## DTU transcripts
+if(!file.exists(fig2insert)){
+  cat('Plot is not found in the figure folder')
+} else {
+  knitr::include_graphics(fig2insert)
+}
+```
+
+
+```{r conditional_block_tstrend_method_das_genes_title, echo=FALSE, results='asis', eval=whether_tstrend}
+cat('Figure: Heatmap of TS DAS trend genes.\n')
+```
+
+```{r conditional_block_tstrend_method_das_genes_figure, echo=FALSE, results='asis', eval=whether_tstrend}
+files <- list.files(DDD.data$figure.folder)
+fig2insert <- file.path(DDD.data$figure.folder,
+                        files[grep(pattern = 'TS DAS trend genes in contrast All.png',files)])
+## DTU transcripts
+if(!file.exists(fig2insert)){
+  cat('Plot is not found in the figure folder')
+} else {
+  knitr::include_graphics(fig2insert)
+}
+```
+
+```{r conditional_block_tstrend_method_de_trans_title, echo=FALSE, results='asis', eval=whether_tstrend}
+cat('Figure: Heatmap of TS DE trend transcripts.\n')
+```
+
+```{r conditional_block_tstrend_method_de_trans_figure, echo=FALSE, results='asis', eval=whether_tstrend}
+files <- list.files(DDD.data$figure.folder)
+fig2insert <- file.path(DDD.data$figure.folder,
+                        files[grep(pattern = 'TS DE trend transcripts in contrast All.png',files)])
+## DTU transcripts
+if(!file.exists(fig2insert)){
+  cat('Plot is not found in the figure folder')
+} else {
+  knitr::include_graphics(fig2insert)
+}
+```
+
+
+```{r conditional_block_tstrend_method_dtu_trans_title, echo=FALSE, results='asis', eval=whether_tstrend}
+cat('Figure: Heatmap of TS DTU trend transcripts.\n')
+```
+
+```{r conditional_block_tstrend_method_dtu_trans_figure, echo=FALSE, results='asis', eval=whether_tstrend}
+files <- list.files(DDD.data$figure.folder)
+fig2insert <- file.path(DDD.data$figure.folder,
+                        files[grep(pattern = 'TS DTU trend transcripts in contrast All.png',files)])
+## DTU transcripts
+if(!file.exists(fig2insert)){
+  cat('Plot is not found in the figure folder')
+} else {
+  knitr::include_graphics(fig2insert)
+}
+```
+
 ### GO annotation plot
 
 Figure: Significant GO enriched terms of DE genes.
