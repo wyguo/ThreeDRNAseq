@@ -351,9 +351,9 @@ observeEvent(input$run_3d_tstrend,{
 
   if(input$tstrend_spline == 'Yes'){
     time.points <- as.numeric(factor(time.points,levels = unique(time.points)))
-    Time <- splines::ns(time.points, df=pmin(2,df=input$tstrend_spline_df))
+    Time <- splines::ns(time.points, df=pmax(2,df=input$tstrend_spline_df))
     colnames(Time) <- paste0('ns',1:ncol(Time))
-    DDD.data$tstrend_spline_df <- pmin(2,df=input$tstrend_spline_df)
+    DDD.data$tstrend_spline_df <- pmax(2,df=input$tstrend_spline_df)
   } else {
     Time <- time.points
   }
