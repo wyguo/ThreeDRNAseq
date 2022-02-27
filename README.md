@@ -39,6 +39,8 @@ To see a demo video, click the screenshot
   <img alt="Youtube video" src="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_App_figure/youtube.png"/>
 </a>
 
+Alternative link on Bilibili: <a href="https://www.bilibili.com/video/BV1mS4y1g7uB/ ">https://www.bilibili.com/video/BV1mS4y1g7uB/</a>
+
 <hr>
 
 Description
