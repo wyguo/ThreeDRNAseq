@@ -41,8 +41,6 @@ To see a demo video, click the screenshot
 
 Alternative link on Bilibili: <a href="https://www.bilibili.com/video/BV1mS4y1g7uB/ ">https://www.bilibili.com/video/BV1mS4y1g7uB/</a>
 
-<iframe src="//player.bilibili.com/player.html?aid=679491148&bvid=BV1mS4y1g7uB&cid=518448216&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
-
 <hr>
 
 Description
