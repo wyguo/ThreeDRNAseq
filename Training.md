@@ -10,6 +10,9 @@ Click “Download” and unzip, you will get three datasets:
   - Arabidopsis_cold: example data for hand-on session
   - Embryonic_mice: example data for practice
 
+Arabidopsis data in different format:
+https://www.dropbox.com/s/w21l4hqyg51m60r/Arabidopsis_cold.zip?dl=0
+
 ### Transcript quantification using Galaxy
 
   - Galaxy Europe link: https://usegalaxy.eu/ 
