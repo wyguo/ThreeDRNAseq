@@ -22,8 +22,6 @@ Table of contents
 -   [Capability of 3D RNA-seq](#capability-of-3d-rna-seq)
 -   [Run 3D RNA-seq App](#run-3d-rna-seq-app)
     -   [Shiny docker image (no installation)](#shiny-docker-image-no-installation)
-    # -   [Shiny App through RStudio (R users, installation required)](#shiny-app-through-rstudio-r-users-installation-required)
-    # -   [R command line (advanced R users, installation required)](#r-command-line-advanced-r-users-installation-required)
 -   [How to get help](#how-to-get-help)
 -   [Pipeline of 3D RNA-seq App](#pipeline-of-3d-rna-seq-app)
 -   [References](#references)
@@ -80,77 +78,7 @@ User manual:
 The 3D RNA-seq App docker image is hosted by the James Hutton Institute server. Open the App by this link: <a href="https://ics.hutton.ac.uk/3drnaseq" target="_blank">https://ics.hutton.ac.uk/3drnaseq </a>
 
 **To perform 3D analysis, no installation is required. Users need to upload input data to our server. All results, reports, figures and intermediate data will be zipped and downloaded in the final step.**
-# 
-# ### Shiny App through RStudio (R users, installation required)
-# 
-# **To run the 3D RNA-seq App through RStudio on a local PC, users do not need to upload the data to our server and all the outputs will be directly saved to the App working directory.** Please run the following command to install ThreeDRNAseq R package and the packages of dependencies.
-# 
-# ***Install dependency packages***
-# 
-# R version required > 4.0.0
-# 
-# ``` r
-# #####################################################################################
-# ## Install packages of dependency
-# ###---> Install packages from Cran
-# cran.package.list <- c("shiny","shinydashboard","rhandsontable","shinyFiles",
-#                        "shinyjs","shinyBS","shinyhelper","shinyWidgets",
-#                        "magrittr","DT","plotly","ggplot2","eulerr",
-#                        "gridExtra","grid","fastcluster","rmarkdown","base64enc",
-#                        "ggrepel","zoo","gtools")
-# for(i in cran.package.list){
-#    if(!(i %in% rownames(installed.packages()))){
-#      message('Installing package: ',i)
-#      install.packages(i,dependencies = T)
-#    } else next
-# }
-# 
-# ###---> Install packages from Bioconductor
-# bioconductor.package.list <- c('tximport','edgeR','limma','RUVSeq',
-#                                'ComplexHeatmap','rhdf5')
-# for(i in bioconductor.package.list){
-#   if (!requireNamespace("BiocManager", quietly = TRUE))
-#     install.packages("BiocManager")
-#   if(!(i %in% rownames(installed.packages()))){
-#     message('Installing package: ',i)
-#     BiocManager::install(i,dependencies = T)
-#   } else next
-# }
-# ```
-# 
-# ***Install ThreeDRNAseq R package***
-# 
-# ThreeDRNAseq R package can be installed from Github by using <a href='https://cran.r-project.org/web/packages/devtools/index.html' target='_blank'>devtools</a> R package
-# 
-# ``` r
-# ##################################################################################################
-# ## use devtools R package to install ThreeDRNAseq from Github
-# ###---> If devtools is not installed, please install
-# if(!requireNamespace("devtools", quietly = TRUE))
-#   install.packages('devtools',dependencies = TRUE)
-# 
-# ###---> Install ThreeDRNAseq
-# if(!requireNamespace("ThreeDRNAseq", quietly = TRUE))
-#   devtools::install_github('wyguo/ThreeDRNAseq')
-# ```
-# 
-# ***Run 3D RNA-seq App***
-# 
-# ``` r
-# library(ThreeDRNAseq)
-# run3DApp()
-# ```
-# 
-# ### R command line (advanced R users, installation required)
-# 
-# The ThreeDRNAseq R package can be used as a normal R package. The vignette of command line for 3D analysis can be found in:
-# 
-# <a href="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_command_line_user_manual.md" target="_blank">https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_RNA-seq_command_line_user_manual.md</a>
-# 
-# **NOTE**:
-# 
-# -   **If you are working on RNA-seq data with very big size of transcript quantification (≥ 2GB), it is recommended to remove the redundant files in the Salmon/Kallisto outputs (see <a href='#input-files'>Input files</a>) to reduce data size or run the 3D RNA-seq App through RStudio on a local PC.**
-# -   To run the ThreeDRNAseq App on a local PC, if any other denpendency R packages are missing, please install them. 
+
 
 <a href='#table-of-contents'>Go back to Table of contents</a>
 
