@@ -85,7 +85,7 @@ The 3D RNA-seq App docker image is hosted by the James Hutton Institute server. 
 How to get help
 ---------------
 
-**3D RNA-seq App "easy-to-use" manual and command line manual:**
+**3D RNA-seq App "easy-to-use" manual:**
 
 <a href="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals" target="_blank">https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals</a>
 
