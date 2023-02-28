@@ -33,6 +33,7 @@ https://www.dropbox.com/s/w21l4hqyg51m60r/Arabidopsis_cold.zip?dl=0
 
   - Guo W, Tzioutziou NA, Stephen G, Milne I, Calixto CPG, Waugh R, et al. 3D RNA-seq: a powerful and flexible tool for rapid and accurate differential expression and alternative splicing analysis of RNA-seq data for biologists. RNA Biol. 2020;00:1–14. 
   - Calixto CPG, Guo W, James AB, Tzioutziou NA, Entizne JC, Panter PE, et al. Rapid and dynamic alternative splicing impacts the arabidopsis cold response transcriptome. Plant Cell. 2018;30:1424–44.
+  - Research used 3D RNA-seq App: https://scholar.google.com.au/scholar?oi=bibs&hl=en&cites=10705638438297153434
   
 ### Reference transcritp dataset (RTD) publications:
   
