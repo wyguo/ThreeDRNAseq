@@ -1,6 +1,6 @@
 ![](vignettes/user_manuals/3D_App_figure/logo.png)
 
-[**Example data**](#example) | [**Transcript quantification**](#quantification) [**3D RNA-seq**](#3d) | [**Publications**](#publication)
+[**Example data**](#example) | [**Transcript quantification**](#quantification) | [**3D RNA-seq**](#3d) | [**Publications**](#publication)
 ----------------
 
 ## 3D RNA-seq training materials
