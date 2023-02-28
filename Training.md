@@ -24,6 +24,7 @@ https://www.dropbox.com/s/w21l4hqyg51m60r/Arabidopsis_cold.zip?dl=0
 
 
 <div id="quantification"></div>
+
 ### Transcript quantification using Galaxy
 
   - Galaxy Europe link: https://usegalaxy.eu/ 
