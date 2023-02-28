@@ -1,4 +1,7 @@
-## Hand on session
+![](vignettes/user_manuals/3D_App_figure/logo.png)
+
+## 3D RNA-seq training materials
+
 
 ### Example data
 
