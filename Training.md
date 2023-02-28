@@ -33,3 +33,11 @@ https://www.dropbox.com/s/w21l4hqyg51m60r/Arabidopsis_cold.zip?dl=0
 
   - Guo W, Tzioutziou NA, Stephen G, Milne I, Calixto CPG, Waugh R, et al. 3D RNA-seq: a powerful and flexible tool for rapid and accurate differential expression and alternative splicing analysis of RNA-seq data for biologists. RNA Biol. 2020;00:1–14. 
   - Calixto CPG, Guo W, James AB, Tzioutziou NA, Entizne JC, Panter PE, et al. Rapid and dynamic alternative splicing impacts the arabidopsis cold response transcriptome. Plant Cell. 2018;30:1424–44.
+  
+### Reference transcritp dataset (RTD) publications:
+  
+  - Coulter M, Entizne JC, Guo W, Bayer M, Wonneberger R, Milne L, et al. BaRTv2: A highly resolved barley reference transcriptome for accurate transcript‐specific RNA‐seq quantification. Plant J. 2022. 
+  - Zhang R, Kuo R, Coulter M, Calixto CPG, Entizne JC, Guo W, et al. A high-resolution single-molecule sequencing-based Arabidopsis transcriptome using novel methods of Iso-seq analysis. Genome Biol 2022 231. 2022;23:1–37. 
+  - Rapazote-Flores P, Bayer M, Milne L, Mayer CD, Fuller J, Guo W, et al. BaRTv1.0: An improved barley reference transcript dataset to determine accurate changes in the barley transcriptome using RNA-seq. BMC Genomics. 2019;20.
+  - Zhang R, Calixto CPG, Marquez Y, Venhuizen P, Tzioutziou NA, Guo W, et al. A high-quality Arabidopsis transcriptome for accurate transcript-level analysis of alternative splicing. Nucleic Acids Res. 2017;45:5061–73. 
+  - Zhang R, Calixto CPG, Tzioutziou NA, James AB, Simpson CG, Guo W, et al. AtRTD - a comprehensive reference transcript dataset resource for accurate quantification of transcript-specific expression in Arabidopsis thaliana. New Phytol. 2015;208:96–101. 
