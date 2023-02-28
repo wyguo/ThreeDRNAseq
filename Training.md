@@ -1,7 +1,11 @@
 ![](vignettes/user_manuals/3D_App_figure/logo.png)
 
+[**Example data**](#example) | [**Transcript quantification**](#quantification)
+
 ## 3D RNA-seq training materials
 
+
+<div id="example"></div>
 
 ### Example data
 
@@ -17,6 +21,8 @@ Arabidopsis data in different format:
 
 https://www.dropbox.com/s/w21l4hqyg51m60r/Arabidopsis_cold.zip?dl=0
 
+
+<div id="quantification"></div>
 ### Transcript quantification using Galaxy
 
   - Galaxy Europe link: https://usegalaxy.eu/ 
