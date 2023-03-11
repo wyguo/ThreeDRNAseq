@@ -2,9 +2,14 @@
 
 ## 3D RNA-seq training materials
 
-[**Example data**](#example) | [**Transcript quantification**](#quantification) | [**3D RNA-seq**](#3d) | [**Publications**](#publication)
+[**Survey**](#survey) | [**Example data**](#example) | [**Transcript quantification**](#quantification) | [**3D RNA-seq**](#3d) | [**Publications**](#publication)
 ----------------
 
+<div id="survey"></div>
+### Survey
+Thank you for taking the time to participate in the survey. Your input is greatly appreciated and will help us to improve the 3D RNA-seq App and training.
+
+https://docs.google.com/forms/d/e/1FAIpQLSc9_ZYPOqNa7DsaK1FtcpYTnRnvcM3W33VZyDXq54O5bHzAOQ/viewform?usp=sf_link
 
 <div id="example"></div>
 
