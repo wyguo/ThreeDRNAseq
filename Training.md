@@ -35,9 +35,12 @@ https://www.dropbox.com/s/w21l4hqyg51m60r/Arabidopsis_cold.zip?dl=0
 ### Transcript quantification using Galaxy
 
   - Galaxy Europe link: https://usegalaxy.eu/ 
+  - Shared example data on Galaxy Europe: https://usegalaxy.eu/u/wbguo/h/3d-rna-seq-example-data-1
+  - Galaxy Australia link: https://usegalaxy.org.au/ 
+  - Shared example data on Galaxy Australia: https://usegalaxy.org.au/u/wbguo/h/3d-rna-seq-example-data
   - User manual: https://github.com/wyguo/ThreeDRNAseq/tree/master/vignettes/user_manuals
   - Video tutorial: https://www.youtube.com/watch?v=rqeXECX1-T4
-  - Shared example data on Galaxy: https://usegalaxy.eu/u/wbguo/h/3d-rna-seq-example-data-1
+
   - Or download example data from: https://www.dropbox.com/s/8fsceneq8jlegwi/3D_RNAseq_example_data.zip?dl=0 
 
 <div id="3d"></div>
