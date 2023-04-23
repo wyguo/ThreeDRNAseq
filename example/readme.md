@@ -10,6 +10,8 @@ https://docs.google.com/forms/d/e/1FAIpQLSd5P8Fk5BrpIvFqk_UWx86BrzqpR5tcKkrPwiMO
 
 ## Example data for 3D RNA-seq
 
+**mice.zip**
+
   - **metatabe.csv**: metatable for experimental design.
   - **trans_gene_mapping.csv**: table of transcript-gene association.
   - **quant.zip**: transcript quantification generated with Salmon tool command line. 
