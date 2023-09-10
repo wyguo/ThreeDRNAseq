@@ -26,29 +26,13 @@ Click “Download” and unzip, you will get three datasets:
   - Arabidopsis_cold: example data from a study of Arabidopsis
   - Embryonic_mice: example data from a study of mice
 
-Arabidopsis data in different format:
-
-https://www.dropbox.com/s/w21l4hqyg51m60r/Arabidopsis_cold.zip?dl=0
-
-
 <div id="quantification"></div>
-
-
-## Small example data
-
-**mice.zip**
-
-  - **metatabe.csv**: metatable for experimental design.
-  - **trans_gene_mapping.csv**: table of transcript-gene association.
-  - **quant.zip**: transcript quantification generated with Salmon tool command line. 
 
 
 ### Transcript quantification using Galaxy
 
   - Galaxy Europe link: https://usegalaxy.eu/ 
-  - Shared example data on Galaxy Europe: https://usegalaxy.eu/u/wbguo/h/3d-rna-seq-example-data-1
-  - **Galaxy Australia link**: https://usegalaxy.org.au/
-  - **Shared example data on Galaxy Australia**: https://usegalaxy.org.au/u/wbguo/h/3d-rna-seq-example-data
+  - Shared example data on Galaxy Europe: https://usegalaxy.eu/u/wbguo/h/3d-rna-seq-data---southampton
   - User manual: https://github.com/wyguo/ThreeDRNAseq/tree/master/vignettes/user_manuals
   - Video tutorial: https://www.youtube.com/watch?v=rqeXECX1-T4
 
@@ -62,6 +46,16 @@ https://www.dropbox.com/s/w21l4hqyg51m60r/Arabidopsis_cold.zip?dl=0
   - 3D RNA-seq App Github page: https://github.com/wyguo/ThreeDRNAseq 
   - 3D RNA-seq App user manual: https://github.com/wyguo/ThreeDRNAseq/tree/master/vignettes/user_manuals
   - 3D RNA-seq App YouTube video: https://www.youtube.com/watch?v=rqeXECX1-T4 
+
+To see a demo video, click the screenshot
+
+<a style="float:center" href="https://youtu.be/rqeXECX1-T4" target="_blank">
+  <img alt="Youtube video" src="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_App_figure/youtube.png"/>
+</a>
+
+Alternative link on Bilibili: <a href="https://www.bilibili.com/video/BV1mS4y1g7uB/ ">https://www.bilibili.com/video/BV1mS4y1g7uB/</a>
+
+<hr>
 
 
 
