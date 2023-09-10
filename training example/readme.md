@@ -1,6 +1,5 @@
-<a style="float:center" target="_blank">
-  <img alt="Youtube video" src="vignettes/user_manuals/3D_App_figure/logo.png"/>
-</a>
+
+<img alt="3D" src="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_App_figure/logo.png"/>
 
 ## 3D RNA-seq training materials
 
