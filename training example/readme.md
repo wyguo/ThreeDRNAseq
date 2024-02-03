@@ -24,9 +24,9 @@ Click “Download” and unzip, you will get three datasets:
 
   - Galaxy_example_data: example data for transcript quantification using Galaxy
   - Arabidopsis_cold: example data from a study of Arabidopsis
-  <img alt="3D" src="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_App_figure/arabidopsis.png"/>
+  <img alt="3D" width="500" src="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_App_figure/arabidopsis.png"/>
   - Embryonic_mice: example data from a study of mice
-  <img alt="3D" src="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_App_figure/mouse.png"/>
+  <img alt="3D" width="500" src="https://github.com/wyguo/ThreeDRNAseq/blob/master/vignettes/user_manuals/3D_App_figure/mouse.png"/>
 <div id="quantification"></div>
 
 
