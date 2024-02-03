@@ -12,7 +12,7 @@
 
 Thank you for taking the time to participate in the survey. Your input is greatly appreciated and will help us to improve the 3D RNA-seq App and training.
 
-https://docs.google.com/forms/d/e/1FAIpQLSdLx8bjZWqHlq05a6vUFEEaG0aPPZx6Rc_crD8UaTg9tTYzMw/viewform?usp=sf_link
+[https://docs.google.com/forms/d/e/1FAIpQLSdLx8bjZWqHlq05a6vUFEEaG0aPPZx6Rc_crD8UaTg9tTYzMw/viewform?usp=sf_link](https://forms.gle/Htg2rLyKRxGggFXy7)
 
 <div id="example"></div>
 
