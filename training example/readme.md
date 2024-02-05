@@ -58,7 +58,20 @@ Alternative link on Bilibili: <a href="https://www.bilibili.com/video/BV1mS4y1g7
 
 <hr>
 
+### R scripts to generate gene-transcript association table
 
+```
+library(rtracklayer)
+file2read <- 'genomic.gtf' # mouse gtf
+gtf <- import(file2read)
+exon <- gtf[gtf$type=='exon']
+
+mapping <- data.frame(TXNAME=exon$transcript_id,GENEID=exon$gene_id)
+mapping <- unique(mapping)
+write.csv(mapping,file='mapping.csv',row.names = F)
+
+
+```
 
 ### 3D RNA-seq App publications:
 
