@@ -33,7 +33,7 @@ Click “Download” and unzip, you will get three datasets:
 ### Transcript quantification using Galaxy
 
   - Galaxy Europe link: https://usegalaxy.eu/ 
-  - Shared example data on Galaxy Europe: https://usegalaxy.eu/u/wbguo/h/3d-rna-seq-data---southampton
+  - Shared example data on Galaxy Europe: https://usegalaxy.eu/u/wbguo/h/3d-rna-seq-data-arabidopsis
   - User manual: https://github.com/wyguo/ThreeDRNAseq/tree/master/vignettes/user_manuals
   - Video tutorial: https://www.youtube.com/watch?v=rqeXECX1-T4
 
